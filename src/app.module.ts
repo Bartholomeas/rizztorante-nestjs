@@ -11,7 +11,10 @@ import { Menu } from "@/menu/entities/menu.entity";
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: [".env.development"],
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: "postgres",
       host: "localhost",
