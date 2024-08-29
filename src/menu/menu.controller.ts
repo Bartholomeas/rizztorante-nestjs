@@ -1,4 +1,14 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, ValidationPipe } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  InternalServerErrorException,
+  Post,
+  ValidationPipe,
+} from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 
 import { MenuService } from "@/menu/menu.service";
@@ -17,7 +27,12 @@ export class MenuController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Create menu" })
   createMenu(@Body(ValidationPipe) createMenuDto: CreateMenuDto) {
-    return this.menuService.createMenu(createMenuDto);
+    try {
+      return this.menuService.createMenu(createMenuDto);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
   }
 
   @Post("create-category")

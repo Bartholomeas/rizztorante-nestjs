@@ -25,23 +25,18 @@ export class MenuService {
   }
 
   async createMenu(createMenuDto: CreateMenuDto): Promise<Menu> {
-    try {
-      const menuSlug = slugify(createMenuDto?.name?.toLowerCase());
+    const menuSlug = slugify(createMenuDto?.name?.toLowerCase());
+    const slugCount = await this.menuRepository.count({
+      where: {
+        slug: Like(`${menuSlug}%`),
+      },
+    });
 
-      const slugCount = await this.menuRepository.count({
-        where: {
-          slug: Like(`${menuSlug}%`),
-        },
-      });
-
-      const menu = this.menuRepository.create({
-        ...createMenuDto,
-        slug: slugCount > 0 ? `${menuSlug}-${slugCount + 1}` : menuSlug,
-      });
-      return await this.menuRepository.save(menu);
-    } catch (err) {
-      throw err;
-    }
+    const menu = this.menuRepository.create({
+      ...createMenuDto,
+      slug: slugCount > 0 ? `${menuSlug}-${slugCount + 1}` : menuSlug,
+    });
+    return await this.menuRepository.save(menu);
   }
 
   async createCategory(): Promise<MenuCategory> {
