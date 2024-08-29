@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-
 import { Like, Repository } from "typeorm";
 import slugify from "slugify";
 
@@ -49,18 +48,18 @@ export class MenuService {
   }
 
   async createPosition(): Promise<Menu> {
-    const category = this.menuCategoryRepository.create({ name: "Pizza" });
+    // const category = this.menuCategoryRepository.create({ name: "Pizza" });
 
-    const newPosition = this.menuPositionRepository.create({
-      name: "Pizza Margherita",
-      price: 2739,
-      category,
-    });
-    const newPosition2 = this.menuPositionRepository.create({
-      name: "Pizza Capriciosa",
-      price: 3245,
-      category,
-    });
+    // const newPosition = this.menuPositionRepository.create({
+    //   name: "Pizza Margherita",
+    //   price: 2739,
+    //   category,
+    // });
+    // const newPosition2 = this.menuPositionRepository.create({
+    //   name: "Pizza Capriciosa",
+    //   price: 3245,
+    //   category,
+    // });
     // const menu = this.menuRepository.create({
     //   name: "Menu test",
     //   options: ["testowe", "costam"],
