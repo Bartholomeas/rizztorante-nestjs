@@ -7,12 +7,11 @@ import { OrdersModule } from "@/orders/orders.module";
 import { CartModule } from "@/cart/cart.module";
 import { AppController } from "@/app.controller";
 import { AppService } from "@/app.service";
-import { Menu } from "@/menu/entities/menu.entity";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [".env.development"],
+      envFilePath: [".env"],
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
@@ -22,8 +21,8 @@ import { Menu } from "@/menu/entities/menu.entity";
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Menu],
       synchronize: true, // probably to delete in production
+      autoLoadEntities: true,
     }),
     OrdersModule,
     MenuModule,
