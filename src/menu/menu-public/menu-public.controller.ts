@@ -5,6 +5,8 @@ import {
   HttpException,
   HttpStatus,
   InternalServerErrorException,
+  Param,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
@@ -27,12 +29,24 @@ export class MenuPublicController {
     }
   }
 
-  @Get("categories")
+  @Get("categories/:menuId")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Get all menu categories" })
-  async getMenuCategories() {
+  async getMenuCategories(@Param("menuId", new ParseUUIDPipe()) menuId: string) {
     try {
-      return await this.menuService.getMenuCategories();
+      return await this.menuService.getMenuCategories(menuId);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
+  }
+
+  @Get("positions/:categoryId")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Get all menu positions" })
+  async getPositions(@Param("categoryId", new ParseUUIDPipe()) categoryId: string) {
+    try {
+      return await this.menuService.getPositions(categoryId);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
