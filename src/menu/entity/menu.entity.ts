@@ -15,8 +15,8 @@ export class Menu {
   slug: string;
 
   @Column({ default: null, nullable: true })
-  descripton: string;
+  description: string;
 
-  @OneToMany(() => MenuCategory, (category) => category.category)
-  categories: MenuCategory;
+  @OneToMany(() => MenuCategory, (category) => category.menu)
+  categories: MenuCategory[];
 }

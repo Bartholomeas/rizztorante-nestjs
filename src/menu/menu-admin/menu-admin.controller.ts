@@ -8,11 +8,13 @@ import {
   Post,
   ValidationPipe,
 } from "@nestjs/common";
-import { ApiOperation } from "@nestjs/swagger";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
-import { CreateMenuDto } from "@/menu/dto/create-menu.dto";
+import { CreateMenuDto } from "@/menu/menu-admin/dto/create-menu.dto";
 import { MenuAdminService } from "@/menu/menu-admin/menu-admin.service";
+import { CreateMenuCategoryDto } from "@/menu/menu-admin/dto/create-category.dto";
 
+@ApiTags("Menu Admin")
 @Controller("menu-admin")
 export class MenuAdminController {
   constructor(private readonly menuService: MenuAdminService) {}
@@ -32,8 +34,8 @@ export class MenuAdminController {
   @Post("create-category")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Create menu category" })
-  createCategory() {
-    return this.menuService.createCategory();
+  createCategory(@Body(ValidationPipe) createMenuCategoryDto: CreateMenuCategoryDto) {
+    return this.menuService.createCategory(createMenuCategoryDto);
   }
 
   @Post("create-position")

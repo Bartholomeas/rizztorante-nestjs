@@ -21,7 +21,7 @@ import { AppService } from "@/app.service";
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      synchronize: true, // probably to delete in production
+      synchronize: true, // TODO: probably to delete in production
       autoLoadEntities: true,
     }),
     OrdersModule,

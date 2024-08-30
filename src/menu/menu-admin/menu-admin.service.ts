@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import slugify from "slugify";
 import { Like, Repository } from "typeorm";
@@ -6,7 +6,8 @@ import { Like, Repository } from "typeorm";
 import { Menu } from "@/menu/entity/menu.entity";
 import { MenuCategory } from "@/menu/entity/menu-category.entity";
 import { MenuPosition } from "@/menu/entity/menu-position.entity";
-import { CreateMenuDto } from "@/menu/dto/create-menu.dto";
+import { CreateMenuDto } from "@/menu/menu-admin/dto/create-menu.dto";
+import { CreateMenuCategoryDto } from "@/menu/menu-admin/dto/create-category.dto";
 
 @Injectable()
 export class MenuAdminService {
@@ -34,10 +35,19 @@ export class MenuAdminService {
     return await this.menuRepository.save(menu);
   }
 
-  async createCategory(): Promise<MenuCategory> {
+  async createCategory(createMenuCategoryDto: CreateMenuCategoryDto): Promise<MenuCategory> {
+    const menu = await this.menuRepository.findOne({
+      where: {
+        id: createMenuCategoryDto.menuId,
+      },
+    });
+
+    if (!menu) throw new NotFoundException("Menu with this id not found");
+
     const category = this.menuCategoryRepository.create({
-      name: "Pizza",
-      category: "pizza",
+      name: createMenuCategoryDto.name,
+      description: createMenuCategoryDto.description,
+      menu,
     });
 
     return this.menuCategoryRepository.save(category);
