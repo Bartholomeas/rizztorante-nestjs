@@ -1,4 +1,4 @@
-import { Check, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Check, Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import { MenuCategory } from "@/menu/entity/menu-category.entity";
 
@@ -14,6 +14,12 @@ export class MenuPosition {
   @Column({ type: "int" })
   price: number;
 
-  @ManyToOne(() => MenuCategory, (category) => category.id)
+  @Column({ default: null, nullable: true })
+  description?: string;
+
+  @Index()
+  @ManyToOne(() => MenuCategory, (category) => category.positions, {
+    onDelete: "CASCADE",
+  })
   category: MenuCategory;
 }
