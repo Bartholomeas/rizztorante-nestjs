@@ -1,11 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsOptional, IsString, IsUUID, MinLength } from "class-validator";
+import { IsInt, IsOptional, IsString, IsUUID, Min, MinLength } from "class-validator";
 
-export class CreateMenuCategoryDto {
+export class PositionDto {
   @ApiProperty()
   @IsString()
   @MinLength(2)
   name: string;
+
+  @ApiProperty()
+  @IsInt()
+  @Min(0)
+  price: number;
 
   @ApiPropertyOptional({ description: "Optional description for the category", nullable: true })
   @IsString()
@@ -14,5 +19,5 @@ export class CreateMenuCategoryDto {
 
   @ApiProperty()
   @IsUUID()
-  menuId: string;
+  menuCategoryId: string;
 }

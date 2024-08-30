@@ -18,9 +18,21 @@ export class MenuPublicController {
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Get all menus" })
-  getMenus() {
+  async getMenus() {
     try {
-      return this.menuService.getMenus();
+      return await this.menuService.getMenus();
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
+  }
+
+  @Get("categories")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Get all menu categories" })
+  async getMenuCategories() {
+    try {
+      return await this.menuService.getMenuCategories();
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);

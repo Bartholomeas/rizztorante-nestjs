@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 import { MenuPosition } from "@/menu/entity/menu-position.entity";
 import { Menu } from "@/menu/entity/menu.entity";
@@ -14,9 +14,12 @@ export class MenuCategory {
   @Column({ default: null, nullable: true })
   description?: string;
 
-  @ManyToOne(() => Menu, (menu) => menu.categories)
+  @Index()
+  @ManyToOne(() => Menu, (menu) => menu.categories, {
+    onDelete: "CASCADE",
+  })
   menu: Menu;
 
-  @OneToMany(() => MenuPosition, (menuPosition) => menuPosition.id)
+  @OneToMany(() => MenuPosition, (menuPosition) => menuPosition.category)
   positions: MenuPosition[];
 }

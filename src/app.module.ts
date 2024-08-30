@@ -14,6 +14,7 @@ import { AppService } from "@/app.service";
       envFilePath: [".env"],
       isGlobal: true,
     }),
+
     TypeOrmModule.forRoot({
       type: "postgres",
       host: "localhost",
@@ -21,8 +22,10 @@ import { AppService } from "@/app.service";
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      synchronize: true, // TODO: probably to delete in production
+      synchronize: process.env.NODE_ENV !== "production",
+      logging: process.env.NODE_ENV !== "production",
       autoLoadEntities: true,
+      // dropSchema: true, To clearing DB in each app restart
     }),
     OrdersModule,
     MenuModule,
