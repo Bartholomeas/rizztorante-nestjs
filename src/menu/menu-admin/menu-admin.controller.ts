@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpException,
   HttpStatus,
@@ -11,17 +10,12 @@ import {
 } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 
-import { MenuService } from "@/menu/menu.service";
 import { CreateMenuDto } from "@/menu/dto/create-menu.dto";
+import { MenuAdminService } from "@/menu/menu-admin/menu-admin.service";
 
-@Controller("menu")
-export class MenuController {
-  constructor(private readonly menuService: MenuService) {}
-
-  @Get()
-  getAll() {
-    return this.menuService.getAll();
-  }
+@Controller("menu-admin")
+export class MenuAdminController {
+  constructor(private readonly menuService: MenuAdminService) {}
 
   @Post("create-menu")
   @HttpCode(HttpStatus.CREATED)

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Like, Repository } from "typeorm";
 import slugify from "slugify";
+import { Like, Repository } from "typeorm";
 
 import { Menu } from "@/menu/entity/menu.entity";
 import { MenuCategory } from "@/menu/entity/menu-category.entity";
@@ -9,7 +9,7 @@ import { MenuPosition } from "@/menu/entity/menu-position.entity";
 import { CreateMenuDto } from "@/menu/dto/create-menu.dto";
 
 @Injectable()
-export class MenuService {
+export class MenuAdminService {
   constructor(
     @InjectRepository(Menu)
     private readonly menuRepository: Repository<Menu>,
@@ -18,10 +18,6 @@ export class MenuService {
     @InjectRepository(MenuPosition)
     private readonly menuPositionRepository: Repository<MenuPosition>,
   ) {}
-
-  async getAll(): Promise<Menu[]> {
-    return this.menuRepository.find();
-  }
 
   async createMenu(createMenuDto: CreateMenuDto): Promise<Menu> {
     const menuSlug = slugify(createMenuDto?.name?.toLowerCase());

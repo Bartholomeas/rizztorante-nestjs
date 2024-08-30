@@ -32,7 +32,5 @@ import { AppService } from "@/app.service";
   providers: [AppService],
 })
 export class AppModule {
-  constructor() {
-    console.log("HEHEHE", process.env.POSTGRES_DB, process.env.POSTGRES_USER);
-  }
+  constructor() {}
 }
