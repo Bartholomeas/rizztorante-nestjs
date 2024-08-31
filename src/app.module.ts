@@ -2,11 +2,11 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { MenuModule } from "@/menu/menu.module";
-import { OrdersModule } from "@/orders/orders.module";
-import { CartModule } from "@/cart/cart.module";
 import { AppController } from "@/app.controller";
 import { AppService } from "@/app.service";
+import { CartModule } from "@/cart/cart.module";
+import { MenuModule } from "@/menu/menu.module";
+import { OrdersModule } from "@/orders/orders.module";
 
 @Module({
   imports: [

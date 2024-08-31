@@ -14,14 +14,14 @@ import {
 } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
-import { UpdateMenuCategoryDto } from "./dto/update/update-category.dto";
-import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
-import { UpdateMenuDto } from "./dto/update/update-menu.dto";
-
-import { CreateMenuDto } from "@/menu/menu-admin/dto/create/create-menu.dto";
-import { MenuAdminService } from "@/menu/menu-admin/menu-admin.service";
 import { CreateMenuCategoryDto } from "@/menu/menu-admin/dto/create/create-category.dto";
+import { CreateMenuDto } from "@/menu/menu-admin/dto/create/create-menu.dto";
 import { CreateMenuPositionDto } from "@/menu/menu-admin/dto/create/create-position.dto";
+import { MenuAdminService } from "@/menu/menu-admin/menu-admin.service";
+
+import { UpdateMenuCategoryDto } from "./dto/update/update-category.dto";
+import { UpdateMenuDto } from "./dto/update/update-menu.dto";
+import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
 
 @ApiTags("Menu Admin")
 @Controller("menu-admin")
@@ -70,6 +70,7 @@ export class MenuAdminController {
   async deleteMenu(@Param("id", new ParseUUIDPipe()) id: string) {
     try {
       await this.menuService.deleteMenu(id);
+      return;
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -82,6 +83,7 @@ export class MenuAdminController {
   async deleteCategory(@Param("id", new ParseUUIDPipe()) id: string) {
     try {
       await this.menuService.deleteCategory(id);
+      return;
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -94,6 +96,7 @@ export class MenuAdminController {
   async deletePosition(@Param("id", new ParseUUIDPipe()) id: string) {
     try {
       await this.menuService.deletePosition(id);
+      return;
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);

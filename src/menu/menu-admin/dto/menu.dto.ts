@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+
 import { IsNotEmpty, IsString, MinLength } from "class-validator";
 
 export class MenuDto {
@@ -8,7 +9,8 @@ export class MenuDto {
   @MinLength(2)
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
-  description: string;
+  @IsNotEmpty()
+  description?: string;
 }
