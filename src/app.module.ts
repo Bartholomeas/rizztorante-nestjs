@@ -2,19 +2,19 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { MenuModule } from "@/menu/menu.module";
-import { OrdersModule } from "@/orders/orders.module";
-import { CartModule } from "@/cart/cart.module";
 import { AppController } from "@/app.controller";
 import { AppService } from "@/app.service";
-import { Menu } from "@/menu/entities/menu.entity";
+import { CartModule } from "@/cart/cart.module";
+import { MenuModule } from "@/menu/menu.module";
+import { OrdersModule } from "@/orders/orders.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [".env.development"],
+      envFilePath: [".env"],
       isGlobal: true,
     }),
+
     TypeOrmModule.forRoot({
       type: "postgres",
       host: "localhost",
@@ -22,8 +22,10 @@ import { Menu } from "@/menu/entities/menu.entity";
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Menu],
-      synchronize: true, // probably to delete in production
+      synchronize: process.env.NODE_ENV !== "production",
+      logging: process.env.NODE_ENV !== "production",
+      autoLoadEntities: true,
+      // dropSchema: true, //To clearing DB in each app restart
     }),
     OrdersModule,
     MenuModule,
@@ -33,7 +35,5 @@ import { Menu } from "@/menu/entities/menu.entity";
   providers: [AppService],
 })
 export class AppModule {
-  constructor() {
-    console.log("HEHEHE", process.env.POSTGRES_DB, process.env.POSTGRES_USER);
-  }
+  constructor() {}
 }
