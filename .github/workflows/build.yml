@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+  pull_request:
+    types: [opened, synchronize]
+# env:
+#   DATABASE_URL: file:./test.db?mode=memory&cache=shared
+
+jobs:
+  build:
+    name: Build and Test
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Configure node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.13.1
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint projects
+        run: pnpm run lint
+
+      # - name: Set up environment variables
+      #   run: echo "env DATABASE_URL=${{ secrets.DATABASE_URL }}"
+
+      - name: Test
+        run: pnpm run test
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Completed
+        run: echo "Project easily did this Pipeline, congratz!"
