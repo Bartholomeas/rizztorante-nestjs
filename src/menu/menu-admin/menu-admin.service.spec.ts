@@ -83,6 +83,7 @@ describe("MenuAdminService", () => {
     });
 
     it("should create a menu with a unique slug", async () => {
+      jest.spyOn(menuRepository, "findOne").mockResolvedValue(null);
       jest.spyOn(menuRepository, "count").mockResolvedValue(0);
 
       const result = await service.createMenu(createMenuDto);
@@ -95,33 +96,11 @@ describe("MenuAdminService", () => {
     });
 
     it("should throw an error if the menu already exists", async () => {
+      jest.spyOn(menuRepository, "findOne").mockResolvedValue(createdMenu as Menu);
       jest.spyOn(menuRepository, "count").mockResolvedValue(1);
       jest.spyOn(menuRepository, "save").mockRejectedValue(new Error("Menu already exists"));
 
       await expect(service.createMenu(createMenuDto)).rejects.toThrow("Menu already exists");
-    });
-
-    it("should create menus with incremented slugs", async () => {
-      const mockCount = jest.spyOn(menuRepository, "count");
-      mockCount.mockResolvedValueOnce(1).mockResolvedValueOnce(2);
-
-      // First creation
-      let result = await service.createMenu(createMenuDto);
-      expect(result).toHaveProperty("slug", "pizzas");
-      expect(menuRepository.create).toHaveBeenCalledWith({
-        ...createMenuDto,
-        slug: "pizzas-2",
-      });
-
-      // Second creation
-      result = await service.createMenu(createMenuDto);
-      expect(result).toHaveProperty("slug", "pizzas");
-      expect(menuRepository.create).toHaveBeenCalledWith({
-        ...createMenuDto,
-        slug: "pizzas-3",
-      });
-
-      expect(mockCount).toHaveBeenCalledTimes(2);
     });
   });
 

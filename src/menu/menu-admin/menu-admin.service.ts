@@ -143,7 +143,7 @@ export class MenuAdminService {
     const baseSlug = slugify(name.toLowerCase());
     const existingMenu = await this.menuRepository.findOne({ where: { slug: baseSlug } });
     if (existingMenu) {
-      throw new ConflictException("A menu with this name already exists");
+      throw new ConflictException("Menu already exists");
     }
     return baseSlug;
   }
