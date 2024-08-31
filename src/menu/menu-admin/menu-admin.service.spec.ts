@@ -42,6 +42,10 @@ describe("MenuAdminService", () => {
           provide: getRepositoryToken(MenuPosition),
           useClass: Repository,
         },
+        {
+          provide: getRepositoryToken(MenuPositionDetails),
+          useClass: Repository,
+        },
       ],
     }).compile();
 

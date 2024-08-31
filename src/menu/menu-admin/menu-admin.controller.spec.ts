@@ -13,6 +13,7 @@ import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
 import { MenuAdminController } from "./menu-admin.controller";
 import { MenuAdminService } from "./menu-admin.service";
 import { MenuCategory } from "../entity/menu-category.entity";
+import { MenuPositionDetails } from "../entity/menu-position-details.entity";
 import { MenuPosition } from "../entity/menu-position.entity";
 import { Menu } from "../entity/menu.entity";
 
@@ -35,6 +36,10 @@ describe("MenuAdminController", () => {
         },
         {
           provide: getRepositoryToken(MenuPosition),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(MenuPositionDetails),
           useClass: Repository,
         },
       ],
