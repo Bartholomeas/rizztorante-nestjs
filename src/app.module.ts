@@ -8,6 +8,8 @@ import { CartModule } from "@/cart/cart.module";
 import { MenuModule } from "@/menu/menu.module";
 import { OrdersModule } from "@/orders/orders.module";
 
+import { AuthModule } from "./auth/auth.module";
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,6 +32,7 @@ import { OrdersModule } from "@/orders/orders.module";
     OrdersModule,
     MenuModule,
     CartModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
