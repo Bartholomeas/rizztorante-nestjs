@@ -37,20 +37,17 @@ export class MenuPositionDetails {
   @Column({ type: "simple-array", nullable: true })
   allergens?: string[];
 
-  @Column({ type: "simple-array", nullable: true })
-  ingredients?: string[];
+  // @Column({ type: "simple-array", nullable: true })
+  // ingredients?: string[];
 
-  @Column({ type: "boolean", default: false })
-  isVegetarian: boolean;
+  // @Column({ type: "boolean", default: false })
+  // isVegetarian: boolean;
 
-  @Column({ type: "boolean", default: false })
-  isVegan: boolean;
+  // @Column({ type: "boolean", default: false })
+  // isVegan: boolean;
 
-  @Column({ type: "boolean", default: false })
-  isGlutenFree: boolean;
-
-  @Column({ type: "int", nullable: true })
-  preparationTime?: number;
+  // @Column({ type: "boolean", default: false })
+  // isGlutenFree: boolean;
 
   @Column({ type: "simple-json", nullable: true })
   nutritionalInfo?: {

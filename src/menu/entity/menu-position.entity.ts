@@ -19,6 +19,18 @@ export class MenuPosition {
   @Column({ default: null, nullable: true })
   description?: string;
 
+  @Column({ type: "simple-array", nullable: true })
+  ingredients?: string[];
+
+  @Column({ type: "boolean", default: false })
+  isVegetarian: boolean;
+
+  @Column({ type: "boolean", default: false })
+  isVegan: boolean;
+
+  @Column({ type: "boolean", default: false })
+  isGlutenFree: boolean;
+
   @Index()
   @ManyToOne(() => MenuCategory, (category) => category.positions, {
     onDelete: "CASCADE",

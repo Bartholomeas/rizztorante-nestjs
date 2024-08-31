@@ -12,6 +12,7 @@ import { UpdateMenuDto } from "./dto/update/update-menu.dto";
 import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
 import { MenuAdminService } from "./menu-admin.service";
 import { MenuCategory } from "../entity/menu-category.entity";
+import { MenuPositionDetails } from "../entity/menu-position-details.entity";
 import { MenuPosition } from "../entity/menu-position.entity";
 import { Menu } from "../entity/menu.entity";
 
@@ -172,6 +173,9 @@ describe("MenuAdminService", () => {
       name: "Margherita",
       description: "Classic Italian pizza",
       price: 10.99,
+      isVegetarian: false,
+      isVegan: false,
+      isGlutenFree: false,
     };
     const createdPosition = {
       id: "9876543e-ea81-4211-9caf-fb84f620a3dc",
@@ -274,6 +278,9 @@ describe("MenuAdminService", () => {
         name: "Updated Position",
         description: "Updated description",
         price: 15.99,
+        isVegetarian: false,
+        isVegan: false,
+        isGlutenFree: false,
       };
       const existingPosition: MenuPosition = {
         id: "existing-position-id",
@@ -292,6 +299,10 @@ describe("MenuAdminService", () => {
           },
           positions: [],
         },
+        details: new MenuPositionDetails(),
+        isVegetarian: false,
+        isVegan: false,
+        isGlutenFree: false,
       };
       jest
         .spyOn(menuPositionRepository, "findOne")

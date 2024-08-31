@@ -47,6 +47,7 @@ describe("MenuAdminController", () => {
     it("should create a new menu", async () => {
       const createMenuDto: CreateMenuDto = {
         name: "Test Menu",
+        description: "",
       };
       const result = {
         id: "1",
@@ -63,6 +64,7 @@ describe("MenuAdminController", () => {
     it("should throw an InternalServerErrorException when service throws an error", async () => {
       const createMenuDto: CreateMenuDto = {
         name: "Test Menu",
+        description: "",
       };
       jest.spyOn(menuAdminService, "createMenu").mockRejectedValue(new Error("Service error"));
 
@@ -77,6 +79,7 @@ describe("MenuAdminController", () => {
       const menuId = "1";
       const updateMenuDto: UpdateMenuDto = {
         name: "Updated Menu",
+        description: "",
       };
       const result = {
         id: menuId,
@@ -94,6 +97,7 @@ describe("MenuAdminController", () => {
       const menuId = "1";
       const updateMenuDto: UpdateMenuDto = {
         name: "Updated Menu",
+        description: "",
       };
       jest.spyOn(menuAdminService, "updateMenu").mockRejectedValue(new Error("Service error"));
 
@@ -224,6 +228,9 @@ describe("MenuAdminController", () => {
       name: "Test Position",
       price: 10.99,
       menuCategoryId: "category-id",
+      isVegetarian: false,
+      isVegan: false,
+      isGlutenFree: false,
     };
 
     it("should create a new menu position", async () => {
@@ -255,6 +262,9 @@ describe("MenuAdminController", () => {
       name: "Updated Position",
       price: 0,
       menuCategoryId: "",
+      isVegetarian: false,
+      isVegan: false,
+      isGlutenFree: false,
     };
     it("should update a menu position by id", async () => {
       const positionId = "1";

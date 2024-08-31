@@ -6,6 +6,7 @@ import { Repository } from "typeorm";
 import { MenuCategory } from "@/menu/entity/menu-category.entity";
 import { Menu } from "@/menu/entity/menu.entity";
 
+import { MenuPositionDetails } from "../entity/menu-position-details.entity";
 import { MenuPosition } from "../entity/menu-position.entity";
 
 @Injectable()
@@ -16,6 +17,8 @@ export class MenuPublicService {
     private readonly menuCategoryRepository: Repository<MenuCategory>,
     @InjectRepository(MenuPosition)
     private readonly menuPositionRepository: Repository<MenuPosition>,
+    @InjectRepository(MenuPositionDetails)
+    private readonly menuPositionDetailsRepository: Repository<MenuPositionDetails>,
   ) {}
 
   async getMenus(): Promise<Menu[]> {
@@ -61,8 +64,8 @@ export class MenuPublicService {
     });
   }
 
-  async getPositionDetails(positionId: string): Promise<MenuPosition> {
-    return this.menuPositionRepository.findOne({
+  async getPositionDetails(positionId: string): Promise<MenuPositionDetails> {
+    return this.menuPositionDetailsRepository.findOne({
       where: {
         id: positionId,
       },
