@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+
 import { IsInt, IsOptional, IsString, IsUUID, Min, MinLength } from "class-validator";
 
 export class PositionDto {
