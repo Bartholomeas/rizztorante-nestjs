@@ -1,15 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-import {
-  IsInt,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Min,
-  MinLength,
-  IsArray,
-  IsBoolean,
-} from "class-validator";
+import { IsInt, IsOptional, IsString, Min, MinLength, IsArray, IsBoolean } from "class-validator";
 
 export class PositionDto {
   @ApiProperty()
@@ -44,8 +35,4 @@ export class PositionDto {
   @ApiProperty()
   @IsBoolean()
   isGlutenFree: boolean;
-
-  @ApiProperty()
-  @IsUUID()
-  menuCategoryId: string;
 }

@@ -40,5 +40,5 @@ export class MenuPosition {
   @OneToOne(() => MenuPositionDetails, (details) => details.menuPosition, {
     onDelete: "CASCADE",
   })
-  details: MenuPositionDetails;
+  details?: MenuPositionDetails;
 }

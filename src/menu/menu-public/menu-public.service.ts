@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
@@ -42,7 +42,7 @@ export class MenuPublicService {
         },
       },
       relations: {
-        menu: true,
+        positions: true,
       },
     });
   }
@@ -65,10 +65,22 @@ export class MenuPublicService {
   }
 
   async getPositionDetails(positionId: string): Promise<MenuPositionDetails> {
-    return this.menuPositionDetailsRepository.findOne({
+    const positionDetails = await this.menuPositionDetailsRepository.findOne({
       where: {
-        id: positionId,
+        menuPosition: {
+          id: positionId,
+        },
+      },
+      cache: {
+        id: `menu-position-details-${positionId}`,
+        milliseconds: 1000 * 60,
+      },
+      relations: {
+        menuPosition: true,
       },
     });
+    if (!positionDetails) throw new NotFoundException("Position details not found");
+
+    return positionDetails;
   }
 }

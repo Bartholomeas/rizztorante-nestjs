@@ -1,8 +1,6 @@
 import { Type } from "class-transformer";
 import { IsString, IsNumber, IsOptional, IsArray, ValidateNested } from "class-validator";
 
-import { PositionDto } from "../position.dto";
-
 class NutritionalInfoDto {
   @IsNumber()
   @IsOptional()
@@ -21,18 +19,7 @@ class NutritionalInfoDto {
   fiber?: number;
 }
 
-export class PositionDetailsDto extends PositionDto {
-  @IsString()
-  name: string;
-
-  @IsNumber()
-  @IsOptional()
-  price: number;
-
-  @IsString()
-  @IsOptional()
-  description?: string;
-
+export class PositionDetailsDto {
   @IsString()
   @IsOptional()
   longDescription?: string;

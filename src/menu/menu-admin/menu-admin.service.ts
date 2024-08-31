@@ -2,7 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from "@nestjs/common
 import { InjectRepository } from "@nestjs/typeorm";
 
 import slugify from "slugify";
-import { Like, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import { MenuCategory } from "@/menu/entity/menu-category.entity";
 import { MenuPosition } from "@/menu/entity/menu-position.entity";
@@ -33,7 +33,7 @@ export class MenuAdminService {
 
   // Create operations
   async createMenu(createMenuDto: CreateMenuDto): Promise<Menu> {
-    const menuSlug = await this.generateSlug(createMenuDto.name);
+    const menuSlug = await this.generateUniqueSlug(createMenuDto.name);
     const menu = this.menuRepository.create({
       ...createMenuDto,
       slug: menuSlug,
@@ -112,8 +112,10 @@ export class MenuAdminService {
   ): Promise<MenuPositionDetails> {
     const position = await this.findPositionById(positionId);
     if (!position.details) {
-      console.log("DETAILS DOESNT EXISSTTSTTTT", position);
-      position.details = this.menuPositionDetailsRepository.create();
+      position.details = await this.menuPositionDetailsRepository.create({
+        ...updateMenuPositionDetailsDto,
+        menuPosition: position,
+      });
     }
     Object.assign(position.details, updateMenuPositionDetailsDto);
     await this.menuPositionRepository.save(position);
@@ -137,12 +139,13 @@ export class MenuAdminService {
   }
 
   // Helper methods
-  private async generateSlug(name: string): Promise<string> {
+  private async generateUniqueSlug(name: string): Promise<string> {
     const baseSlug = slugify(name.toLowerCase());
-    const slugCount = await this.menuRepository.count({
-      where: { slug: Like(`${baseSlug}%`) },
-    });
-    return slugCount > 0 ? `${baseSlug}-${slugCount + 1}` : baseSlug;
+    const existingMenu = await this.menuRepository.findOne({ where: { slug: baseSlug } });
+    if (existingMenu) {
+      throw new ConflictException("A menu with this name already exists");
+    }
+    return baseSlug;
   }
 
   private async findMenuById(id: string): Promise<Menu> {
