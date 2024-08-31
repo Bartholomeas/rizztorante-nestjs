@@ -24,11 +24,11 @@ import { UpdateMenuDto } from "./dto/update/update-menu.dto";
 import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
 
 @ApiTags("Menu Admin")
-@Controller("menu-admin")
+@Controller("admin/menus")
 export class MenuAdminController {
   constructor(private readonly menuService: MenuAdminService) {}
 
-  @Post("menu")
+  @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Create menu" })
   async createMenu(@Body(ValidationPipe) createMenuDto: CreateMenuDto) {
@@ -40,7 +40,7 @@ export class MenuAdminController {
     }
   }
 
-  @Post("category")
+  @Post("categories")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Create menu category" })
   async createCategory(@Body(ValidationPipe) createMenuCategoryDto: CreateMenuCategoryDto) {
@@ -52,7 +52,7 @@ export class MenuAdminController {
     }
   }
 
-  @Post("position")
+  @Post("positions")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Create position in specified category" })
   async createPosition(@Body(ValidationPipe) createMenuPositionDto: CreateMenuPositionDto) {
@@ -64,7 +64,7 @@ export class MenuAdminController {
     }
   }
 
-  @Delete("menu/:id")
+  @Delete(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: "Delete menu" })
   async deleteMenu(@Param("id", new ParseUUIDPipe()) id: string) {
@@ -77,7 +77,7 @@ export class MenuAdminController {
     }
   }
 
-  @Delete("category/:id")
+  @Delete("categories/:id")
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: "Delete menu category" })
   async deleteCategory(@Param("id", new ParseUUIDPipe()) id: string) {
@@ -90,7 +90,7 @@ export class MenuAdminController {
     }
   }
 
-  @Delete("position/:id")
+  @Delete("positions/:id")
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: "Delete menu position" })
   async deletePosition(@Param("id", new ParseUUIDPipe()) id: string) {
@@ -103,7 +103,7 @@ export class MenuAdminController {
     }
   }
 
-  @Put("menu/:id")
+  @Put(":id")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Update menu" })
   async updateMenu(
@@ -118,7 +118,7 @@ export class MenuAdminController {
     }
   }
 
-  @Put("category/:id")
+  @Put("categories/:id")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Update menu category" })
   async updateCategory(
@@ -133,7 +133,7 @@ export class MenuAdminController {
     }
   }
 
-  @Put("position/:id")
+  @Put("positions/:id")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Update menu position" })
   async updatePosition(

@@ -7,8 +7,10 @@ import { Menu } from "@/menu/entity/menu.entity";
 import { MenuPublicController } from "@/menu/menu-public/menu-public.controller";
 import { MenuPublicService } from "@/menu/menu-public/menu-public.service";
 
+import { MenuPositionDetails } from "../entity/menu-position-details.entity";
+
 @Module({
-  imports: [TypeOrmModule.forFeature([Menu, MenuCategory, MenuPosition])],
+  imports: [TypeOrmModule.forFeature([Menu, MenuCategory, MenuPosition, MenuPositionDetails])],
   providers: [MenuPublicService],
   controllers: [MenuPublicController],
 })

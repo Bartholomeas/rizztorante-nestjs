@@ -60,4 +60,12 @@ export class MenuPublicService {
       },
     });
   }
+
+  async getPositionDetails(positionId: string): Promise<MenuPosition> {
+    return this.menuPositionRepository.findOne({
+      where: {
+        id: positionId,
+      },
+    });
+  }
 }

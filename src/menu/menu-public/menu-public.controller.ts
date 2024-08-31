@@ -13,14 +13,14 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { MenuPublicService } from "@/menu/menu-public/menu-public.service";
 
 @ApiTags("Menu Public")
-@Controller("menu-public")
+@Controller("menus")
 export class MenuPublicController {
   constructor(private readonly menuService: MenuPublicService) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Get all menus" })
-  async getMenus() {
+  async getAllMenus() {
     try {
       return await this.menuService.getMenus();
     } catch (err) {
@@ -29,9 +29,9 @@ export class MenuPublicController {
     }
   }
 
-  @Get("categories/:menuId")
+  @Get(":menuId/categories")
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Get all menu categories" })
+  @ApiOperation({ summary: "Get all categories for a specific menu" })
   async getMenuCategories(@Param("menuId", new ParseUUIDPipe()) menuId: string) {
     try {
       return await this.menuService.getMenuCategories(menuId);
@@ -41,12 +41,24 @@ export class MenuPublicController {
     }
   }
 
-  @Get("positions/:categoryId")
+  @Get("categories/:categoryId/positions")
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Get all menu positions" })
-  async getPositions(@Param("categoryId", new ParseUUIDPipe()) categoryId: string) {
+  @ApiOperation({ summary: "Get all positions for a specific category" })
+  async getCategoryPositions(@Param("categoryId", new ParseUUIDPipe()) categoryId: string) {
     try {
       return await this.menuService.getPositions(categoryId);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
+  }
+
+  @Get("positions/:positionId")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Get details of a specific position" })
+  async getPositionDetails(@Param("positionId", new ParseUUIDPipe()) positionId: string) {
+    try {
+      return await this.menuService.getPositionDetails(positionId);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
