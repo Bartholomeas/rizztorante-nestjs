@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-import { IsInt, IsOptional, IsString, IsUUID, Min, MinLength } from "class-validator";
+import { IsInt, IsOptional, IsString, Min, MinLength, IsArray, IsBoolean } from "class-validator";
 
 export class PositionDto {
   @ApiProperty()
@@ -13,12 +13,26 @@ export class PositionDto {
   @Min(0)
   price: number;
 
-  @ApiPropertyOptional({ description: "Optional description for the category", nullable: true })
+  @ApiPropertyOptional({ description: "Optional description for the position", nullable: true })
   @IsString()
   @IsOptional()
   description?: string;
 
+  @ApiPropertyOptional({ type: [String], nullable: true })
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  ingredients?: string[];
+
   @ApiProperty()
-  @IsUUID()
-  menuCategoryId: string;
+  @IsBoolean()
+  isVegetarian: boolean;
+
+  @ApiProperty()
+  @IsBoolean()
+  isVegan: boolean;
+
+  @ApiProperty()
+  @IsBoolean()
+  isGlutenFree: boolean;
 }

@@ -25,7 +25,7 @@ import { OrdersModule } from "@/orders/orders.module";
       synchronize: process.env.NODE_ENV !== "production",
       logging: process.env.NODE_ENV !== "production",
       autoLoadEntities: true,
-      // dropSchema: true, To clearing DB in each app restart
+      // dropSchema: true, //To clearing DB in each app restart
     }),
     OrdersModule,
     MenuModule,

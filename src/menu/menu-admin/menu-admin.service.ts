@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import slugify from "slugify";
-import { Like, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import { MenuCategory } from "@/menu/entity/menu-category.entity";
 import { MenuPosition } from "@/menu/entity/menu-position.entity";
@@ -11,9 +11,12 @@ import { CreateMenuCategoryDto } from "@/menu/menu-admin/dto/create/create-categ
 import { CreateMenuDto } from "@/menu/menu-admin/dto/create/create-menu.dto";
 import { CreateMenuPositionDto } from "@/menu/menu-admin/dto/create/create-position.dto";
 
+import { CreateMenuPositionDetailsDto } from "./dto/update/create-position-details.dto";
 import { UpdateMenuCategoryDto } from "./dto/update/update-category.dto";
 import { UpdateMenuDto } from "./dto/update/update-menu.dto";
+import { UpdateMenuPositionDetailsDto } from "./dto/update/update-position-details.dto";
 import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
+import { MenuPositionDetails } from "../entity/menu-position-details.entity";
 
 @Injectable()
 export class MenuAdminService {
@@ -24,11 +27,13 @@ export class MenuAdminService {
     private readonly menuCategoryRepository: Repository<MenuCategory>,
     @InjectRepository(MenuPosition)
     private readonly menuPositionRepository: Repository<MenuPosition>,
+    @InjectRepository(MenuPositionDetails)
+    private readonly menuPositionDetailsRepository: Repository<MenuPositionDetails>,
   ) {}
 
   // Create operations
   async createMenu(createMenuDto: CreateMenuDto): Promise<Menu> {
-    const menuSlug = await this.generateSlug(createMenuDto.name);
+    const menuSlug = await this.generateUniqueSlug(createMenuDto.name);
     const menu = this.menuRepository.create({
       ...createMenuDto,
       slug: menuSlug,
@@ -88,6 +93,35 @@ export class MenuAdminService {
     return await this.menuPositionRepository.save(position);
   }
 
+  async createPositionDetails(
+    positionId: string,
+    createMenuPositionDetailsDto: CreateMenuPositionDetailsDto,
+  ): Promise<MenuPositionDetails> {
+    const position = await this.findPositionById(positionId);
+    if (position?.details) throw new ConflictException("Position details already exist");
+    const details = this.menuPositionDetailsRepository.create({
+      ...createMenuPositionDetailsDto,
+      menuPosition: position,
+    });
+    return this.menuPositionDetailsRepository.save(details);
+  }
+
+  async updatePositionDetails(
+    positionId: string,
+    updateMenuPositionDetailsDto: UpdateMenuPositionDetailsDto,
+  ): Promise<MenuPositionDetails> {
+    const position = await this.findPositionById(positionId);
+    if (!position.details) {
+      position.details = await this.menuPositionDetailsRepository.create({
+        ...updateMenuPositionDetailsDto,
+        menuPosition: position,
+      });
+    }
+    Object.assign(position.details, updateMenuPositionDetailsDto);
+    await this.menuPositionRepository.save(position);
+    return position.details;
+  }
+
   // Delete operations
   async deleteMenu(id: string): Promise<void> {
     const menu = await this.findMenuById(id);
@@ -105,12 +139,13 @@ export class MenuAdminService {
   }
 
   // Helper methods
-  private async generateSlug(name: string): Promise<string> {
+  private async generateUniqueSlug(name: string): Promise<string> {
     const baseSlug = slugify(name.toLowerCase());
-    const slugCount = await this.menuRepository.count({
-      where: { slug: Like(`${baseSlug}%`) },
-    });
-    return slugCount > 0 ? `${baseSlug}-${slugCount + 1}` : baseSlug;
+    const existingMenu = await this.menuRepository.findOne({ where: { slug: baseSlug } });
+    if (existingMenu) {
+      throw new ConflictException("Menu already exists");
+    }
+    return baseSlug;
   }
 
   private async findMenuById(id: string): Promise<Menu> {
