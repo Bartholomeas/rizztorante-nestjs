@@ -1,12 +1,26 @@
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
+import * as session from "express-session";
+import * as passport from "passport";
+
 import { AppModule } from "./app.module";
 import { APP_NAME } from "./constants";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix("api/v1");
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+
   const config = new DocumentBuilder()
     .setTitle(APP_NAME)
     .setDescription("API for handling orders in restaurant")

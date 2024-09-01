@@ -10,10 +10,12 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  UseGuards,
   ValidationPipe,
 } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
+import { AuthenticatedGuard } from "@/auth/guard/autenticated.guard";
 import { CreateMenuCategoryDto } from "@/menu/menu-admin/dto/create/create-category.dto";
 import { CreateMenuDto } from "@/menu/menu-admin/dto/create/create-menu.dto";
 import { CreateMenuPositionDto } from "@/menu/menu-admin/dto/create/create-position.dto";
@@ -30,6 +32,7 @@ import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
 export class MenuAdminController {
   constructor(private readonly menuService: MenuAdminService) {}
 
+  @UseGuards(AuthenticatedGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Create menu" })
