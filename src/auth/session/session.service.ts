@@ -7,7 +7,7 @@ import { IsNull, LessThan, Not, Repository } from "typeorm";
 import { SessionEntity } from "./entity/session.entity";
 
 @Injectable()
-export class SessionCronService {
+export class SessionService {
   constructor(
     @InjectRepository(SessionEntity) private readonly sessionRepository: Repository<SessionEntity>,
   ) {}

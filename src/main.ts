@@ -22,7 +22,7 @@ async function bootstrap() {
       name: process.env.SESSION_NAME,
       secret: process.env.SESSION_SECRET,
       resave: false,
-      saveUninitialized: false,
+      saveUninitialized: false, //TODO: For testing purposes, turn false after that
       cookie: {
         httpOnly: true,
         // secure: "auto",

@@ -10,6 +10,7 @@ import {
   Req,
   UseGuards,
   ValidationPipe,
+  Session,
 } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
@@ -31,6 +32,21 @@ export class AuthController {
   async register(@Body(ValidationPipe) createUserDto: CreateUserDto) {
     try {
       return await this.authService.createUser(createUserDto);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
+  }
+
+  @Post("login-guest")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: "Login as a guest" })
+  async loginGuest(@Session() session: Record<string, any>) {
+    try {
+      session.guestId = "123";
+      session.isGuest = true;
+      session.save();
+      return { message: "Logged in as a guest", sessionId: session.id };
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
