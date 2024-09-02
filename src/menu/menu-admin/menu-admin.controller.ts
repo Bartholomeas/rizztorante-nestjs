@@ -30,12 +30,12 @@ import { UpdateMenuPositionDetailsDto } from "./dto/update/update-position-detai
 import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
 
 @ApiTags("Menu Admin")
+@Roles(UserRole.ADMIN)
+@UseGuards(RolesGuard)
 @Controller("admin/menus")
 export class MenuAdminController {
   constructor(private readonly menuService: MenuAdminService) {}
 
-  @Roles(UserRole.ADMIN)
-  @UseGuards(RolesGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Create menu" })

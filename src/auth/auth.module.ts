@@ -5,7 +5,6 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
-import { GuestUser } from "./entity/guest.entity";
 import { User } from "./entity/user.entity";
 import { SessionEntity } from "./session/entity/session.entity";
 import { SessionSerializer } from "./session/session.serializer";
@@ -14,7 +13,7 @@ import { LocalStrategy } from "./strategy/local.strategy";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, SessionEntity, GuestUser]),
+    TypeOrmModule.forFeature([User, SessionEntity]),
     PassportModule.register({ session: true }),
     ScheduleModule.forRoot(),
   ],
