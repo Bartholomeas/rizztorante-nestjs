@@ -1,5 +1,11 @@
 import { IsEmail, IsString } from "class-validator";
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 import { UserRole } from "@/types/user-roles";
 
@@ -10,6 +16,9 @@ export class User {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @Column({ unique: true })
   @IsEmail({}, { message: "Email is not valid" })

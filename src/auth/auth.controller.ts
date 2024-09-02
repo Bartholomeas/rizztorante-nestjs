@@ -37,6 +37,21 @@ export class AuthController {
     }
   }
 
+  @Post("login-guest")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: "Login as a guest" })
+  async loginGuest(@Req() req: Request) {
+    try {
+      const guest = await this.authService.createGuest();
+      req.session["guestId"] = guest.id;
+      console.log("glest", guest);
+      return { message: "Logged in as a guest", guestId: guest.id };
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
+  }
+
   @UseGuards(LocalAuthGuard)
   @Post("login")
   @HttpCode(HttpStatus.OK)
