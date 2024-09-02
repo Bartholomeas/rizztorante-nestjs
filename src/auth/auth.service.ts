@@ -13,7 +13,6 @@ import { Repository } from "typeorm";
 import { AuthUtils } from "./auth.utils";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
-import { GuestUser } from "./entity/guest.entity";
 import { User } from "./entity/user.entity";
 
 @Injectable()
@@ -21,8 +20,6 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(GuestUser)
-    private guestUserRepository: Repository<GuestUser>,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<Omit<User, "password">> {
@@ -41,12 +38,6 @@ export class AuthService {
     });
 
     return AuthUtils.removePasswordFromResponse(await this.userRepository.save(user));
-  }
-
-  async createGuest() {
-    const guest = this.guestUserRepository.create();
-
-    return await this.guestUserRepository.save(guest);
   }
 
   async login(loginUserDto: LoginUserDto) {

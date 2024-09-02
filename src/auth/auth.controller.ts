@@ -10,6 +10,7 @@ import {
   Req,
   UseGuards,
   ValidationPipe,
+  Session,
 } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
@@ -40,12 +41,12 @@ export class AuthController {
   @Post("login-guest")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Login as a guest" })
-  async loginGuest(@Req() req: Request) {
+  async loginGuest(@Session() session: Record<string, any>) {
     try {
-      const guest = await this.authService.createGuest();
-      req.session["guestId"] = guest.id;
-      console.log("glest", guest);
-      return { message: "Logged in as a guest", guestId: guest.id };
+      session.guestId = "123";
+      session.isGuest = true;
+      session.save();
+      return { message: "Logged in as a guest", sessionId: session.id };
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
