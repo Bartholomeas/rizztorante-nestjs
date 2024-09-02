@@ -1,15 +1,19 @@
 import {
   Body,
   Controller,
+  Delete,
   HttpCode,
   HttpException,
   HttpStatus,
   InternalServerErrorException,
   Post,
+  Req,
   UseGuards,
   ValidationPipe,
 } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
+
+import { Request } from "express";
 
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -24,9 +28,9 @@ export class AuthController {
   @Post("register")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Register new user" })
-  register(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+  async register(@Body(ValidationPipe) createUserDto: CreateUserDto) {
     try {
-      return this.authService.createUser(createUserDto);
+      return await this.authService.createUser(createUserDto);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -37,9 +41,25 @@ export class AuthController {
   @Post("login")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Login user" })
-  login(@Body(ValidationPipe) loginUserDto: LoginUserDto) {
+  async login(@Body(ValidationPipe) loginUserDto: LoginUserDto) {
     try {
-      return this.authService.login(loginUserDto);
+      return await this.authService.login(loginUserDto);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
+  }
+
+  @Delete("logout")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Logout user" })
+  async logout(@Req() req: Request) {
+    try {
+      req?.session?.destroy(() => {
+        console.log("Session destroy", req.sessionID);
+      });
+
+      return { message: "Logged out successfully" };
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);

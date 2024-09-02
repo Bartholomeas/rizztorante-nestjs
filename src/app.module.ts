@@ -16,7 +16,6 @@ import { AuthModule } from "./auth/auth.module";
       envFilePath: [".env"],
       isGlobal: true,
     }),
-
     TypeOrmModule.forRoot({
       type: "postgres",
       host: "localhost",
@@ -29,7 +28,6 @@ import { AuthModule } from "./auth/auth.module";
       autoLoadEntities: true,
       // dropSchema: true, //To clearing DB in each app restart
     }),
-
     OrdersModule,
     MenuModule,
     CartModule,
