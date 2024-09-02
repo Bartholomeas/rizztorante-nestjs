@@ -1,20 +1,22 @@
 import { NotFoundException } from "@nestjs/common";
-import { Test, TestingModule } from "@nestjs/testing";
+import type { TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { CreateMenuCategoryDto } from "./dto/create/create-category.dto";
-import { CreateMenuDto } from "./dto/create/create-menu.dto";
-import { CreateMenuPositionDto } from "./dto/create/create-position.dto";
-import { UpdateMenuCategoryDto } from "./dto/update/update-category.dto";
-import { UpdateMenuDto } from "./dto/update/update-menu.dto";
-import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
 import { MenuAdminService } from "./menu-admin.service";
 import { MenuCategory } from "../entity/menu-category.entity";
 import { MenuPositionDetails } from "../entity/menu-position-details.entity";
 import { MenuPosition } from "../entity/menu-position.entity";
 import { Menu } from "../entity/menu.entity";
+
+import type { CreateMenuCategoryDto } from "./dto/create/create-category.dto";
+import type { CreateMenuDto } from "./dto/create/create-menu.dto";
+import type { CreateMenuPositionDto } from "./dto/create/create-position.dto";
+import type { UpdateMenuCategoryDto } from "./dto/update/update-category.dto";
+import type { UpdateMenuDto } from "./dto/update/update-menu.dto";
+import type { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
 
 export type MockType<T> = {
   [P in keyof T]?: jest.Mock<unknown>;
