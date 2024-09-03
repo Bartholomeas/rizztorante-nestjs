@@ -1,5 +1,15 @@
-import { Check, Column, Entity, Index, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Check,
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
+import { CartItem } from "@/cart/entity/cart-item.entity";
 import { MenuCategory } from "@/menu/entity/menu-category.entity";
 
 import { MenuPositionDetails } from "./menu-position-details.entity";
@@ -41,4 +51,7 @@ export class MenuPosition {
     onDelete: "CASCADE",
   })
   details?: MenuPositionDetails;
+
+  @OneToMany(() => CartItem, (cartItem) => cartItem.menuPosition)
+  cartItems: CartItem[];
 }

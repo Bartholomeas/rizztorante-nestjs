@@ -1,8 +1,9 @@
 import { NestFactory } from "@nestjs/core";
 
-import { DataSource } from "typeorm";
+import { Connection, DataSource } from "typeorm";
 
 import { AppModule } from "./app.module";
+import { AuthService } from "./auth/auth.service";
 import { MenuAdminService } from "./menu/menu-admin/menu-admin.service";
 
 async function cleanDatabase(dataSource: DataSource) {
@@ -42,6 +43,7 @@ async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
 
   const menuService = app.get(MenuAdminService);
+  const authService = app.get(AuthService);
 
   try {
     // Clean the database
@@ -99,6 +101,16 @@ async function bootstrap() {
         fiber: 40,
       },
     });
+
+    const user = await authService.createUser({
+      email: "test@gmail.com",
+      password: "!23Haslo",
+      confirmPassword: "!23Haslo",
+    });
+
+    await authService.createGuestUser();
+
+    await app.get(Connection).query(`UPDATE "user" SET role = 'ADMIN' WHERE id = $1`, [user.id]);
 
     console.log("Seeding completed");
   } catch (err) {

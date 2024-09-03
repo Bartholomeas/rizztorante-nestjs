@@ -10,6 +10,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
 
+import { UserRole } from "@/types/user-roles";
+
 import { AuthUtils } from "./auth.utils";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
@@ -62,5 +64,14 @@ export class AuthService {
     }
 
     return AuthUtils.removePasswordFromResponse(user);
+  }
+
+  async createGuestUser(): Promise<User> {
+    const guestUser = this.userRepository.create({
+      email: null,
+      password: null,
+      role: UserRole.GUEST,
+    });
+    return this.userRepository.save(guestUser);
   }
 }

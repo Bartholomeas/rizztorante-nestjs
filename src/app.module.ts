@@ -4,11 +4,10 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AppController } from "@/app.controller";
 import { AppService } from "@/app.service";
+import { AuthModule } from "@/auth/auth.module";
 import { CartModule } from "@/cart/cart.module";
 import { MenuModule } from "@/menu/menu.module";
 import { OrdersModule } from "@/orders/orders.module";
-
-import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [
