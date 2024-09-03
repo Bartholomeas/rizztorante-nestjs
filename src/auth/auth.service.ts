@@ -10,6 +10,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
 
+import { SessionEntity } from "@/auth/session/entity/session.entity";
 import { UserRole } from "@/types/user-roles";
 
 import { AuthUtils } from "./auth.utils";
@@ -22,6 +23,8 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(SessionEntity)
+    private sessionRepository: Repository<SessionEntity>,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<Omit<User, "password">> {
@@ -61,10 +64,18 @@ export class AuthService {
     return AuthUtils.removePasswordFromResponse(user);
   }
 
-  async createGuestUser(userId?: string): Promise<User> {
+  async createGuestUser(userId?: string, sessionId?: string): Promise<User> {
     if (userId) {
-      const user = await this.findOne(userId, "id");
-      if (user) return user;
+      const session = await this.sessionRepository.findOne({
+        where: {
+          id: sessionId,
+        },
+      });
+      const sessionActive = !session.deletedAt && session?.expiredAt > Date.now();
+      if (sessionActive) {
+        const user = await this.findOne(userId, "id");
+        if (user) return user;
+      }
     }
 
     const guestUser = this.userRepository.create({

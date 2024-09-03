@@ -46,7 +46,10 @@ export class AuthController {
   @ApiOperation({ summary: "Login as a guest" })
   async loginGuest(@Session() session: SessionContent) {
     try {
-      const guestUser = await this.authService.createGuestUser(session?.passport?.user?.id);
+      const guestUser = await this.authService.createGuestUser(
+        session?.passport?.user?.id,
+        session?.id,
+      );
 
       session.passport = { user: guestUser };
       return AuthUtils.removePasswordFromResponse(guestUser);
