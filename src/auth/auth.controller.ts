@@ -1,5 +1,3 @@
-import * as crypto from "crypto";
-
 import {
   Body,
   Controller,
@@ -18,7 +16,7 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import { Request } from "express";
 
-import { UserRole } from "@/types/user-roles";
+import { AuthUtils } from "@/auth/auth.utils";
 
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -48,16 +46,10 @@ export class AuthController {
   @ApiOperation({ summary: "Login as a guest" })
   async loginGuest(@Session() session: SessionContent) {
     try {
-      const guestUser = {
-        id: crypto.randomUUID({ disableEntropyCache: true }),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        role: UserRole.GUEST,
-      };
-      console.log("SSSXDDD", session.id);
-      session.passport = { user: guestUser };
+      const guestUser = await this.authService.createGuestUser(session?.passport?.user?.id);
 
-      return await this.authService.createGuestUser();
+      session.passport = { user: guestUser };
+      return AuthUtils.removePasswordFromResponse(guestUser);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);

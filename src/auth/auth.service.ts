@@ -28,9 +28,8 @@ export class AuthService {
     if (createUserDto.password !== createUserDto.confirmPassword)
       throw new BadRequestException("Passwords do not match");
 
-    const userExists = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
-    });
+    const userExists = await this.findOne(createUserDto.email, "email");
+
     if (userExists) throw new ConflictException("User already exists");
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
@@ -48,11 +47,7 @@ export class AuthService {
   }
 
   public async validateUser(loginUserDto: LoginUserDto): Promise<Omit<User, "password">> {
-    const user = await this.userRepository.findOne({
-      where: {
-        email: loginUserDto.email,
-      },
-    });
+    const user = await this.findOne(loginUserDto.email, "email");
 
     if (!user) {
       throw new NotFoundException("We cannot find an account");
@@ -66,12 +61,25 @@ export class AuthService {
     return AuthUtils.removePasswordFromResponse(user);
   }
 
-  async createGuestUser(): Promise<User> {
+  async createGuestUser(userId?: string): Promise<User> {
+    if (userId) {
+      const user = await this.findOne(userId, "id");
+      if (user) return user;
+    }
+
     const guestUser = this.userRepository.create({
       email: null,
       password: null,
       role: UserRole.GUEST,
     });
     return this.userRepository.save(guestUser);
+  }
+
+  private async findOne(value: string, findBy: "email" | "id" = "id"): Promise<User> {
+    return this.userRepository.findOne({
+      where: {
+        [findBy]: value,
+      },
+    });
   }
 }
