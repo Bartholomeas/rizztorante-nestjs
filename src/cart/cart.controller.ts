@@ -22,6 +22,7 @@ import { SessionContent } from "@/auth/session/types/session.types";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 
 import { CartService } from "./cart.service";
+import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
 
 @Controller("cart")
 @ApiTags("Cart")
@@ -84,9 +85,10 @@ export class CartController {
   async setItemQuantity(
     @Session()
     session: SessionContent,
+    @Body(ValidationPipe) changeCartItemQuantityDto: ChangeCartItemQuantityDto,
   ) {
     try {
-      return this.cartService.setQuantity(session.passport.user.id, "itemId", 5);
+      return this.cartService.setQuantity(session?.passport?.user?.id, changeCartItemQuantityDto);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);

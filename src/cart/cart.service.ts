@@ -10,6 +10,7 @@ import { User } from "@/auth/entity/user.entity";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 import { MenuPosition } from "@/menu/entity/menu-position.entity";
 
+import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
 import { CartItem } from "./entity/cart-item.entity";
 import { Cart } from "./entity/cart.entity";
 
@@ -71,15 +72,19 @@ export class CartService {
     return await this.cartRepository.save(userCart);
   }
 
-  async setQuantity(userId: string, cartItemId: string, quantity: number): Promise<Cart> {
+  async setQuantity(
+    userId: string,
+    { cartItemId, quantity }: ChangeCartItemQuantityDto,
+  ): Promise<Cart> {
     const cart = await this.getUserCart(userId);
-    const item = cart.items.find((item) => item.id === cartItemId);
+    const item = cart?.items?.find((item) => item.id === cartItemId);
 
     if (!item) throw new NotFoundException(`Item with id ${cartItemId} not found in the cart`);
 
     const oldAmount = item.amount;
+
     item.quantity = quantity;
-    item.amount = item.menuPosition.price * quantity;
+    item.amount = this.calculateItemAmount(item);
 
     cart.total = cart.total - oldAmount + item.amount;
 
@@ -88,7 +93,7 @@ export class CartService {
 
   async removeItem(userId: string, itemId: string): Promise<Cart> {
     const cart = await this.getUserCart(userId);
-    const itemIndex = cart.items.findIndex((item) => item.id === itemId);
+    const itemIndex = cart?.items?.findIndex((item) => item.id === itemId);
 
     if (itemIndex === -1)
       throw new NotFoundException(`Item with id ${itemId} not found in the cart`);
@@ -120,5 +125,9 @@ export class CartService {
         milliseconds: 1000 * 60 * 5,
       },
     });
+  }
+
+  private calculateItemAmount(item: CartItem): number {
+    return Number(item.menuPosition.price * item.quantity);
   }
 }

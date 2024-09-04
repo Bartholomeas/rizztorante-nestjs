@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber, IsString, IsUUID } from "class-validator";
 
 export class ChangeCartItemQuantityDto {
-  @ApiProperty()
+  @ApiProperty({ default: "00000000-0000-0000-0000-000000000000" })
   @IsNotEmpty()
   @IsString()
   @IsUUID()
