@@ -5,6 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import * as bcrypt from "bcrypt";
@@ -17,6 +18,7 @@ import { AuthUtils } from "./auth.utils";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { User } from "./entity/user.entity";
+import { GuestCreatedEvent, GuestEvents } from "./session/event/guest-created.event";
 
 @Injectable()
 export class AuthService {
@@ -27,79 +29,93 @@ export class AuthService {
     private sessionRepository: Repository<SessionEntity>,
   ) {}
 
-  async getMe(userId: string | undefined): Promise<Omit<User, "password">> {
-    if (!userId) throw new NotFoundException("User not found");
+  async getUserProfile(userId: string | undefined): Promise<Omit<User, "password">> {
+    if (!userId) throw new NotFoundException("User ID is required");
 
-    const user = await this.findOne(userId, "id");
+    const user = await this.findUserById(userId);
     if (!user) throw new NotFoundException("User not found");
     return AuthUtils.removePasswordFromResponse(user);
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<Omit<User, "password">> {
+  async registerUser(createUserDto: CreateUserDto): Promise<Omit<User, "password">> {
     if (createUserDto.password !== createUserDto.confirmPassword)
       throw new BadRequestException("Passwords do not match");
 
-    const userExists = await this.findOne(createUserDto.email, "email");
+    const existingUser = await this.findUserByEmail(createUserDto.email);
 
-    if (userExists) throw new ConflictException("User already exists");
+    if (existingUser) throw new ConflictException("User with this email already exists");
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-    const user = this.userRepository.create({
+    const hashedPassword = await this.hashPassword(createUserDto.password);
+    const newUser = this.userRepository.create({
       email: createUserDto.email,
       password: hashedPassword,
     });
 
-    return AuthUtils.removePasswordFromResponse(await this.userRepository.save(user));
+    const savedUser = await this.userRepository.save(newUser);
+    return AuthUtils.removePasswordFromResponse(savedUser);
   }
 
-  async login(loginUserDto: LoginUserDto) {
-    const user = await this.validateUser(loginUserDto);
-    return user;
-  }
-
-  public async validateUser(loginUserDto: LoginUserDto): Promise<Omit<User, "password">> {
-    const user = await this.findOne(loginUserDto.email, "email");
+  async authenticateUser(loginUserDto: LoginUserDto): Promise<Omit<User, "password">> {
+    const user = await this.findUserByEmail(loginUserDto.email);
 
     if (!user) {
-      throw new NotFoundException("We cannot find an account");
+      throw new NotFoundException("User not found");
     }
 
-    const isPasswordValid = await bcrypt.compare(loginUserDto.password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException("Invalid credentials");
-    }
+    await this.verifyPassword(loginUserDto.password, user.password);
 
     return AuthUtils.removePasswordFromResponse(user);
   }
 
-  async createGuestUser(userId?: string, sessionId?: string): Promise<User> {
+  @OnEvent(GuestEvents.GUEST_CREATED)
+  async createOrRetrieveGuestUser({ userId, sessionId }: GuestCreatedEvent = {}): Promise<User> {
     if (userId) {
-      const session = await this.sessionRepository.findOne({
-        where: {
-          id: sessionId,
-        },
-      });
-
-      const sessionActive = !session.deletedAt && session?.expiredAt > Date.now();
-      if (sessionActive) {
-        const user = await this.findOne(userId, "id");
-        if (user) return user;
+      const session = await this.getActiveSession(sessionId);
+      if (session) {
+        const existingUser = await this.findUserById(userId);
+        if (existingUser) return existingUser;
       }
     }
+    return this.createNewGuestUser();
+  }
 
+  private async findUserById(id: string): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { id } });
+  }
+
+  private async findUserByEmail(email: string): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, 10);
+  }
+
+  private async verifyPassword(plainTextPassword: string, hashedPassword: string): Promise<void> {
+    const isPasswordValid = await bcrypt.compare(plainTextPassword, hashedPassword);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException("Invalid credentials");
+    }
+  }
+
+  private async getActiveSession(sessionId: string): Promise<SessionEntity | null> {
+    const session = await this.sessionRepository.findOne({
+      where: { id: sessionId },
+    });
+
+    if (session && !session.deletedAt && session.expiredAt > Date.now()) {
+      return session;
+    }
+
+    return null;
+  }
+
+  private async createNewGuestUser(): Promise<User> {
     const guestUser = this.userRepository.create({
       email: null,
       password: null,
       role: UserRole.GUEST,
     });
     return this.userRepository.save(guestUser);
-  }
-
-  private async findOne(value: string, findBy: "email" | "id" = "id"): Promise<User> {
-    return this.userRepository.findOne({
-      where: {
-        [findBy]: value,
-      },
-    });
   }
 }

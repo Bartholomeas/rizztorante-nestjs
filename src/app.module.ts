@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { EventEmitterModule } from "@nestjs/event-emitter";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AppController } from "@/app.controller";
@@ -27,6 +28,7 @@ import { OrdersModule } from "@/orders/orders.module";
       autoLoadEntities: true,
       // dropSchema: true, //To clearing DB in each app restart
     }),
+    EventEmitterModule.forRoot(),
     AuthModule,
     CartModule,
     OrdersModule,

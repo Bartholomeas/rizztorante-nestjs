@@ -4,6 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 import { User } from "@/auth/entity/user.entity";
+import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 
 import { Cart } from "./entity/cart.entity";
 
@@ -43,8 +44,8 @@ export class CartService {
     return await this.cartRepository.save(created);
   }
 
-  async addItem(userId: string): Promise<void> {
-    console.log({ userId });
+  async addItem(userId: string, addCartItemDto: AddCartItemDto): Promise<void> {
+    console.log({ userId, addCartItemDto });
     throw new NotImplementedException("Method not implemented.");
   }
 

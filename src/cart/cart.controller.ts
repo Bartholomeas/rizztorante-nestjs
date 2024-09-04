@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -10,17 +11,24 @@ import {
   Post,
   Put,
   Session,
+  ValidationPipe,
 } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
+import { GuestEvents } from "@/auth/session/event/guest-created.event";
 import { SessionContent } from "@/auth/session/types/session.types";
+import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 
 import { CartService } from "./cart.service";
 
 @Controller("cart")
 @ApiTags("Cart")
 export class CartController {
-  constructor(private readonly cartService: CartService) {}
+  constructor(
+    private readonly cartService: CartService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: "Get cart" })
@@ -44,17 +52,17 @@ export class CartController {
   @Post("add-item")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Add item to cart" })
-  async addItemToCart(
+  async addItem(
     @Session()
     session: SessionContent,
+    @Body(ValidationPipe) addCartItemDto: AddCartItemDto,
   ) {
     try {
-      if (!session?.passport?.user)
-        throw new NotFoundException("User session not found. Item cannot be added to cart.");
+      if (!session?.passport?.user) {
+        await this.eventEmitter.emitAsync(GuestEvents.GUEST_SESSION_CREATED, session);
+      }
 
-      console.log("Session in addItemToCart: ", session);
-
-      return this.cartService.addItem(session.passport.user.id);
+      return this.cartService.addItem(session.passport?.user?.id, addCartItemDto);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
