@@ -27,7 +27,9 @@ export class AuthService {
     private sessionRepository: Repository<SessionEntity>,
   ) {}
 
-  async getMe(userId: string): Promise<Omit<User, "password">> {
+  async getMe(userId: string | undefined): Promise<Omit<User, "password">> {
+    if (!userId) throw new NotFoundException("User not found");
+
     const user = await this.findOne(userId, "id");
     if (!user) throw new NotFoundException("User not found");
     return AuthUtils.removePasswordFromResponse(user);

@@ -4,7 +4,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 import { User } from "@/auth/entity/user.entity";
-import { SessionEntity } from "@/auth/session/entity/session.entity";
 
 import { Cart } from "./entity/cart.entity";
 
@@ -13,9 +12,8 @@ export class CartService {
   constructor(
     @InjectRepository(Cart)
     private readonly cartRepository: Repository<Cart>,
-    @InjectRepository(SessionEntity)
-    private readonly sessionRepository: Repository<SessionEntity>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async getUserCart(userId: string): Promise<Cart> {
@@ -25,9 +23,14 @@ export class CartService {
           id: userId,
         },
       },
+      relations: ["items", "user"],
+      select: {
+        user: {
+          id: true,
+        },
+      },
     });
 
-    console.log("cholibka::::::: ", userCart);
     if (userCart) return userCart;
 
     const currentUser = await this.userRepository.findOne({
@@ -35,9 +38,7 @@ export class CartService {
         id: userId,
       },
     });
-
-    console.log("ALE JSUER:   ", currentUser, userId);
-    const created = this.cartRepository.create({ user: currentUser, items: [{}] });
+    const created = this.cartRepository.create({ user: currentUser, items: [], total: 0 });
 
     return await this.cartRepository.save(created);
   }
