@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotImplementedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
@@ -43,12 +43,28 @@ export class CartService {
     return await this.cartRepository.save(created);
   }
 
+  async proceedToCheckout(userId: string): Promise<void> {
+    console.log({ userId });
+    throw new NotImplementedException("Method not implemented.");
+  }
+
+  async addItemToCart(userId: string): Promise<void> {
+    console.log({ userId });
+    throw new NotImplementedException("Method not implemented.");
+  }
+
+  async setItemQuantity(userId: string): Promise<void> {
+    console.log({ userId });
+    throw new NotImplementedException("Method not implemented.");
+  }
+
+  async removeItem(userId: string): Promise<void> {
+    console.log({ userId });
+    throw new NotImplementedException("Method not implemented.");
+  }
+
   async createCartForUser(userId: string): Promise<Cart> {
     console.log({ userId });
     return {} as Cart;
-  }
-
-  async clearCart(cartId: string): Promise<void> {
-    await this.cartRepository.delete(cartId);
   }
 }
