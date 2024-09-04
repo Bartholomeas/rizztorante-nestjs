@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, JoinColumn } from "typeorm";
 
 import { User } from "@/auth/entity/user.entity";
 
@@ -12,9 +12,13 @@ export class Cart {
   @Column({ default: 0 })
   total: number;
 
-  @OneToMany(() => CartItem, (items) => items.cart, { onDelete: "CASCADE" })
-  items?: CartItem[];
+  @OneToMany(() => CartItem, (item) => item.cart, {
+    eager: true,
+    cascade: true,
+  })
+  items: CartItem[];
 
   @OneToOne(() => User, (user) => user.cart)
+  @JoinColumn()
   user: User;
 }

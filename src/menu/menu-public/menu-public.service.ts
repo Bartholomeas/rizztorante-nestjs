@@ -1,7 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
+
+import { MenuPublicEventTypes } from "@/shared/events/menu-public.events";
 
 import { MenuCategory } from "@/menu/entity/menu-category.entity";
 import { Menu } from "@/menu/entity/menu.entity";
@@ -60,6 +63,15 @@ export class MenuPublicService {
       },
       relations: {
         category: true,
+      },
+    });
+  }
+
+  @OnEvent(MenuPublicEventTypes.GET_SINGLE_POSITION)
+  async getSinglePosition(positionId: string): Promise<MenuPosition> {
+    return this.menuPositionRepository.findOne({
+      where: {
+        id: positionId,
       },
     });
   }

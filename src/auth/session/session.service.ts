@@ -9,7 +9,7 @@ import { User } from "@/auth/entity/user.entity";
 import { SessionContent } from "@/auth/session/types/session.types";
 
 import { SessionEntity } from "./entity/session.entity";
-import { GuestCreatedEvent, GuestEvents } from "./event/guest-created.event";
+import { GuestCreatedPayload, GuestEventTypes } from "../../shared/events/guest-created.event";
 
 @Injectable()
 export class SessionService {
@@ -18,11 +18,11 @@ export class SessionService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  @OnEvent(GuestEvents.GUEST_SESSION_CREATED)
+  @OnEvent(GuestEventTypes.SESSION_CREATED)
   async addGuestToSession(session: SessionContent) {
     const [user]: User[] = await this.eventEmitter.emitAsync(
-      GuestEvents.GUEST_CREATED,
-      new GuestCreatedEvent(session?.passport?.user?.id, session?.id),
+      GuestEventTypes.CREATED,
+      new GuestCreatedPayload(session?.passport?.user?.id, session?.id),
     );
     session.passport = {
       user,

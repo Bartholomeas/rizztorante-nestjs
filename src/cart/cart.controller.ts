@@ -16,7 +16,8 @@ import {
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
-import { GuestEvents } from "@/auth/session/event/guest-created.event";
+import { GuestEventTypes, GuestSessionCreatedEvent } from "@/shared/events/guest-created.event";
+
 import { SessionContent } from "@/auth/session/types/session.types";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 
@@ -37,10 +38,14 @@ export class CartController {
     session: SessionContent,
   ) {
     try {
-      if (!session?.passport?.user)
-        throw new NotFoundException("User session not found. Cart cannot be returned.");
+      if (!session?.passport?.user) {
+        const guestCreatedEvent: GuestSessionCreatedEvent = {
+          type: GuestEventTypes.SESSION_CREATED,
+          payload: session,
+        };
 
-      console.log("Session in getCart: ", session);
+        await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
+      }
 
       return this.cartService.getUserCart(session.passport.user.id);
     } catch (err) {
@@ -59,10 +64,15 @@ export class CartController {
   ) {
     try {
       if (!session?.passport?.user) {
-        await this.eventEmitter.emitAsync(GuestEvents.GUEST_SESSION_CREATED, session);
+        const guestCreatedEvent: GuestSessionCreatedEvent = {
+          type: GuestEventTypes.SESSION_CREATED,
+          payload: session,
+        };
+
+        await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
       }
 
-      return this.cartService.addItem(session.passport?.user?.id, addCartItemDto);
+      return await this.cartService.addItem(session.passport?.user?.id, addCartItemDto);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -76,7 +86,7 @@ export class CartController {
     session: SessionContent,
   ) {
     try {
-      return this.cartService.setQuantity(session.passport.user.id);
+      return this.cartService.setQuantity(session.passport.user.id, "itemId", 5);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -95,7 +105,7 @@ export class CartController {
 
       console.log("Session in removeItemFromCart: ", session);
 
-      return this.cartService.removeItem(session.passport.user.id);
+      return this.cartService.removeItem(session.passport.user.id, "itemId");
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);

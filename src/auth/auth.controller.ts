@@ -23,8 +23,8 @@ import { AuthService } from "./auth.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { LocalAuthGuard } from "./guard/local.auth.guard";
-import { GuestCreatedEvent } from "./session/event/guest-created.event";
 import { SessionContent } from "./session/types/session.types";
+import { GuestCreatedPayload } from "../shared/events/guest-created.event";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -61,7 +61,7 @@ export class AuthController {
   async loginGuest(@Session() session: SessionContent) {
     try {
       const guestUser = await this.authService.createOrRetrieveGuestUser(
-        new GuestCreatedEvent(session?.passport?.user?.id, session?.id),
+        new GuestCreatedPayload(session?.passport?.user?.id, session?.id),
       );
       session.passport = { user: guestUser };
       return AuthUtils.removePasswordFromResponse(guestUser);

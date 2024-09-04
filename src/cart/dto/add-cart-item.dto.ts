@@ -6,7 +6,7 @@ export class AddCartItemDto {
   @ApiProperty({ default: "00000000-0000-0000-0000-000000000000" })
   @IsNotEmpty()
   @IsUUID()
-  productId: string;
+  menuPositionId: string;
 
   @ApiProperty({ default: 1 })
   @IsNotEmpty()

@@ -18,7 +18,7 @@ import { AuthUtils } from "./auth.utils";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { User } from "./entity/user.entity";
-import { GuestCreatedEvent, GuestEvents } from "./session/event/guest-created.event";
+import { GuestCreatedPayload, GuestEventTypes } from "../shared/events/guest-created.event";
 
 @Injectable()
 export class AuthService {
@@ -67,8 +67,8 @@ export class AuthService {
     return AuthUtils.removePasswordFromResponse(user);
   }
 
-  @OnEvent(GuestEvents.GUEST_CREATED)
-  async createOrRetrieveGuestUser({ userId, sessionId }: GuestCreatedEvent = {}): Promise<User> {
+  @OnEvent(GuestEventTypes.CREATED)
+  async createOrRetrieveGuestUser({ userId, sessionId }: GuestCreatedPayload = {}): Promise<User> {
     if (userId) {
       const session = await this.getActiveSession(sessionId);
       if (session) {
