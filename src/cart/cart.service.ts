@@ -35,11 +35,12 @@ export class CartService {
 
     return this.initUserCart(currentUser);
   }
+
   async addItem(userId: string, addCartItemDto: AddCartItemDto): Promise<Cart> {
     const userCart = await this.getUserCart(userId);
     const menuPositionEvent: GetSinglePositionEvent = {
       type: MenuPublicEventTypes.GET_SINGLE_POSITION,
-      payload: addCartItemDto?.menuPositionId,
+      payload: addCartItemDto.menuPositionId,
     };
 
     const [menuPosition]: MenuPosition[] = await this.eventEmitter.emitAsync(
@@ -74,7 +75,8 @@ export class CartService {
 
   async setQuantity(
     userId: string,
-    { cartItemId, quantity }: ChangeCartItemQuantityDto,
+    cartItemId,
+    { quantity }: ChangeCartItemQuantityDto,
   ): Promise<Cart> {
     const cart = await this.getUserCart(userId);
     const item = cart?.items?.find((item) => item.id === cartItemId);

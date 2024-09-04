@@ -5,11 +5,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { IsNull, LessThan, Not, Repository } from "typeorm";
 
+import { GuestCreatedPayload, GuestEventTypes } from "@/shared/events/guest-created.event";
+
 import { User } from "@/auth/entity/user.entity";
 import { SessionContent } from "@/auth/session/types/session.types";
 
 import { SessionEntity } from "./entity/session.entity";
-import { GuestCreatedPayload, GuestEventTypes } from "../../shared/events/guest-created.event";
 
 @Injectable()
 export class SessionService {

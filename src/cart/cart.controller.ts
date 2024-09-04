@@ -7,7 +7,8 @@ import {
   HttpException,
   HttpStatus,
   InternalServerErrorException,
-  NotFoundException,
+  Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Session,
@@ -55,7 +56,7 @@ export class CartController {
     }
   }
 
-  @Post("add-item")
+  @Post("item")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Add item to cart" })
   async addItem(
@@ -80,34 +81,53 @@ export class CartController {
     }
   }
 
-  @Put("set-item-quantity")
+  @Put("item/:cartItemId")
   @ApiOperation({ summary: "Set item quantity" })
   async setItemQuantity(
     @Session()
     session: SessionContent,
+    @Param("cartItemId", new ParseUUIDPipe()) cartItemId: string,
     @Body(ValidationPipe) changeCartItemQuantityDto: ChangeCartItemQuantityDto,
   ) {
     try {
-      return this.cartService.setQuantity(session?.passport?.user?.id, changeCartItemQuantityDto);
+      if (!session?.passport?.user) {
+        const guestCreatedEvent: GuestSessionCreatedEvent = {
+          type: GuestEventTypes.SESSION_CREATED,
+          payload: session,
+        };
+
+        await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
+      }
+
+      return this.cartService.setQuantity(
+        session?.passport?.user?.id,
+        cartItemId,
+        changeCartItemQuantityDto,
+      );
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
     }
   }
 
-  @Delete("remove-item")
+  @Delete("item/:cartItemId")
   @ApiOperation({ summary: "Remove item from cart" })
   async removeItem(
     @Session()
     session: SessionContent,
+    @Param("cartItemId", new ParseUUIDPipe()) cartItemId: string,
   ) {
     try {
-      if (!session?.passport?.user)
-        throw new NotFoundException("User session not found. Item cannot be removed from cart.");
+      if (!session?.passport?.user) {
+        const guestCreatedEvent: GuestSessionCreatedEvent = {
+          type: GuestEventTypes.SESSION_CREATED,
+          payload: session,
+        };
 
-      console.log("Session in removeItemFromCart: ", session);
+        await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
+      }
 
-      return this.cartService.removeItem(session.passport.user.id, "itemId");
+      return this.cartService.removeItem(session.passport.user.id, cartItemId);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
