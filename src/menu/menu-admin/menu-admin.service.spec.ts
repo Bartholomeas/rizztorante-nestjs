@@ -268,6 +268,7 @@ describe("MenuAdminService", () => {
         isGlutenFree: false,
       };
       const existingPosition: MenuPosition = {
+        cartItems: [],
         id: "existing-position-id",
         name: "Existing Position",
         price: 10.99,

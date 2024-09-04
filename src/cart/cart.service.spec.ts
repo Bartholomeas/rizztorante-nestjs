@@ -1,5 +1,13 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+
+import { Repository } from "typeorm";
+
+import { User } from "@/auth/entity/user.entity";
+import { SessionEntity } from "@/auth/session/entity/session.entity";
+import { CartItem } from "@/cart/entity/cart-item.entity";
+import { Cart } from "@/cart/entity/cart.entity";
 
 import { CartService } from "./cart.service";
 
@@ -8,7 +16,25 @@ describe("CartService", () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CartService],
+      providers: [
+        CartService,
+        {
+          provide: getRepositoryToken(Cart),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(CartItem),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(SessionEntity),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(User),
+          useClass: Repository,
+        },
+      ],
     }).compile();
 
     service = module.get<CartService>(CartService);
