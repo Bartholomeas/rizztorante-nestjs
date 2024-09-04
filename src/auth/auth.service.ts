@@ -27,6 +27,12 @@ export class AuthService {
     private sessionRepository: Repository<SessionEntity>,
   ) {}
 
+  async getMe(userId: string): Promise<Omit<User, "password">> {
+    const user = await this.findOne(userId, "id");
+    if (!user) throw new NotFoundException("User not found");
+    return AuthUtils.removePasswordFromResponse(user);
+  }
+
   async createUser(createUserDto: CreateUserDto): Promise<Omit<User, "password">> {
     if (createUserDto.password !== createUserDto.confirmPassword)
       throw new BadRequestException("Passwords do not match");
@@ -71,6 +77,7 @@ export class AuthService {
           id: sessionId,
         },
       });
+
       const sessionActive = !session.deletedAt && session?.expiredAt > Date.now();
       if (sessionActive) {
         const user = await this.findOne(userId, "id");

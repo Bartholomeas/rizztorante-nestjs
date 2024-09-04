@@ -2,10 +2,12 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpException,
   HttpStatus,
   InternalServerErrorException,
+  NotFoundException,
   Post,
   Req,
   Session,
@@ -28,6 +30,19 @@ import { SessionContent } from "./session/types/session.types";
 @Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get("me")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Get current user" })
+  async getMe(@Session() session: SessionContent) {
+    try {
+      if (!session?.passport?.user) throw new NotFoundException("User not found");
+      return await this.authService.getMe(session?.passport?.user?.id);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
+  }
 
   @Post("register")
   @HttpCode(HttpStatus.CREATED)
