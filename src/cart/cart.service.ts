@@ -43,17 +43,12 @@ export class CartService {
     return await this.cartRepository.save(created);
   }
 
-  async proceedToCheckout(userId: string): Promise<void> {
+  async addItem(userId: string): Promise<void> {
     console.log({ userId });
     throw new NotImplementedException("Method not implemented.");
   }
 
-  async addItemToCart(userId: string): Promise<void> {
-    console.log({ userId });
-    throw new NotImplementedException("Method not implemented.");
-  }
-
-  async setItemQuantity(userId: string): Promise<void> {
+  async setQuantity(userId: string): Promise<void> {
     console.log({ userId });
     throw new NotImplementedException("Method not implemented.");
   }
@@ -63,8 +58,8 @@ export class CartService {
     throw new NotImplementedException("Method not implemented.");
   }
 
-  async createCartForUser(userId: string): Promise<Cart> {
+  async proceedToCheckout(userId: string): Promise<void> {
     console.log({ userId });
-    return {} as Cart;
+    throw new NotImplementedException("Method not implemented.");
   }
 }

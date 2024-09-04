@@ -54,31 +54,7 @@ export class CartController {
 
       console.log("Session in addItemToCart: ", session);
 
-      return this.cartService.addItemToCart(session.passport.user.id);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
-  }
-
-  @Post()
-  @ApiOperation({ summary: "Create cart for user" })
-  create(@Session() session: SessionContent) {
-    try {
-      if (!session?.passport?.user)
-        throw new NotFoundException("User session not found. Cart cannot be created.");
-      return this.cartService.createCartForUser(session.passport.user.id);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
-  }
-
-  @Post("checkout")
-  @ApiOperation({ summary: "Proceed to checkout" })
-  async proceedToCheckout(@Session() session: SessionContent) {
-    try {
-      return await this.cartService.proceedToCheckout(session.passport.user.id);
+      return this.cartService.addItem(session.passport.user.id);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -92,7 +68,7 @@ export class CartController {
     session: SessionContent,
   ) {
     try {
-      return this.cartService.setItemQuantity(session.passport.user.id);
+      return this.cartService.setQuantity(session.passport.user.id);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -112,6 +88,17 @@ export class CartController {
       console.log("Session in removeItemFromCart: ", session);
 
       return this.cartService.removeItem(session.passport.user.id);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
+  }
+
+  @Post("checkout")
+  @ApiOperation({ summary: "Proceed to checkout" })
+  async proceedToCheckout(@Session() session: SessionContent) {
+    try {
+      return await this.cartService.proceedToCheckout(session.passport.user.id);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
