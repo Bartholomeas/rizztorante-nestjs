@@ -19,15 +19,39 @@ export class StripeService {
       payment_method_types: ["card", "blik", "p24"],
       line_items: [
         {
-          price: "1234",
-          quantity: 1,
+          price_data: {
+            currency: "pln",
+            product_data: {
+              name: "Spaghetti Carbonara",
+              images: [
+                "https://t4.ftcdn.net/jpg/00/18/66/99/360_F_18669964_Txz4BS0OErzj9v9DHM3N51d8yFVa85dR.jpg",
+              ],
+            },
+            unit_amount: 2000,
+          },
+          quantity: 2,
+        },
+        {
+          price_data: {
+            currency: "pln",
+            product_data: {
+              name: "Pizza Marinara",
+              images: [
+                "https://t4.ftcdn.net/jpg/00/18/66/99/360_F_18669964_Txz4BS0OErzj9v9DHM3N51d8yFVa85dR.jpg",
+              ],
+            },
+            unit_amount: 2000,
+          },
+          quantity: 2,
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:3000/api/success`,
-      cancel_url: `http://localhost:3000/api/error`,
+      success_url: process.env.STRIPE_SUCCESS_URL,
+      cancel_url: process.env.STRIPE_CANCEL_URL,
+      return_url: process.env.STRIPE_RETURN_URL,
       locale: "pl",
     });
-    console.log("stripe session", session);
+
+    return { url: session?.url };
   }
 }

@@ -8,6 +8,8 @@ import { User } from "@/auth/entities/user.entity";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 import { CartItem } from "@/cart/entities/cart-item.entity";
 import { Cart } from "@/cart/entities/cart.entity";
+import { CartEventTypes } from "@/cart/events/cart.events";
+import { ProceedCheckoutEvent, ProceedCheckoutPayload } from "@/cart/events/proceed-checkout.event";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 import {
   GetSinglePositionEvent,
@@ -109,9 +111,19 @@ export class CartService {
     return this.cartRepository.save(cart);
   }
 
-  async proceedToCheckout(userId: string): Promise<void> {
+  async checkout(userId: string): Promise<string> {
     console.log("userId", userId);
-    throw new Error("Checkout process not implemented");
+    const proceedCheckoutEvent: ProceedCheckoutEvent = {
+      type: CartEventTypes.PROCEED_CHECKOUT,
+      payload: new ProceedCheckoutPayload(userId),
+    };
+
+    const [successUrl] = await this.eventEmitter.emitAsync(
+      proceedCheckoutEvent.type,
+      proceedCheckoutEvent.payload,
+    );
+
+    return successUrl;
   }
 
   private async initUserCart(user: User): Promise<Cart> {

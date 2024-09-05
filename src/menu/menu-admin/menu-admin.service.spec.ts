@@ -19,10 +19,6 @@ import type { UpdateMenuCategoryDto } from "./dto/update/update-category.dto";
 import type { UpdateMenuDto } from "./dto/update/update-menu.dto";
 import type { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
 
-export type MockType<T> = {
-  [P in keyof T]?: jest.Mock<unknown>;
-};
-
 describe("MenuAdminService", () => {
   let service: MenuAdminService;
   let menuRepository: Repository<Menu>;

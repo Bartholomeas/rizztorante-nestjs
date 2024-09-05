@@ -178,8 +178,6 @@ describe("CartService", () => {
   it("should throw an error when proceeding to checkout", async () => {
     const userId = "test-user-id";
 
-    await expect(service.proceedToCheckout(userId)).rejects.toThrow(
-      "Checkout process not implemented",
-    );
+    await expect(service.checkout(userId)).rejects.toThrow("Checkout process not implemented");
   });
 });
