@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 
-import { MenuCategory } from "@/menu/entity/menu-category.entity";
+import { MenuCategory } from "@/menu/entities/menu-category.entity";
 
 @Entity()
 @Unique(["slug"])

@@ -5,10 +5,10 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { User } from "@/auth/entity/user.entity";
-import { SessionEntity } from "@/auth/session/entity/session.entity";
-import { CartItem } from "@/cart/entity/cart-item.entity";
-import { Cart } from "@/cart/entity/cart.entity";
+import { User } from "@/auth/entities/user.entity";
+import { SessionEntity } from "@/auth/sessions/entity/session.entity";
+import { CartItem } from "@/cart/entities/cart-item.entity";
+import { Cart } from "@/cart/entities/cart.entity";
 
 import { CartController } from "./cart.controller";
 import { CartService } from "./cart.service";

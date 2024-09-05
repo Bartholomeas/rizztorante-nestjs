@@ -1,7 +1,7 @@
 import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-import { MenuPosition } from "@/menu/entity/menu-position.entity";
-import { Menu } from "@/menu/entity/menu.entity";
+import { MenuPosition } from "@/menu/entities/menu-position.entity";
+import { Menu } from "@/menu/entities/menu.entity";
 
 @Entity()
 export class MenuCategory {

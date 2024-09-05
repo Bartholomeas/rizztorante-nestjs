@@ -8,9 +8,10 @@ import * as session from "express-session";
 import * as passport from "passport";
 import { DataSource } from "typeorm";
 
+import { SessionEntity } from "@/auth/sessions/entity/session.entity";
+
 import { AppModule } from "./app.module";
-import { SessionEntity } from "./auth/session/entity/session.entity";
-import { APP_NAME } from "./constants";
+import { APP_NAME } from "./common/constants";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

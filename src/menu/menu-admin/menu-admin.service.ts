@@ -4,9 +4,10 @@ import { InjectRepository } from "@nestjs/typeorm";
 import slugify from "slugify";
 import { Repository } from "typeorm";
 
-import { MenuCategory } from "@/menu/entity/menu-category.entity";
-import { MenuPosition } from "@/menu/entity/menu-position.entity";
-import { Menu } from "@/menu/entity/menu.entity";
+import { MenuCategory } from "@/menu/entities/menu-category.entity";
+import { MenuPositionDetails } from "@/menu/entities/menu-position-details.entity";
+import { MenuPosition } from "@/menu/entities/menu-position.entity";
+import { Menu } from "@/menu/entities/menu.entity";
 import { CreateMenuCategoryDto } from "@/menu/menu-admin/dto/create/create-category.dto";
 import { CreateMenuDto } from "@/menu/menu-admin/dto/create/create-menu.dto";
 import { CreateMenuPositionDto } from "@/menu/menu-admin/dto/create/create-position.dto";
@@ -16,7 +17,6 @@ import { UpdateMenuCategoryDto } from "./dto/update/update-category.dto";
 import { UpdateMenuDto } from "./dto/update/update-menu.dto";
 import { UpdateMenuPositionDetailsDto } from "./dto/update/update-position-details.dto";
 import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
-import { MenuPositionDetails } from "../entity/menu-position-details.entity";
 
 @Injectable()
 export class MenuAdminService {

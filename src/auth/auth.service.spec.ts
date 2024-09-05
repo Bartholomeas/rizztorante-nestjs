@@ -4,10 +4,10 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { SessionEntity } from "@/auth/session/entity/session.entity";
+import { User } from "@/auth/entities/user.entity";
+import { SessionEntity } from "@/auth/sessions/entity/session.entity";
 
 import { AuthService } from "./auth.service";
-import { User } from "./entity/user.entity";
 
 describe("AuthService", () => {
   let service: AuthService;

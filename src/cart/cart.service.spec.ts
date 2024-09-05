@@ -6,11 +6,11 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { User } from "@/auth/entity/user.entity";
-import { SessionEntity } from "@/auth/session/entity/session.entity";
-import { CartItem } from "@/cart/entity/cart-item.entity";
-import { Cart } from "@/cart/entity/cart.entity";
-import type { MenuPosition } from "@/menu/entity/menu-position.entity";
+import { User } from "@/auth/entities/user.entity";
+import { SessionEntity } from "@/auth/sessions/entity/session.entity";
+import { CartItem } from "@/cart/entities/cart-item.entity";
+import { Cart } from "@/cart/entities/cart.entity";
+import type { MenuPosition } from "@/menu/entities/menu-position.entity";
 
 import { CartService } from "./cart.service";
 

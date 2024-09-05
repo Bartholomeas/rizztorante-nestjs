@@ -17,9 +17,8 @@ import {
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
-import { GuestEventTypes, GuestSessionCreatedEvent } from "@/shared/events/guest-created.event";
-
-import { SessionContent } from "@/auth/session/types/session.types";
+import { GuestEventTypes, GuestSessionCreatedEvent } from "@/auth/events/guest-created.event";
+import { SessionContent } from "@/auth/sessions/types/session.types";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 
 import { CartService } from "./cart.service";
