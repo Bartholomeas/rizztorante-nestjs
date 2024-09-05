@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { EventEmitterModule } from "@nestjs/event-emitter";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AppController } from "@/app.controller";
 import { AppService } from "@/app.service";
+import { AuthModule } from "@/auth/auth.module";
 import { CartModule } from "@/cart/cart.module";
 import { MenuModule } from "@/menu/menu.module";
 import { OrdersModule } from "@/orders/orders.module";
-
-import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -24,14 +24,15 @@ import { AuthModule } from "./auth/auth.module";
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== "production",
-      logging: process.env.NODE_ENV !== "production",
+      // logging: process.env.NODE_ENV !== "production",
       autoLoadEntities: true,
       // dropSchema: true, //To clearing DB in each app restart
     }),
+    EventEmitterModule.forRoot(),
+    AuthModule,
+    CartModule,
     OrdersModule,
     MenuModule,
-    CartModule,
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -2,6 +2,7 @@ import { InternalServerErrorException } from "@nestjs/common";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
+import { AuthUtils } from "@/auth/auth.utils";
 import { UserRole } from "@/types/user-roles";
 
 import { AuthController } from "./auth.controller";
@@ -21,8 +22,9 @@ describe("AuthController", () => {
         {
           provide: AuthService,
           useValue: {
-            createUser: jest.fn(),
-            login: jest.fn(),
+            registerUser: jest.fn(),
+            authenticateUser: jest.fn(),
+            createOrRetrieveGuestUser: jest.fn(),
           },
         },
       ],
@@ -46,7 +48,7 @@ describe("AuthController", () => {
         updatedAt: new Date(),
         role: UserRole.USER,
       };
-      jest.spyOn(authService, "createUser").mockResolvedValue({
+      jest.spyOn(authService, "registerUser").mockResolvedValue({
         ...result,
         id: "1", // Change id to string type
         role: UserRole.USER,
@@ -65,7 +67,7 @@ describe("AuthController", () => {
         password: "weak",
         confirmPassword: "weak",
       };
-      jest.spyOn(authService, "createUser").mockImplementation(() => {
+      jest.spyOn(authService, "registerUser").mockImplementation(() => {
         throw new Error("Password is too weak");
       });
 
@@ -78,7 +80,7 @@ describe("AuthController", () => {
         password: "StrongPassword123!",
         confirmPassword: "StrongPassword123!",
       };
-      jest.spyOn(authService, "createUser").mockImplementation(() => {
+      jest.spyOn(authService, "registerUser").mockImplementation(() => {
         throw new Error("Invalid email format");
       });
 
@@ -91,7 +93,7 @@ describe("AuthController", () => {
         password: "StrongPassword123!",
         confirmPassword: "StrongPassword123!",
       };
-      jest.spyOn(authService, "createUser").mockRejectedValue(new Error("Error"));
+      jest.spyOn(authService, "registerUser").mockRejectedValue(new Error("Error"));
 
       await expect(authController.register(createUserDto)).rejects.toThrow(
         InternalServerErrorException,
@@ -101,10 +103,37 @@ describe("AuthController", () => {
 
   describe("loginGuest", () => {
     it("should login as a guest", async () => {
-      const session = { save: jest.fn(), id: "sessionId" };
-      const result = { message: "Logged in as a guest", sessionId: "sessionId" };
+      const session = {
+        save: jest.fn(),
+        id: "sessionId",
+        passport: {
+          user: {
+            id: "userId",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            password: null,
+            role: UserRole.GUEST,
+          },
+        },
+        cookie: {
+          maxAge: 1000,
+          originalMaxAge: 1000,
+        },
+      };
+      const guestUser = {
+        id: "userId",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        password: null,
+        role: UserRole.GUEST,
+      };
+      jest.spyOn(authService, "createOrRetrieveGuestUser").mockResolvedValue(guestUser);
 
-      expect(await authController.loginGuest(session)).toEqual(result);
+      expect(await authController.loginGuest(session)).toEqual(
+        AuthUtils.removePasswordFromResponse(guestUser),
+      );
+
+      // expect(await authController.loginGuest(session)).toEqual(result);
     });
   });
 
@@ -118,7 +147,7 @@ describe("AuthController", () => {
         email: "test@gmail.com",
         role: UserRole.USER,
       };
-      jest.spyOn(authService, "login").mockResolvedValue({
+      jest.spyOn(authService, "authenticateUser").mockResolvedValue({
         ...result,
         role: UserRole.USER,
       });
@@ -132,7 +161,7 @@ describe("AuthController", () => {
 
     it("should throw an InternalServerErrorException on error", async () => {
       const loginUserDto: LoginUserDto = { email: "test", password: "test" };
-      jest.spyOn(authService, "login").mockRejectedValue(new Error("Error"));
+      jest.spyOn(authService, "authenticateUser").mockRejectedValue(new Error("Error"));
 
       await expect(authController.login(loginUserDto)).rejects.toThrow(
         InternalServerErrorException,

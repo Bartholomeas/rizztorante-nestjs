@@ -39,6 +39,7 @@ module.exports = {
         ],
         pathGroups: [
           { pattern: "@nestjs/**", group: "external", position: "before" },
+          { pattern: "@/shared/**", group: "internal", position: "after" },
           { pattern: "@/**", group: "internal", position: "after" },
         ],
         "newlines-between": "always",
