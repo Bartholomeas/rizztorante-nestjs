@@ -17,7 +17,8 @@ import {
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
-import { GuestEventTypes, GuestSessionCreatedEvent } from "@/auth/events/guest-created.event";
+import { GuestEventTypes } from "@/auth/events/auth.events";
+import { GuestSessionCreatedEvent } from "@/auth/events/guest-created.event";
 import { SessionContent } from "@/auth/sessions/types/session.types";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 
@@ -137,7 +138,7 @@ export class CartController {
   @ApiOperation({ summary: "Proceed to checkout" })
   async proceedToCheckout(@Session() session: SessionContent) {
     try {
-      return await this.cartService.proceedToCheckout(session.passport.user.id);
+      return await this.cartService.checkout(session.passport.user.id);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);

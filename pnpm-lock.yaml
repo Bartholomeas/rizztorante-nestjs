@@ -74,6 +74,9 @@ importers:
       slugify:
         specifier: ^1.6.6
         version: 1.6.6
+      stripe:
+        specifier: 16.9.0
+        version: 16.9.0
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.12.0)(ts-node@10.9.2(@types/node@20.16.2)(typescript@5.5.4))
@@ -4115,6 +4118,10 @@ packages:
   strip-json-comments@3.1.1:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
+
+  stripe@16.9.0:
+    resolution: {integrity: sha512-SgzwdMgWNe1FD1A1WevZ/wuv8b4yWz8SiG/vO7Pf4cBl0qat20Clz8Zself+tcbB+fuMkZJrjJ2WmarIgXfCow==}
+    engines: {node: '>=12.*'}
 
   super-regex@1.0.0:
     resolution: {integrity: sha512-CY8u7DtbvucKuquCmOFEKhr9Besln7n9uN8eFbwcoGYWXOMW07u2o8njWaiXt11ylS3qoGF55pILjRmPlbodyg==}
@@ -9214,6 +9221,11 @@ snapshots:
   strip-json-comments@2.0.1: {}
 
   strip-json-comments@3.1.1: {}
+
+  stripe@16.9.0:
+    dependencies:
+      '@types/node': 20.16.2
+      qs: 6.13.0
 
   super-regex@1.0.0:
     dependencies:

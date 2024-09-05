@@ -12,13 +12,14 @@ import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
 
 import { User } from "@/auth/entities/user.entity";
+import { GuestEventTypes } from "@/auth/events/auth.events";
 import { SessionEntity } from "@/auth/sessions/entity/session.entity";
 import { UserRole } from "@/common/types/user-roles.types";
 
 import { AuthUtils } from "./auth.utils";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
-import { GuestCreatedPayload, GuestEventTypes } from "./events/guest-created.event";
+import { GuestCreatedPayload } from "./events/guest-created.event";
 
 @Injectable()
 export class AuthService {
