@@ -3,7 +3,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
 import { AuthUtils } from "@/auth/auth.utils";
-import { UserRole } from "@/types/user-roles";
+import { UserRole } from "@/common/types/user-roles.types";
 
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
@@ -133,7 +133,7 @@ describe("AuthController", () => {
         AuthUtils.removePasswordFromResponse(guestUser),
       );
 
-      // expect(await authController.loginGuest(session)).toEqual(result);
+      // expect(await authController.loginGuest(sessions)).toEqual(result);
     });
   });
 

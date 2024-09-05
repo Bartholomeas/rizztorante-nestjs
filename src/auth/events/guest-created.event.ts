@@ -1,6 +1,6 @@
-import type { SessionContent } from "@/auth/session/types/session.types";
+import type { SessionContent } from "@/auth/sessions/types/session.types";
 
-import type { Event } from "./events.types";
+import type { Event } from "../../common/types/events.types";
 
 export enum GuestEventTypes {
   CREATED = "guest.created",

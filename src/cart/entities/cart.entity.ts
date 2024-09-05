@@ -1,6 +1,6 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, JoinColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
-import { User } from "@/auth/entity/user.entity";
+import { User } from "@/auth/entities/user.entity";
 
 import { CartItem } from "./cart-item.entity";
 

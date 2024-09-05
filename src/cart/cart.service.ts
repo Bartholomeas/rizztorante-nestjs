@@ -4,15 +4,17 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { GetSinglePositionEvent, MenuPublicEventTypes } from "@/shared/events/menu-public.events";
-
-import { User } from "@/auth/entity/user.entity";
+import { User } from "@/auth/entities/user.entity";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
-import { MenuPosition } from "@/menu/entity/menu-position.entity";
+import { CartItem } from "@/cart/entities/cart-item.entity";
+import { Cart } from "@/cart/entities/cart.entity";
+import { MenuPosition } from "@/menu/entities/menu-position.entity";
+import {
+  GetSinglePositionEvent,
+  MenuPublicEventTypes,
+} from "@/menu/menu-public/events/menu-public.events";
 
 import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
-import { CartItem } from "./entity/cart-item.entity";
-import { Cart } from "./entity/cart.entity";
 
 @Injectable()
 export class CartService {
