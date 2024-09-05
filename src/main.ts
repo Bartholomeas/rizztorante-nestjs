@@ -2,6 +2,7 @@ import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
+import * as compression from "compression";
 import { TypeormStore } from "connect-typeorm";
 import * as session from "express-session";
 import * as passport from "passport";
@@ -18,6 +19,7 @@ async function bootstrap() {
   const sessionRepository = dataSource.getRepository(SessionEntity);
 
   app.setGlobalPrefix("api/v1");
+  app.use(compression());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

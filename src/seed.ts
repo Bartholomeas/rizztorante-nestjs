@@ -102,13 +102,13 @@ async function bootstrap() {
       },
     });
 
-    const user = await authService.createUser({
+    const user = await authService.registerUser({
       email: "test@gmail.com",
       password: "!23Haslo",
       confirmPassword: "!23Haslo",
     });
 
-    await authService.createGuestUser();
+    await authService.createOrRetrieveGuestUser();
 
     await app.get(Connection).query(`UPDATE "user" SET role = 'ADMIN' WHERE id = $1`, [user.id]);
 

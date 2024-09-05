@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -6,21 +7,31 @@ import {
   HttpException,
   HttpStatus,
   InternalServerErrorException,
-  NotFoundException,
+  Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Session,
+  ValidationPipe,
 } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
+import { GuestEventTypes, GuestSessionCreatedEvent } from "@/shared/events/guest-created.event";
+
 import { SessionContent } from "@/auth/session/types/session.types";
+import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 
 import { CartService } from "./cart.service";
+import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
 
 @Controller("cart")
 @ApiTags("Cart")
 export class CartController {
-  constructor(private readonly cartService: CartService) {}
+  constructor(
+    private readonly cartService: CartService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: "Get cart" })
@@ -29,10 +40,14 @@ export class CartController {
     session: SessionContent,
   ) {
     try {
-      if (!session?.passport?.user)
-        throw new NotFoundException("User session not found. Cart cannot be returned.");
+      if (!session?.passport?.user) {
+        const guestCreatedEvent: GuestSessionCreatedEvent = {
+          type: GuestEventTypes.SESSION_CREATED,
+          payload: session,
+        };
 
-      console.log("Session in getCart: ", session);
+        await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
+      }
 
       return this.cartService.getUserCart(session.passport.user.id);
     } catch (err) {
@@ -41,33 +56,78 @@ export class CartController {
     }
   }
 
-  @Post("add-item")
+  @Post("item")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Add item to cart" })
-  async addItemToCart(
+  async addItem(
     @Session()
     session: SessionContent,
+    @Body(ValidationPipe) addCartItemDto: AddCartItemDto,
   ) {
     try {
-      if (!session?.passport?.user)
-        throw new NotFoundException("User session not found. Item cannot be added to cart.");
+      if (!session?.passport?.user) {
+        const guestCreatedEvent: GuestSessionCreatedEvent = {
+          type: GuestEventTypes.SESSION_CREATED,
+          payload: session,
+        };
 
-      console.log("Session in addItemToCart: ", session);
+        await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
+      }
 
-      return this.cartService.addItemToCart(session.passport.user.id);
+      return await this.cartService.addItem(session.passport?.user?.id, addCartItemDto);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
     }
   }
 
-  @Post()
-  @ApiOperation({ summary: "Create cart for user" })
-  create(@Session() session: SessionContent) {
+  @Put("item/:cartItemId")
+  @ApiOperation({ summary: "Set item quantity" })
+  async setItemQuantity(
+    @Session()
+    session: SessionContent,
+    @Param("cartItemId", new ParseUUIDPipe()) cartItemId: string,
+    @Body(ValidationPipe) changeCartItemQuantityDto: ChangeCartItemQuantityDto,
+  ) {
     try {
-      if (!session?.passport?.user)
-        throw new NotFoundException("User session not found. Cart cannot be created.");
-      return this.cartService.createCartForUser(session.passport.user.id);
+      if (!session?.passport?.user) {
+        const guestCreatedEvent: GuestSessionCreatedEvent = {
+          type: GuestEventTypes.SESSION_CREATED,
+          payload: session,
+        };
+
+        await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
+      }
+
+      return this.cartService.setQuantity(
+        session?.passport?.user?.id,
+        cartItemId,
+        changeCartItemQuantityDto,
+      );
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
+  }
+
+  @Delete("item/:cartItemId")
+  @ApiOperation({ summary: "Remove item from cart" })
+  async removeItem(
+    @Session()
+    session: SessionContent,
+    @Param("cartItemId", new ParseUUIDPipe()) cartItemId: string,
+  ) {
+    try {
+      if (!session?.passport?.user) {
+        const guestCreatedEvent: GuestSessionCreatedEvent = {
+          type: GuestEventTypes.SESSION_CREATED,
+          payload: session,
+        };
+
+        await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
+      }
+
+      return this.cartService.removeItem(session.passport.user.id, cartItemId);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -79,39 +139,6 @@ export class CartController {
   async proceedToCheckout(@Session() session: SessionContent) {
     try {
       return await this.cartService.proceedToCheckout(session.passport.user.id);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
-  }
-
-  @Put("set-item-quantity")
-  @ApiOperation({ summary: "Set item quantity" })
-  async setItemQuantity(
-    @Session()
-    session: SessionContent,
-  ) {
-    try {
-      return this.cartService.setItemQuantity(session.passport.user.id);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
-  }
-
-  @Delete("remove-item")
-  @ApiOperation({ summary: "Remove item from cart" })
-  async removeItem(
-    @Session()
-    session: SessionContent,
-  ) {
-    try {
-      if (!session?.passport?.user)
-        throw new NotFoundException("User session not found. Item cannot be removed from cart.");
-
-      console.log("Session in removeItemFromCart: ", session);
-
-      return this.cartService.removeItem(session.passport.user.id);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);

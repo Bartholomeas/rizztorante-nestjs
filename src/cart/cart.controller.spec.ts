@@ -1,3 +1,4 @@
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
@@ -14,6 +15,7 @@ import { CartService } from "./cart.service";
 
 describe("CartController", () => {
   let controller: CartController;
+  let eventEmitter: EventEmitter2;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,10 +39,15 @@ describe("CartController", () => {
           provide: getRepositoryToken(User),
           useClass: Repository,
         },
+        {
+          provide: EventEmitter2,
+          useValue: eventEmitter,
+        },
       ],
     }).compile();
 
     controller = module.get<CartController>(CartController);
+    eventEmitter = module.get<EventEmitter2>(EventEmitter2);
   });
 
   it("should be defined", () => {
