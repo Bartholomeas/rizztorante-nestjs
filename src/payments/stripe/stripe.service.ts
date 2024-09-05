@@ -8,7 +8,6 @@ import { STRIPE_KEY } from "@/payments/stripe/stripe.constants";
 export class StripeService {
   private stripe: Stripe;
 
-  // constructor(@Inject(process.env.STRAPI_API_KEY) private readonly apiKey: string) {
   constructor(@Inject(STRIPE_KEY) private readonly apiKey: string) {
     this.stripe = new Stripe(this.apiKey, {
       apiVersion: "2024-06-20",
