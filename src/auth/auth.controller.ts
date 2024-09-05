@@ -18,13 +18,13 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { AuthUtils } from "@/auth/auth.utils";
+import { LocalAuthGuard } from "@/auth/guards/local.auth.guard";
+import { SessionContent } from "@/auth/sessions/types/session.types";
 
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
-import { LocalAuthGuard } from "./guard/local.auth.guard";
-import { SessionContent } from "./session/types/session.types";
-import { GuestCreatedPayload } from "../shared/events/guest-created.event";
+import { GuestCreatedPayload } from "./events/guest-created.event";
 
 @ApiTags("Auth")
 @Controller("auth")

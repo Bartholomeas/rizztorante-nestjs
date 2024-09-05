@@ -9,8 +9,8 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 
-import { CartItem } from "@/cart/entity/cart-item.entity";
-import { MenuCategory } from "@/menu/entity/menu-category.entity";
+import { CartItem } from "@/cart/entities/cart-item.entity";
+import { MenuCategory } from "@/menu/entities/menu-category.entity";
 
 import { MenuPositionDetails } from "./menu-position-details.entity";
 

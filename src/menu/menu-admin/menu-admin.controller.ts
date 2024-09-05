@@ -15,13 +15,13 @@ import {
 } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
-import { Roles } from "@/auth/decorator/roles.decorator";
-import { RolesGuard } from "@/auth/guard/roles.guard";
+import { Roles } from "@/auth/decorators/roles.decorator";
+import { RolesGuard } from "@/auth/guards/roles.guard";
+import { UserRole } from "@/common/types/user-roles.types";
 import { CreateMenuCategoryDto } from "@/menu/menu-admin/dto/create/create-category.dto";
 import { CreateMenuDto } from "@/menu/menu-admin/dto/create/create-menu.dto";
 import { CreateMenuPositionDto } from "@/menu/menu-admin/dto/create/create-position.dto";
 import { MenuAdminService } from "@/menu/menu-admin/menu-admin.service";
-import { UserRole } from "@/types/user-roles";
 
 import { CreateMenuPositionDetailsDto } from "./dto/update/create-position-details.dto";
 import { UpdateMenuCategoryDto } from "./dto/update/update-category.dto";

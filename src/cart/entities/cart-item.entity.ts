@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
-import { MenuPosition } from "@/menu/entity/menu-position.entity";
+import { MenuPosition } from "@/menu/entities/menu-position.entity";
 
 import { Cart } from "./cart.entity";
 

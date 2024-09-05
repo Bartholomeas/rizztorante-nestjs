@@ -1,16 +1,16 @@
 import { IsEmail, IsStrongPassword, ValidateIf } from "class-validator";
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
-  OneToOne,
+  Entity,
   JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 
-import { Cart } from "@/cart/entity/cart.entity";
-import { UserRole } from "@/types/user-roles";
+import { Cart } from "@/cart/entities/cart.entity";
+import { UserRole } from "@/common/types/user-roles.types";
 
 @Entity()
 export class User {

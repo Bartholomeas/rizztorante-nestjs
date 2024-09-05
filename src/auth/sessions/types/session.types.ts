@@ -1,4 +1,4 @@
-import type { User } from "@/auth/entity/user.entity";
+import type { User } from "@/auth/entities/user.entity";
 
 import type { SessionData } from "express-session";
 
