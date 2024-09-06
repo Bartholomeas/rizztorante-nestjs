@@ -40,16 +40,7 @@ export class CartController {
     session: SessionContent,
   ) {
     try {
-      if (!session?.passport?.user) {
-        const guestCreatedEvent: GuestSessionCreatedEvent = {
-          type: GuestEventTypes.SESSION_CREATED,
-          payload: session,
-        };
-
-        await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
-      }
-
-      return this.cartService.getUserCart(session.passport.user.id);
+      return this.cartService.getUserCart(session?.passport?.user?.id);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -65,16 +56,7 @@ export class CartController {
     @Body(ValidationPipe) addCartItemDto: AddCartItemDto,
   ) {
     try {
-      if (!session?.passport?.user) {
-        const guestCreatedEvent: GuestSessionCreatedEvent = {
-          type: GuestEventTypes.SESSION_CREATED,
-          payload: session,
-        };
-
-        await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
-      }
-
-      return await this.cartService.addItem(session.passport?.user?.id, addCartItemDto);
+      return await this.cartService.addItem(session?.passport?.user?.id, addCartItemDto);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -90,15 +72,6 @@ export class CartController {
     @Body(ValidationPipe) changeCartItemQuantityDto: ChangeCartItemQuantityDto,
   ) {
     try {
-      if (!session?.passport?.user) {
-        const guestCreatedEvent: GuestSessionCreatedEvent = {
-          type: GuestEventTypes.SESSION_CREATED,
-          payload: session,
-        };
-
-        await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
-      }
-
       return this.cartService.setQuantity(
         session?.passport?.user?.id,
         cartItemId,
@@ -118,6 +91,17 @@ export class CartController {
     @Param("cartItemId", new ParseUUIDPipe()) cartItemId: string,
   ) {
     try {
+      return this.cartService.removeItem(session?.passport?.user?.id, cartItemId);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
+  }
+
+  @Post("checkout")
+  @ApiOperation({ summary: "Proceed to checkout" })
+  async checkoutCart(@Session() session: SessionContent) {
+    try {
       if (!session?.passport?.user) {
         const guestCreatedEvent: GuestSessionCreatedEvent = {
           type: GuestEventTypes.SESSION_CREATED,
@@ -127,18 +111,7 @@ export class CartController {
         await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
       }
 
-      return this.cartService.removeItem(session.passport.user.id, cartItemId);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
-  }
-
-  @Post("checkout")
-  @ApiOperation({ summary: "Proceed to checkout" })
-  async proceedToCheckout(@Session() session: SessionContent) {
-    try {
-      return await this.cartService.checkout(session.passport.user.id);
+      return await this.cartService.checkoutCart(session.passport.user.id);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);

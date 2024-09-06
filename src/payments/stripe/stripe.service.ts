@@ -15,6 +15,16 @@ export class StripeService {
   }
 
   async createPayment() {
+    // const paymentIntent = await this.stripe.paymentIntents.create({
+    //   amount: 12345,
+    //   currency: "pln",
+    //   metadata: {
+    //     order_id: "323232-orderId",
+    //     payment_method: "cash",
+    //   },
+    // });
+    // return paymentIntent;
+
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ["card", "blik", "p24"],
       line_items: [
@@ -48,10 +58,8 @@ export class StripeService {
       mode: "payment",
       success_url: process.env.STRIPE_SUCCESS_URL,
       cancel_url: process.env.STRIPE_CANCEL_URL,
-      return_url: process.env.STRIPE_RETURN_URL,
       locale: "pl",
     });
-
     return { url: session?.url };
   }
 }
