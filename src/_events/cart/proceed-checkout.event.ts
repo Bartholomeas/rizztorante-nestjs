@@ -1,7 +1,8 @@
 import { IsUUID } from "class-validator";
 
 import { EventBody } from "@/_common/types/events.types";
-import { CartEventTypes } from "@/cart/events/cart.events";
+
+import { CartEventTypes } from "./cart.events";
 
 export class ProceedCheckoutPayload {
   @IsUUID()

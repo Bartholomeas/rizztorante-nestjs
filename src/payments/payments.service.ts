@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 
-import { CartEventTypes } from "@/cart/events/cart.events";
+import { CartEventTypes } from "@events/cart/cart.events";
+
 import { StripeService } from "@/payments/stripe/stripe.service";
 
 @Injectable()

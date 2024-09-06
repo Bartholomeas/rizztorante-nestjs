@@ -10,7 +10,7 @@ export class OrdersController {
 
   @Post()
   async addOrder(@Body(ValidationPipe) orderData: any) {
-    console.log("ff", orderData);
+    console.log(orderData);
     return this.ordersService.addOrder();
   }
 

@@ -11,15 +11,16 @@ import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
 
+import { GuestEventTypes } from "@events/auth/auth.events";
+import { GuestCreatedPayload } from "@events/auth/guest-created.event";
+
 import { UserRole } from "@/_common/types/user-roles.types";
 import { User } from "@/auth/entities/user.entity";
-import { GuestEventTypes } from "@/auth/events/auth.events";
 import { SessionEntity } from "@/auth/sessions/entity/session.entity";
 
 import { AuthUtils } from "./auth.utils";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
-import { GuestCreatedPayload } from "./events/guest-created.event";
 
 @Injectable()
 export class AuthService {
