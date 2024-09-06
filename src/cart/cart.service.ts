@@ -37,11 +37,12 @@ export class CartService {
     const currentUser = await this.userRepository.findOne({ where: { id: userId } });
     if (!currentUser) throw new NotFoundException(`User with id ${userId} not found`);
 
-    return this.initUserCart(currentUser);
+    return this.initUserCart(currentUser) as any;
   }
 
   async addItem(userId: string, addCartItemDto: AddCartItemDto): Promise<Cart> {
     const userCart = await this.getUserCart(userId);
+
     const menuPositionEvent: GetSinglePositionEvent = {
       type: MenuPublicEventTypes.GET_SINGLE_POSITION,
       payload: addCartItemDto.menuPositionId,
@@ -126,9 +127,11 @@ export class CartService {
     return successUrl;
   }
 
-  private async initUserCart(user: User): Promise<Cart> {
+  private async initUserCart(user: User): Promise<Omit<Cart, "user">> {
     const createdCart = this.cartRepository.create({ user, items: [], total: 0 });
-    return this.cartRepository.save(createdCart);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { user: _, ...rest } = await this.cartRepository.save(createdCart);
+    return rest;
   }
 
   private async retrieveUserCart(userId: string): Promise<Cart | null> {
