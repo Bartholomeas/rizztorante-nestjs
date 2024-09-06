@@ -19,9 +19,9 @@ export class GuestUserMiddleware implements NestMiddleware {
         type: GuestEventTypes.SESSION_CREATED,
         payload: session,
       };
-
       await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
     }
+
     next();
   }
 }

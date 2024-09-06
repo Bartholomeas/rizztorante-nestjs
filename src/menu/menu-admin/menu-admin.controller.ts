@@ -15,9 +15,9 @@ import {
 } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
+import { UserRole } from "@/_common/types/user-roles.types";
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
-import { UserRole } from "@/common/types/user-roles.types";
 import { CreateMenuCategoryDto } from "@/menu/menu-admin/dto/create/create-category.dto";
 import { CreateMenuDto } from "@/menu/menu-admin/dto/create/create-menu.dto";
 import { CreateMenuPositionDto } from "@/menu/menu-admin/dto/create/create-position.dto";

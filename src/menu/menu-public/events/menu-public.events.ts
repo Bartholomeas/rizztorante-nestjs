@@ -1,4 +1,4 @@
-import type { EventBody } from "@/common/types/events.types";
+import type { EventBody } from "@/_common/types/events.types";
 
 export enum MenuPublicEventTypes {
   GET_SINGLE_POSITION = "menu-public.get-single-position",
