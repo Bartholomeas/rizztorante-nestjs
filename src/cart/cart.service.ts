@@ -111,7 +111,7 @@ export class CartService {
     return this.cartRepository.save(cart);
   }
 
-  async checkout(userId: string): Promise<string> {
+  async checkoutCart(userId: string): Promise<string> {
     console.log("userId", userId);
     const proceedCheckoutEvent: ProceedCheckoutEvent = {
       type: CartEventTypes.PROCEED_CHECKOUT,
@@ -135,7 +135,7 @@ export class CartService {
     return this.cartRepository.findOne({
       where: { user: { id: userId } },
       relations: ["items", "items.menuPosition"],
-      select: { user: { id: true } },
+      // select: { user: { id: true } },
       cache: {
         id: `${userId}-user-cart`,
         milliseconds: 1000 * 60 * 5,
