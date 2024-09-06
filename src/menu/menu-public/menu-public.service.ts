@@ -4,11 +4,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
+import { MenuPublicEventTypes } from "@events/menu/menu-public.events";
+
 import { MenuCategory } from "@/menu/entities/menu-category.entity";
 import { MenuPositionDetails } from "@/menu/entities/menu-position-details.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 import { Menu } from "@/menu/entities/menu.entity";
-import { MenuPublicEventTypes } from "@/menu/menu-public/events/menu-public.events";
 
 @Injectable()
 export class MenuPublicService {

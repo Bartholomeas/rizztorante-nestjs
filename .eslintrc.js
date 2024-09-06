@@ -40,6 +40,7 @@ module.exports = {
         pathGroups: [
           { pattern: "@nestjs/**", group: "external", position: "before" },
           { pattern: "@common/**", group: "internal", position: "after" },
+          { pattern: "@events/**", group: "internal", position: "after" },
           { pattern: "@/**", group: "internal", position: "after" },
         ],
         "newlines-between": "always",

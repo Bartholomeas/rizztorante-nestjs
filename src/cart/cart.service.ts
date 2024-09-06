@@ -4,17 +4,15 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
+import { CartEventTypes } from "@events/cart/cart.events";
+import { ProceedCheckoutEvent, ProceedCheckoutPayload } from "@events/cart/proceed-checkout.event";
+import { GetSinglePositionEvent, MenuPublicEventTypes } from "@events/menu/menu-public.events";
+
 import { User } from "@/auth/entities/user.entity";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 import { CartItem } from "@/cart/entities/cart-item.entity";
 import { Cart } from "@/cart/entities/cart.entity";
-import { CartEventTypes } from "@/cart/events/cart.events";
-import { ProceedCheckoutEvent, ProceedCheckoutPayload } from "@/cart/events/proceed-checkout.event";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
-import {
-  GetSinglePositionEvent,
-  MenuPublicEventTypes,
-} from "@/menu/menu-public/events/menu-public.events";
 
 import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
 
