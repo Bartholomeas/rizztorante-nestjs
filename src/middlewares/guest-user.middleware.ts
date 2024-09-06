@@ -3,8 +3,8 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 
 import { NextFunction, Request, Response } from "express";
 
-import { GuestEventTypes } from "@events/auth/auth.events";
-import { GuestSessionCreatedEvent } from "@events/auth/guest-created.event";
+import { GuestEventTypes } from "@events/events";
+import { GuestSessionCreatedEvent } from "@events/payloads";
 
 import { SessionContent } from "@/auth/sessions/types/session.types";
 

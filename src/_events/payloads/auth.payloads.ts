@@ -1,9 +1,9 @@
 import { IsOptional, IsString, IsUUID } from "class-validator";
 
-import type { EventBody } from "@/_common/types/events.types";
-import type { SessionContent } from "@/auth/sessions/types/session.types";
+import { GuestEventTypes } from "@events/events";
+import { EventBody } from "@events/events.types";
 
-import { GuestEventTypes } from "./auth.events";
+import type { SessionContent } from "@/auth/sessions/types/session.types";
 
 export class GuestCreatedPayload {
   @IsUUID()

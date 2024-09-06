@@ -11,8 +11,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
 
-import { GuestEventTypes } from "@events/auth/auth.events";
-import { GuestCreatedPayload } from "@events/auth/guest-created.event";
+import { GuestEventTypes } from "@events/events";
+import { GuestCreatedPayload } from "@events/payloads";
 
 import { UserRole } from "@/_common/types/user-roles.types";
 import { User } from "@/auth/entities/user.entity";

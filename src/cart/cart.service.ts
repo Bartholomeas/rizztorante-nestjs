@@ -1,12 +1,15 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { EventEmitter2 } from "@nestjs/event-emitter";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { CartEventTypes } from "@events/cart/cart.events";
-import { ProceedCheckoutEvent, ProceedCheckoutPayload } from "@events/cart/proceed-checkout.event";
-import { GetSinglePositionEvent, MenuPublicEventTypes } from "@events/menu/menu-public.events";
+import { CartEventTypes, MenuPublicEventTypes } from "@events/events";
+import {
+  ProceedCheckoutEvent,
+  ProceedCheckoutPayload,
+  GetSinglePositionEvent,
+} from "@events/payloads";
 
 import { User } from "@/auth/entities/user.entity";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
@@ -28,6 +31,7 @@ export class CartService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
+  @OnEvent()
   async getUserCart(userId: string): Promise<Cart> {
     const userCart = await this.retrieveUserCart(userId);
     if (userCart) return userCart;
