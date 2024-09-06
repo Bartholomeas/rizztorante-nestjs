@@ -1,12 +1,25 @@
-import { Injectable, NotImplementedException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
+import { CheckoutEventTypes } from "@events/events";
+
+import { Cart } from "@/cart/entities/cart.entity";
+
+import { CheckoutDto } from "./dto/checkout.dto";
 import { PaymentsEnum, PickupEnum } from "./enums/checkout.enums";
 
 @Injectable()
 export class CheckoutService {
-  constructor() {}
-  async proceedCheckout() {
-    throw new NotImplementedException();
+  constructor(private readonly eventEmitter: EventEmitter2) {}
+  async proceedCheckout(userId: string | undefined, {}: CheckoutDto) {
+    if (!userId) throw new NotFoundException("User is not found");
+
+    const [userCart] = (await this.eventEmitter.emitAsync(
+      CheckoutEventTypes.GET_USER_CART,
+      userId,
+    )) as [Cart];
+
+    return userCart;
   }
 
   async getPickupOptions() {

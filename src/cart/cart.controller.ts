@@ -14,7 +14,6 @@ import {
   Session,
   ValidationPipe,
 } from "@nestjs/common";
-import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import { SessionContent } from "@/auth/sessions/types/session.types";
@@ -26,10 +25,7 @@ import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
 @Controller("cart")
 @ApiTags("Cart")
 export class CartController {
-  constructor(
-    private readonly cartService: CartService,
-    private readonly eventEmitter: EventEmitter2,
-  ) {}
+  constructor(private readonly cartService: CartService) {}
 
   @Get()
   @ApiOperation({ summary: "Get cart" })
@@ -96,14 +92,14 @@ export class CartController {
     }
   }
 
-  @Post("checkout")
-  @ApiOperation({ summary: "Proceed to checkout" })
-  async checkoutCart(@Session() session: SessionContent) {
-    try {
-      return await this.cartService.checkoutCart(session.passport.user.id);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
-  }
+  // @Post("checkout")
+  // @ApiOperation({ summary: "Proceed to checkout" })
+  // async checkoutCart(@Session() session: SessionContent) {
+  //   try {
+  //     return await this.cartService.checkoutCart(session.passport.user.id);
+  //   } catch (err) {
+  //     if (err instanceof HttpException) throw err;
+  //     throw new InternalServerErrorException(err?.message);
+  //   }
+  // }
 }

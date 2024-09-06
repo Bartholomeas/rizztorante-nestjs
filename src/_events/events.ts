@@ -11,6 +11,6 @@ export enum MenuPublicEventTypes {
   GET_SINGLE_POSITION = "menu-public.get-single-position",
 }
 
-export enum CheckouEventTypes {
+export enum CheckoutEventTypes {
   GET_USER_CART = "checkout.get-user-cart",
 }

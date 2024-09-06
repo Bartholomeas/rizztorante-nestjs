@@ -4,7 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { MenuPublicEventTypes } from "@events/menu/menu-public.events";
+import { MenuPublicEventTypes } from "@events/events";
 
 import { MenuCategory } from "@/menu/entities/menu-category.entity";
 import { MenuPositionDetails } from "@/menu/entities/menu-position-details.entity";

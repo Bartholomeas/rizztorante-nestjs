@@ -1,17 +1,59 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { IsString } from "class-validator";
+import { IsEnum, IsOptional, IsPhoneNumber, IsString, Matches, ValidateIf } from "class-validator";
+
+import { PaymentsEnum, PickupEnum } from "../enums/checkout.enums";
 
 export class CheckoutDto {
   @ApiProperty()
   @IsString()
-  firstName: string;
+  @ValidateIf(({ pickupType }) => pickupType === PickupEnum.DELIVERY)
+  firstName?: string;
 
   @ApiProperty()
   @IsString()
-  lastName: string;
+  @IsOptional()
+  @ValidateIf(({ pickupType }) => pickupType === PickupEnum.DELIVERY)
+  lastName?: string;
 
   @ApiProperty()
   @IsString()
-  lastName2: string;
+  @ValidateIf(({ pickupType }) => pickupType === PickupEnum.DELIVERY)
+  street: string;
+
+  @ApiProperty()
+  @IsString()
+  @ValidateIf(({ pickupType }) => pickupType === PickupEnum.DELIVERY)
+  houseNumber: string;
+
+  @ApiProperty()
+  @IsString()
+  @ValidateIf(({ pickupType }) => pickupType === PickupEnum.DELIVERY)
+  city: string;
+
+  @ApiProperty({ example: "00-000" })
+  @IsString()
+  @ValidateIf(({ pickupType }) => pickupType === PickupEnum.DELIVERY)
+  @Matches(/^\d{2}-\d{3}$/)
+  zipCode: string;
+
+  @ApiProperty({ example: "123456789" })
+  @IsString()
+  @IsPhoneNumber()
+  @ValidateIf(({ pickupType }) => pickupType === PickupEnum.DELIVERY)
+  phoneNumber: number;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  @ValidateIf(({ pickupType }) => pickupType === PickupEnum.DELIVERY)
+  deliveryInstructions?: string;
+
+  @ApiProperty({ enum: PickupEnum })
+  @IsEnum(PickupEnum)
+  pickupType: PickupEnum;
+
+  @ApiProperty({ enum: PaymentsEnum })
+  @IsEnum(PaymentsEnum)
+  paymentType: PaymentsEnum;
 }
