@@ -1,6 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { IsEnum, IsOptional, IsPhoneNumber, IsString, Matches, ValidateIf } from "class-validator";
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+  Matches,
+  ValidateIf,
+} from "class-validator";
 
 import { PaymentsEnum, PickupEnum } from "../enums/checkout.enums";
 
@@ -48,6 +56,12 @@ export class CheckoutDto {
   @IsOptional()
   @ValidateIf(({ pickupType }) => pickupType === PickupEnum.DELIVERY)
   deliveryInstructions?: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  @ValidateIf(({ pickupType }) => pickupType === PickupEnum.ON_SITE)
+  tableNumber: number;
 
   @ApiProperty({ enum: PickupEnum })
   @IsEnum(PickupEnum)
