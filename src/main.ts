@@ -10,8 +10,8 @@ import { DataSource } from "typeorm";
 
 import { SessionEntity } from "@/auth/sessions/entity/session.entity";
 
+import { APP_NAME } from "./_common/constants";
 import { AppModule } from "./app.module";
-import { APP_NAME } from "./common/constants";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -37,7 +37,7 @@ async function bootstrap() {
       cookie: {
         httpOnly: true,
         // secure: "auto",
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+        maxAge: 1000 * 60 * 60 * 24 * 30, // 7 days
         // sameSite: "strict",
       },
       store: new TypeormStore({

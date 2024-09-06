@@ -7,6 +7,7 @@ import { AppController } from "@/app.controller";
 import { AppService } from "@/app.service";
 import { AuthModule } from "@/auth/auth.module";
 import { CartModule } from "@/cart/cart.module";
+import { CheckoutModule } from "@/checkout/checkout.module";
 import { MenuModule } from "@/menu/menu.module";
 import { OrdersModule } from "@/orders/orders.module";
 import { PaymentsModule } from "@/payments/payments.module";
@@ -31,9 +32,10 @@ import { PaymentsModule } from "@/payments/payments.module";
     }),
     EventEmitterModule.forRoot(),
     AuthModule,
-    CartModule,
-    OrdersModule,
     MenuModule,
+    OrdersModule,
+    CartModule,
+    CheckoutModule,
     PaymentsModule,
   ],
   controllers: [AppController],

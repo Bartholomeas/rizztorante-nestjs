@@ -9,8 +9,8 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
+import { UserRole } from "@/_common/types/user-roles.types";
 import { Cart } from "@/cart/entities/cart.entity";
-import { UserRole } from "@/common/types/user-roles.types";
 
 @Entity()
 export class User {
