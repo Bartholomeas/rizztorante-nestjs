@@ -16,7 +16,24 @@ export class StripeService {
   }
 
   async createPayment<T extends Record<string, any>>(cart: Cart, additionalInfo?: Partial<T>) {
-    console.log("HEHEHE", { cart, additionalInfo });
+    cart?.items.forEach((el) => {
+      console.log("DDDEDE", el?.menuPosition?.images);
+    });
+
+    const lineItems = cart?.items?.map(
+      (item): Stripe.Checkout.SessionCreateParams.LineItem => ({
+        price_data: {
+          currency: "pln",
+          unit_amount: item.menuPosition.price,
+          product_data: {
+            name: item.menuPosition.name,
+            images: item?.menuPosition?.images ?? [],
+            description: item.menuPosition.description,
+          },
+        },
+        quantity: item.quantity,
+      }),
+    );
 
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ["card", "blik", "p24"],
@@ -24,37 +41,10 @@ export class StripeService {
       payment_intent_data: {
         metadata: additionalInfo,
       },
-      line_items: [
-        {
-          price_data: {
-            currency: "pln",
-            product_data: {
-              name: "Spaghetti Carbonara",
-              images: [
-                "https://t4.ftcdn.net/jpg/00/18/66/99/360_F_18669964_Txz4BS0OErzj9v9DHM3N51d8yFVa85dR.jpg",
-              ],
-            },
-            unit_amount: 2000,
-          },
-          quantity: 2,
-        },
-        {
-          price_data: {
-            currency: "pln",
-            product_data: {
-              name: "Pizza Marinara",
-              images: [
-                "https://t4.ftcdn.net/jpg/00/18/66/99/360_F_18669964_Txz4BS0OErzj9v9DHM3N51d8yFVa85dR.jpg",
-              ],
-            },
-            unit_amount: 2000,
-          },
-          quantity: 2,
-        },
-      ],
+      line_items: lineItems,
       mode: "payment",
-      success_url: process.env.STRIPE_SUCCESS_URL,
-      cancel_url: process.env.STRIPE_CANCEL_URL,
+      success_url: process.env.PAYMENT_SUCCESS_URL,
+      cancel_url: process.env.PAYMENT_ERROR_URL,
       locale: "pl",
     });
     return { url: session?.url };

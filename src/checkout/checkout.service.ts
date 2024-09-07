@@ -36,7 +36,7 @@ export class CheckoutService {
       return successUrl;
     }
 
-    return userCart;
+    return { url: process.env.PAYMENT_SUCCESS_URL };
   }
 
   async getPickupOptions() {
