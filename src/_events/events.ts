@@ -13,4 +13,5 @@ export enum MenuPublicEventTypes {
 
 export enum CheckoutEventTypes {
   GET_USER_CART = "checkout.get-user-cart",
+  INIT_PAYMENT = "checkout.init-payment",
 }

@@ -2,6 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 
 import Stripe from "stripe";
 
+import { Cart } from "@/cart/entities/cart.entity";
 import { STRIPE_KEY } from "@/payments/stripe/stripe.constants";
 
 @Injectable()
@@ -14,19 +15,15 @@ export class StripeService {
     });
   }
 
-  async createPayment() {
-    // const paymentIntent = await this.stripe.paymentIntents.create({
-    //   amount: 12345,
-    //   currency: "pln",
-    //   metadata: {
-    //     order_id: "323232-orderId",
-    //     payment_method: "cash",
-    //   },
-    // });
-    // return paymentIntent;
+  async createPayment<T extends Record<string, any>>(cart: Cart, additionalInfo?: Partial<T>) {
+    console.log("HEHEHE", { cart, additionalInfo });
 
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ["card", "blik", "p24"],
+      allow_promotion_codes: true,
+      payment_intent_data: {
+        metadata: additionalInfo,
+      },
       line_items: [
         {
           price_data: {

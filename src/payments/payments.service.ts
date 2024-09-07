@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 
-import { CartEventTypes } from "@events/events";
+import { CheckoutEventTypes } from "@events/events";
+import { CheckoutPaymentPayload } from "@events/payloads";
 
 import { StripeService } from "@/payments/stripe/stripe.service";
 
@@ -9,10 +10,13 @@ import { StripeService } from "@/payments/stripe/stripe.service";
 export class PaymentsService {
   constructor(private readonly stripeService: StripeService) {}
 
-  @OnEvent(CartEventTypes.PROCEED_CHECKOUT)
-  async createPayment(smth: any) {
-    console.log("XD", smth);
+  @OnEvent(CheckoutEventTypes.INIT_PAYMENT)
+  async createPayment(payload: CheckoutPaymentPayload) {
+    console.log("XDDD", payload);
     // Poczebujem: userId (?), koszyk, dane do platnosci
-    return this.stripeService.createPayment();
+    return this.stripeService.createPayment<CheckoutPaymentPayload["userCheckoutData"]>(
+      payload.cart,
+      payload.userCheckoutData,
+    );
   }
 }

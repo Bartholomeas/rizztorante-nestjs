@@ -1,12 +1,21 @@
 import type { CheckoutEventTypes } from "@events/events";
 import type { EventBody } from "@events/events.types";
 
-// export class CheckoutGetUserCartPayload {
-//   @IsUUID()
-//   public readonly userId: string;
-//   constructor(userId: string) {
-//     this.userId = userId;
-//   }
-// }
+import type { Cart } from "@/cart/entities/cart.entity";
+import type { CheckoutDto } from "@/checkout/dto/checkout.dto";
+
+export class CheckoutPaymentPayload {
+  public readonly userCheckoutData: CheckoutDto;
+  public readonly cart: Cart;
+  constructor(userCheckoutData: CheckoutDto, cart: Cart) {
+    this.userCheckoutData = userCheckoutData;
+    this.cart = cart;
+  }
+}
 
 export type CheckoutGetUserCartEvent = EventBody<typeof CheckoutEventTypes.GET_USER_CART, string>;
+
+export type CheckoutPaymentEvent = EventBody<
+  typeof CheckoutEventTypes.INIT_PAYMENT,
+  CheckoutPaymentPayload
+>;
