@@ -9,6 +9,8 @@ import { SessionEntity } from "@/auth/sessions/entity/session.entity";
 
 import { AuthService } from "./auth.service";
 
+jest.mock("@events/events");
+
 describe("AuthService", () => {
   let service: AuthService;
 

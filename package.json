@@ -105,6 +105,8 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
+      "^@common/(.*)$": "<rootDir>/_common/$1",
+      "^@events/(.*)$": "<rootDir>/_events/$1",
       "^@/(.*)$": "<rootDir>/$1"
     }
   },

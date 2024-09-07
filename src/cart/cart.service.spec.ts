@@ -14,6 +14,11 @@ import type { MenuPosition } from "@/menu/entities/menu-position.entity";
 
 import { CartService } from "./cart.service";
 
+jest.mock("@events/events", () => ({
+  CheckoutEventTypes: {},
+  MenuPublicEventTypes: {},
+}));
+
 describe("CartService", () => {
   let service: CartService;
   let eventEmitter: EventEmitter2;

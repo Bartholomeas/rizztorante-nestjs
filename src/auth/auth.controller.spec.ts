@@ -11,6 +11,23 @@ import { AuthService } from "./auth.service";
 import type { CreateUserDto } from "./dto/create-user.dto";
 import type { LoginUserDto } from "./dto/login-user.dto";
 
+jest.mock("@nestjs/event-emitter", () => ({
+  ...jest.requireActual("@nestjs/event-emitter"),
+  OnEvent: jest.fn(),
+  EventEmitter: jest.fn().mockImplementation(() => ({
+    emit: jest.fn(),
+    emitAsync: jest.fn(),
+  })),
+}));
+jest.mock("@events/events", () => ({
+  GuestEventTypes: {
+    CREATED: "mocked_created",
+  },
+  CheckoutEventTypes: {
+    GET_USER_CART: "mocked_get_user_cart",
+  },
+}));
+
 describe("AuthController", () => {
   let authController: AuthController;
   let authService: AuthService;
