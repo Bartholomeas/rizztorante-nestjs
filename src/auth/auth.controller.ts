@@ -17,7 +17,7 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import { Request } from "express";
 
-import { GuestCreatedPayload } from "@events/auth/guest-created.event";
+import { GuestCreatedPayload } from "@events/payloads";
 
 import { AuthUtils } from "@/auth/auth.utils";
 import { LocalAuthGuard } from "@/auth/guards/local.auth.guard";

@@ -26,6 +26,9 @@ export class MenuPosition {
   @Column({ type: "int" })
   price: number;
 
+  @Column({ type: "simple-array", nullable: true, array: true })
+  images?: string[];
+
   @Column({ default: null, nullable: true })
   description?: string;
 

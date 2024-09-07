@@ -5,8 +5,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { IsNull, LessThan, Not, Repository } from "typeorm";
 
-import { GuestEventTypes } from "@events/auth/auth.events";
-import { GuestCreatedPayload } from "@events/auth/guest-created.event";
+import { GuestEventTypes } from "@events/events";
+import { GuestCreatedPayload } from "@events/payloads";
 
 import { User } from "@/auth/entities/user.entity";
 import { SessionContent } from "@/auth/sessions/types/session.types";

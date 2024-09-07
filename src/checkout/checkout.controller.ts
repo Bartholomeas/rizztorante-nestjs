@@ -1,7 +1,19 @@
-import { Controller, Post, Put } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  InternalServerErrorException,
+  Post,
+  Session,
+  ValidationPipe,
+} from "@nestjs/common";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
+
+import { SessionContent } from "@/auth/sessions/types/session.types";
 
 import { CheckoutService } from "./checkout.service";
+import { CheckoutDto } from "./dto/checkout.dto";
 
 @Controller("checkout")
 @ApiTags("Checkout")
@@ -9,17 +21,27 @@ export class CheckoutController {
   constructor(private readonly checkoutService: CheckoutService) {}
 
   @Post()
-  async proceedCheckout() {
-    return await this.checkoutService.proceedCheckout();
+  async proceedCheckout(
+    @Session() session: SessionContent,
+    @Body(ValidationPipe) checkoutDto: CheckoutDto,
+  ) {
+    try {
+      return await this.checkoutService.proceedCheckout(session?.passport?.user?.id, checkoutDto);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
   }
 
-  @Put("delivery")
-  async setDelivery() {
-    return await this.checkoutService.setDelivery();
+  @Get("pickup")
+  @ApiOperation({ summary: "Get pickup options" })
+  async getPickupOptions() {
+    return await this.checkoutService.getPickupOptions();
   }
 
-  @Put("payment")
-  async setPayment() {
-    return await this.checkoutService.setPayment();
+  @Get("payment")
+  @ApiOperation({ summary: "Get payment options" })
+  async getPaymentOptions() {
+    return await this.checkoutService.getPaymentOptions();
   }
 }

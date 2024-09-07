@@ -1,5 +1,7 @@
 import { Injectable, NotImplementedException } from "@nestjs/common";
 
+import { CheckoutCreateOrderPayload } from "@events/payloads";
+
 @Injectable()
 export class OrdersService {
   constructor() {}
@@ -23,7 +25,8 @@ export class OrdersService {
     throw new NotImplementedException();
   }
 
-  async addOrder() {
+  async createOrder(payload: CheckoutCreateOrderPayload) {
+    console.log("FF create order: ", payload);
     throw new NotImplementedException();
   }
 }
