@@ -1,3 +1,5 @@
+import { IsString } from "class-validator";
+
 import type { CheckoutEventTypes } from "@events/events";
 import type { EventBody } from "@events/events.types";
 
@@ -13,9 +15,19 @@ export class CheckoutPaymentPayload {
   }
 }
 
+export class CheckoutCreateOrderPayload {
+  @IsString()
+  public readonly orderId: string;
+}
+
 export type CheckoutGetUserCartEvent = EventBody<typeof CheckoutEventTypes.GET_USER_CART, string>;
 
 export type CheckoutPaymentEvent = EventBody<
   typeof CheckoutEventTypes.INIT_PAYMENT,
   CheckoutPaymentPayload
+>;
+
+export type CheckoutCreateOrderEvent = EventBody<
+  typeof CheckoutEventTypes.CREATE_ORDER,
+  CheckoutCreateOrderPayload
 >;

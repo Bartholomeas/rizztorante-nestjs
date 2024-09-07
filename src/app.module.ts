@@ -30,7 +30,7 @@ import { PaymentsModule } from "@/payments/payments.module";
       autoLoadEntities: true,
       // dropSchema: true, //To clearing DB in each app restart
     }),
-    EventEmitterModule.forRoot(),
+    EventEmitterModule.forRoot({ delimiter: "." }),
     AuthModule,
     MenuModule,
     OrdersModule,

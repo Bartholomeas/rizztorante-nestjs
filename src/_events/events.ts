@@ -1,6 +1,6 @@
 export enum GuestEventTypes {
-  CREATED = "GuestCreated",
-  SESSION_CREATED = "GuestSessionCreated",
+  CREATED = "guest.created",
+  SESSION_CREATED = "guest.session.created",
 }
 
 export enum CartEventTypes {
@@ -14,4 +14,5 @@ export enum MenuPublicEventTypes {
 export enum CheckoutEventTypes {
   GET_USER_CART = "checkout.get-user-cart",
   INIT_PAYMENT = "checkout.init-payment",
+  CREATE_ORDER = "checkout.create-order",
 }
