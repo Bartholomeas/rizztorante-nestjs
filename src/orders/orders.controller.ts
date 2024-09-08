@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Body, ValidationPipe, ParseUUIDPipe, Put } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseUUIDPipe, Put, ValidationPipe } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
 import { OrdersService } from "./orders.service";

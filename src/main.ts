@@ -37,14 +37,15 @@ async function bootstrap() {
       cookie: {
         httpOnly: true,
         // secure: "auto",
-        maxAge: 1000 * 60 * 60 * 24 * 30, // 7 days
+        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
         // sameSite: "strict",
       },
       store: new TypeormStore({
         cleanupLimit: 2,
         limitSubquery: false,
         resave: false,
-        ttl: 1000 * 5,
+        ttl: 1000 * 60 * 60 * 24 * 30,
+        rolling: true,
       }).connect(sessionRepository),
     }),
   );

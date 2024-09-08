@@ -91,15 +91,4 @@ export class CartController {
       throw new InternalServerErrorException(err?.message);
     }
   }
-
-  // @Post("checkout")
-  // @ApiOperation({ summary: "Proceed to checkout" })
-  // async checkoutCart(@Session() session: SessionContent) {
-  //   try {
-  //     return await this.cartService.checkoutCart(session.passport.user.id);
-  //   } catch (err) {
-  //     if (err instanceof HttpException) throw err;
-  //     throw new InternalServerErrorException(err?.message);
-  //   }
-  // }
 }

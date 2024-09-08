@@ -12,6 +12,7 @@ import { PaymentsEnum, PickupEnum } from "./enums/checkout.enums";
 @Injectable()
 export class CheckoutService {
   constructor(private readonly eventEmitter: EventEmitter2) {}
+
   async proceedCheckout(userId: string | undefined, checkoutDto: CheckoutDto) {
     try {
       if (!userId) throw new NotFoundException("User is not found");
@@ -38,6 +39,7 @@ export class CheckoutService {
       }
 
       await this.eventEmitter.emitAsync(CheckoutEventTypes.CREATE_ORDER, {});
+      // TODO: Clear cart after successful order
 
       return { url: process.env.PAYMENT_SUCCESS_URL };
     } catch (err) {
@@ -58,6 +60,7 @@ export class CheckoutService {
       },
     ];
   }
+
   async getPaymentOptions() {
     return [
       {
