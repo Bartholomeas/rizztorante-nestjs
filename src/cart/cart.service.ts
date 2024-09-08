@@ -110,20 +110,6 @@ export class CartService {
     return this.cartRepository.save(cart);
   }
 
-  // async checkoutCart(userId: string): Promise<string> {
-  //   const proceedCheckoutEvent: ProceedCheckoutEvent = {
-  //     type: CartEventTypes.PROCEED_CHECKOUT,
-  //     payload: new ProceedCheckoutPayload(userId),
-  //   };
-
-  //   const [successUrl] = await this.eventEmitter.emitAsync(
-  //     proceedCheckoutEvent.type,
-  //     proceedCheckoutEvent.payload,
-  //   );
-
-  //   return successUrl;
-  // }
-
   private async initUserCart(user: User): Promise<Omit<Cart, "user">> {
     const createdCart = this.cartRepository.create({ user, items: [], total: 0 });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
