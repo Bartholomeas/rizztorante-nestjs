@@ -18,7 +18,7 @@ import { CheckoutDto } from "./dto/checkout.dto";
 @Controller("checkout")
 @ApiTags("Checkout")
 export class CheckoutController {
-  constructor(private readonly checkoutService: CheckoutService) {}
+  constructor(private readonly service: CheckoutService) {}
 
   @Post()
   async proceedCheckout(
@@ -26,7 +26,7 @@ export class CheckoutController {
     @Body(ValidationPipe) checkoutDto: CheckoutDto,
   ) {
     try {
-      return await this.checkoutService.proceedCheckout(session?.passport?.user?.id, checkoutDto);
+      return await this.service.proceedCheckout(session?.passport?.user?.id, checkoutDto);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -36,12 +36,12 @@ export class CheckoutController {
   @Get("pickup")
   @ApiOperation({ summary: "Get pickup options" })
   async getPickupOptions() {
-    return await this.checkoutService.getPickupOptions();
+    return await this.service.getPickupOptions();
   }
 
   @Get("payment")
   @ApiOperation({ summary: "Get payment options" })
   async getPaymentOptions() {
-    return await this.checkoutService.getPaymentOptions();
+    return await this.service.getPaymentOptions();
   }
 }
