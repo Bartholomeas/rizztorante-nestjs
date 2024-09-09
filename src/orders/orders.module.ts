@@ -10,10 +10,11 @@ import { CommandHandlers } from "./commands/handlers";
 import { OrdersController } from "./orders.controller";
 import { OrdersListener } from "./orders.listener";
 import { OrdersService } from "./orders.service";
+import { QueryHandlers } from "./queries/handlers";
 
 @Module({
   imports: [CqrsModule, TypeOrmModule.forFeature([User, Cart, Order])],
   controllers: [OrdersController],
-  providers: [...CommandHandlers, OrdersService, OrdersListener],
+  providers: [...CommandHandlers, ...QueryHandlers, OrdersService, OrdersListener],
 })
 export class OrdersModule {}

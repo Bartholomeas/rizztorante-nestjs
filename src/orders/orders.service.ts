@@ -12,7 +12,7 @@ import { OrderStatus } from "./types/order-status.enum";
 
 @Injectable()
 export class OrdersService {
-  constructor(@InjectRepository(Order) private readonly orderRepository: Repository<Order>) {}
+  constructor(@InjectRepository(Order) private readonly repository: Repository<Order>) {}
 
   async getOrder() {
     throw new NotImplementedException();
@@ -27,8 +27,13 @@ export class OrdersService {
   }
 
   async updateOrder(orderId: string, status: OrderStatus) {
-    console.log("updateOrder: ", orderId, status);
-    throw new NotImplementedException();
+    const order = await this.repository.findOne({
+      where: {
+        id: orderId,
+      },
+    });
+    order.orderStatus = status;
+    return await this.repository.save(order);
   }
 
   async deleteOrder() {
@@ -45,6 +50,6 @@ export class OrdersService {
     order.cart = payload.cart;
     order.checkoutData = payload.checkoutData;
 
-    return await this.orderRepository.save(this.orderRepository.create(order));
+    return await this.repository.save(this.repository.create(order));
   }
 }
