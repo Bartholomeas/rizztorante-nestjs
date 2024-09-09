@@ -8,6 +8,7 @@ import { CheckoutCreateOrderPayload } from "@events/payloads";
 import { Order } from "@/orders/entities/order.entity";
 
 import { OrdersUtils } from "./orders.utils";
+import { OrderStatus } from "./types/order-status.enum";
 
 @Injectable()
 export class OrdersService {
@@ -25,7 +26,8 @@ export class OrdersService {
     throw new NotImplementedException();
   }
 
-  async updateOrder() {
+  async updateOrder(orderId: string, status: OrderStatus) {
+    console.log("updateOrder: ", orderId, status);
     throw new NotImplementedException();
   }
 
@@ -34,8 +36,6 @@ export class OrdersService {
   }
 
   async createOrder(payload: CheckoutCreateOrderPayload) {
-    console.log("Robim order:::", payload.cart.user);
-
     const orderNumber = OrdersUtils.createOrderId(
       `order-${Date.now()}-${payload.cart?.id}-${payload.user?.id}-${JSON.stringify(payload.checkoutData)}`,
     );
