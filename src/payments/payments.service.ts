@@ -12,8 +12,6 @@ export class PaymentsService {
 
   @OnEvent(CheckoutEventTypes.INIT_PAYMENT)
   async createPayment(payload: CheckoutPaymentPayload) {
-    console.log("XDDD", payload);
-    // Poczebujem: userId (?), koszyk, dane do platnosci
     return this.stripeService.createPayment<CheckoutPaymentPayload["userCheckoutData"]>(
       payload.cart,
       payload.userCheckoutData,

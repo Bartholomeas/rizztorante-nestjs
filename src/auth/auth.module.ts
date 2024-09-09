@@ -3,6 +3,7 @@ import { PassportModule } from "@nestjs/passport";
 import { ScheduleModule } from "@nestjs/schedule";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { AuthListener } from "@/auth/auth.listener";
 import { User } from "@/auth/entities/user.entity";
 import { SessionEntity } from "@/auth/sessions/entity/session.entity";
 import { SessionSerializer } from "@/auth/sessions/session.serializer";
@@ -20,7 +21,7 @@ import { AuthService } from "./auth.service";
     PassportModule.register({ session: true }),
     ScheduleModule.forRoot(),
   ],
-  providers: [AuthService, LocalStrategy, SessionSerializer, SessionService],
+  providers: [AuthService, LocalStrategy, SessionSerializer, SessionService, AuthListener],
   controllers: [AuthController],
 })
 export class AuthModule {}

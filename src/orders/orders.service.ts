@@ -1,14 +1,20 @@
 import { Injectable, NotImplementedException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+
+import { Repository } from "typeorm";
 
 import { CheckoutCreateOrderPayload } from "@events/payloads";
 
+import { Order } from "@/orders/entities/order.entity";
+
 @Injectable()
 export class OrdersService {
-  constructor() {}
+  constructor(@InjectRepository(Order) private readonly orderRepository: Repository<Order>) {}
 
   async getOrder() {
     throw new NotImplementedException();
   }
+
   async getAllOrders() {
     throw new NotImplementedException();
   }
@@ -26,7 +32,21 @@ export class OrdersService {
   }
 
   async createOrder(payload: CheckoutCreateOrderPayload) {
-    console.log("FF create order: ", payload);
-    throw new NotImplementedException();
+    console.log("Robim order:::", payload.cart.user);
+    // const order = this.orderRepository.create({
+    //   orderNumber: `${Math.random() * 153 * Date.now()}`,
+    //   cart: payload.cart,
+    //   checkoutData: payload.checkoutData,
+    //   // user: payload.cart.user,
+    // });
+
+    const order = new Order();
+    order.orderNumber = `${Math.random() * Date.now()}`;
+    order.cart = payload.cart;
+    order.checkoutData = payload.checkoutData;
+
+    const orderCreated = this.orderRepository.create(order);
+    // const orderCreated = this.orderRepository.create({});
+    return await this.orderRepository.save(orderCreated);
   }
 }

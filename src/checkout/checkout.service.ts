@@ -2,7 +2,11 @@ import { HttpException, Injectable, NotFoundException } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 
 import { CheckoutEventTypes } from "@events/events";
-import { CheckoutPaymentEvent } from "@events/payloads";
+import {
+  CheckoutCreateOrderEvent,
+  CheckoutGetUserEvent,
+  CheckoutPaymentEvent,
+} from "@events/payloads";
 
 import { Cart } from "@/cart/entities/cart.entity";
 
@@ -22,8 +26,16 @@ export class CheckoutService {
         userId,
       )) as [Cart];
 
+      const getUserEvent: CheckoutGetUserEvent = {
+        type: CheckoutEventTypes.GET_USER_PROFILE,
+        payload: userId,
+      };
+      const [user] = await this.eventEmitter.emitAsync(getUserEvent.type, getUserEvent.payload);
+
+      console.log("HEHEHE", user);
+
       if (checkoutDto.paymentType === PaymentsEnum.ONLINE) {
-        const checkoutPayload: CheckoutPaymentEvent = {
+        const checkoutEvent: CheckoutPaymentEvent = {
           type: CheckoutEventTypes.INIT_PAYMENT,
           payload: {
             cart: userCart,
@@ -32,13 +44,34 @@ export class CheckoutService {
         };
 
         const [successUrl] = await this.eventEmitter.emitAsync(
-          checkoutPayload.type,
-          checkoutPayload.payload,
+          checkoutEvent.type,
+          checkoutEvent.payload,
         );
+
+        const createOrderEvent: CheckoutCreateOrderEvent = {
+          type: CheckoutEventTypes.CREATE_ORDER,
+          payload: {
+            cart: userCart,
+            user,
+            checkoutData: checkoutDto,
+          },
+        };
+
+        await this.eventEmitter.emitAsync(createOrderEvent.type, createOrderEvent.payload);
+
         return successUrl;
       }
 
-      await this.eventEmitter.emitAsync(CheckoutEventTypes.CREATE_ORDER, {});
+      const createOrderEvent: CheckoutCreateOrderEvent = {
+        type: CheckoutEventTypes.CREATE_ORDER,
+        payload: {
+          cart: userCart,
+          user,
+          checkoutData: checkoutDto,
+        },
+      };
+
+      await this.eventEmitter.emitAsync(createOrderEvent.type, createOrderEvent.payload);
       // TODO: Clear cart after successful order
 
       return { url: process.env.PAYMENT_SUCCESS_URL };

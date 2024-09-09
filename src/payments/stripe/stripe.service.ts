@@ -16,10 +16,6 @@ export class StripeService {
   }
 
   async createPayment<T extends Record<string, any>>(cart: Cart, additionalInfo?: Partial<T>) {
-    cart?.items.forEach((el) => {
-      console.log("DDDEDE", el?.menuPosition?.images);
-    });
-
     const lineItems = cart?.items?.map(
       (item): Stripe.Checkout.SessionCreateParams.LineItem => ({
         price_data: {

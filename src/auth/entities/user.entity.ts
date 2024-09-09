@@ -52,5 +52,6 @@ export class User {
   cart?: Cart;
 
   @OneToMany(() => Order, (order) => order.user)
+  @JoinColumn()
   orders: Order[];
 }
