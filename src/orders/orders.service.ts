@@ -7,6 +7,8 @@ import { CheckoutCreateOrderPayload } from "@events/payloads";
 
 import { Order } from "@/orders/entities/order.entity";
 
+import { OrdersUtils } from "./orders.utils";
+
 @Injectable()
 export class OrdersService {
   constructor(@InjectRepository(Order) private readonly orderRepository: Repository<Order>) {}
@@ -33,20 +35,16 @@ export class OrdersService {
 
   async createOrder(payload: CheckoutCreateOrderPayload) {
     console.log("Robim order:::", payload.cart.user);
-    // const order = this.orderRepository.create({
-    //   orderNumber: `${Math.random() * 153 * Date.now()}`,
-    //   cart: payload.cart,
-    //   checkoutData: payload.checkoutData,
-    //   // user: payload.cart.user,
-    // });
+
+    const orderNumber = OrdersUtils.createOrderId(
+      `order-${Date.now()}-${payload.cart?.id}-${payload.user?.id}-${JSON.stringify(payload.checkoutData)}`,
+    );
 
     const order = new Order();
-    order.orderNumber = `${Math.random() * Date.now()}`;
+    order.orderNumber = orderNumber;
     order.cart = payload.cart;
     order.checkoutData = payload.checkoutData;
 
-    const orderCreated = this.orderRepository.create(order);
-    // const orderCreated = this.orderRepository.create({});
-    return await this.orderRepository.save(orderCreated);
+    return await this.orderRepository.save(this.orderRepository.create(order));
   }
 }
