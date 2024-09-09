@@ -8,10 +8,17 @@ import {
   CheckoutPaymentEvent,
 } from "@events/payloads";
 
+import { User } from "@/auth/entities/user.entity";
 import { Cart } from "@/cart/entities/cart.entity";
 
 import { CheckoutDto } from "./dto/checkout.dto";
 import { PaymentsEnum, PickupEnum } from "./enums/checkout.enums";
+
+interface CreateOrderProps {
+  cart: Cart;
+  user: User;
+  checkoutData: CheckoutDto;
+}
 
 @Injectable()
 export class CheckoutService {
@@ -32,53 +39,73 @@ export class CheckoutService {
       };
       const [user] = await this.eventEmitter.emitAsync(getUserEvent.type, getUserEvent.payload);
 
-      console.log("HEHEHE", user);
-
       if (checkoutDto.paymentType === PaymentsEnum.ONLINE) {
-        const checkoutEvent: CheckoutPaymentEvent = {
-          type: CheckoutEventTypes.INIT_PAYMENT,
-          payload: {
-            cart: userCart,
-            userCheckoutData: checkoutDto,
-          },
-        };
-
-        const [successUrl] = await this.eventEmitter.emitAsync(
-          checkoutEvent.type,
-          checkoutEvent.payload,
-        );
-
-        const createOrderEvent: CheckoutCreateOrderEvent = {
-          type: CheckoutEventTypes.CREATE_ORDER,
-          payload: {
-            cart: userCart,
-            user,
-            checkoutData: checkoutDto,
-          },
-        };
-
-        await this.eventEmitter.emitAsync(createOrderEvent.type, createOrderEvent.payload);
-
-        return successUrl;
-      }
-
-      const createOrderEvent: CheckoutCreateOrderEvent = {
-        type: CheckoutEventTypes.CREATE_ORDER,
-        payload: {
+        return await this.createOnlineOrder({
           cart: userCart,
           user,
           checkoutData: checkoutDto,
-        },
-      };
-
-      await this.eventEmitter.emitAsync(createOrderEvent.type, createOrderEvent.payload);
-      // TODO: Clear cart after successful order
-
-      return { url: process.env.PAYMENT_SUCCESS_URL };
+        });
+      } else {
+        return await this.createInPersonOrder({
+          cart: userCart,
+          user,
+          checkoutData: checkoutDto,
+        });
+      }
     } catch (err) {
       // TODO: Handle better
       if (err instanceof HttpException) throw new HttpException(err?.message, 400);
     }
+  }
+
+  private async createOnlineOrder({
+    cart,
+    user,
+    checkoutData,
+  }: CreateOrderProps): Promise<{ url: string }> {
+    const checkoutEvent: CheckoutPaymentEvent = {
+      type: CheckoutEventTypes.INIT_PAYMENT,
+      payload: {
+        cart,
+        checkoutData,
+      },
+    };
+    const createOrderEvent: CheckoutCreateOrderEvent = {
+      type: CheckoutEventTypes.CREATE_ORDER,
+      payload: {
+        cart,
+        user,
+        checkoutData,
+      },
+    };
+
+    const [successUrl] = await this.eventEmitter.emitAsync(
+      checkoutEvent.type,
+      checkoutEvent.payload,
+    );
+
+    await this.eventEmitter.emitAsync(createOrderEvent.type, createOrderEvent.payload);
+
+    return successUrl;
+  }
+
+  private async createInPersonOrder({
+    cart,
+    user,
+    checkoutData,
+  }: CreateOrderProps): Promise<{ url: string }> {
+    const createOrderEvent: CheckoutCreateOrderEvent = {
+      type: CheckoutEventTypes.CREATE_ORDER,
+      payload: {
+        cart,
+        user,
+        checkoutData,
+      },
+    };
+
+    await this.eventEmitter.emitAsync(createOrderEvent.type, createOrderEvent.payload);
+
+    return { url: process.env.PAYMENT_SUCCESS_URL };
   }
 
   async getPickupOptions() {
