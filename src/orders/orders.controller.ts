@@ -7,6 +7,7 @@ import {
   Param,
   ParseUUIDPipe,
   Put,
+  Session,
   UseGuards,
   ValidationPipe,
 } from "@nestjs/common";
@@ -17,15 +18,14 @@ import { UserRole } from "@common/types/user-roles.types";
 
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
+import { SessionContent } from "@/auth/sessions/types/session.types";
+import { UpdateOrderStatusDto } from "@/orders/dto/update-order-status.dto";
+import { UpdateOrderStatusCommand } from "@/orders/queries/impl/update-order-status.command";
 
-import { UpdateOrderStatusDto } from "./dto/update-order-status.dto";
 import { OrdersService } from "./orders.service";
-import { UpdateOrderStatusCommand } from "./queries/impl/update-order-status.command";
 
 @Controller("orders")
 @ApiTags("Orders")
-@Roles(UserRole.ADMIN)
-@UseGuards(RolesGuard)
 export class OrdersController {
   constructor(
     private readonly ordersService: OrdersService,
@@ -33,22 +33,24 @@ export class OrdersController {
   ) {}
 
   @Get(":id")
-  async getOrder(@Param("id", new ParseUUIDPipe()) orderId: string) {
-    console.log(orderId);
-    return this.ordersService.getOrder();
+  async getSingleOrder(
+    @Param("id", new ParseUUIDPipe()) orderId: string,
+    @Session() session: SessionContent,
+  ) {
+    return this.ordersService.getSingleOrder(
+      orderId,
+      session?.passport?.user?.id,
+      session?.passport?.user?.role,
+    );
   }
 
   @Get()
-  async getAllOrders() {
+  async getUserOrders() {
     return this.ordersService.getAllOrders();
   }
 
-  // @Get(":id/delete")
-  // async deleteOrder(@Param("id", new ParseUUIDPipe()) orderId: string) {
-  //   console.log(orderId);
-  //   return this.ordersService.deleteOrder();
-  // }
-
+  @Roles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
   @Put(":id/status")
   async updateOrderStatus(
     @Param("id", new ParseUUIDPipe()) orderId: string,

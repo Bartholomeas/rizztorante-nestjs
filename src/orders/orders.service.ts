@@ -3,6 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
+import { UserRole } from "@common/types/user-roles.types";
+
 import { CheckoutCreateOrderPayload } from "@events/payloads";
 
 import { Order } from "@/orders/entities/order.entity";
@@ -14,8 +16,22 @@ import { OrderStatus } from "./types/order-status.enum";
 export class OrdersService {
   constructor(@InjectRepository(Order) private readonly repository: Repository<Order>) {}
 
-  async getOrder() {
-    throw new NotImplementedException();
+  async getSingleOrder(orderId: string, userId: string, role: UserRole = UserRole.GUEST) {
+    return await this.repository.findOne({
+      where:
+        role === UserRole.ADMIN
+          ? { id: orderId }
+          : [
+              {
+                id: orderId,
+              },
+              {
+                user: {
+                  id: userId,
+                },
+              },
+            ],
+    });
   }
 
   async getAllOrders() {
@@ -48,6 +64,7 @@ export class OrdersService {
     const order = new Order();
     order.orderNumber = orderNumber;
     order.cart = payload.cart;
+    order.user = payload.user;
     order.checkoutData = payload.checkoutData;
 
     return await this.repository.save(this.repository.create(order));
