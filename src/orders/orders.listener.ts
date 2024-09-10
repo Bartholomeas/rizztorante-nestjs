@@ -12,7 +12,6 @@ export class OrdersListener {
 
   @OnEvent(CheckoutEventTypes.CREATE_ORDER)
   async createOrder(payload: CheckoutCreateOrderPayload) {
-    console.log("Checkout event: ");
     return await this.ordersService.createOrder(payload);
   }
 }

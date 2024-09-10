@@ -1,13 +1,15 @@
 import { HttpException, Injectable, NotFoundException } from "@nestjs/common";
-import { CommandBus } from "@nestjs/cqrs";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 
 import { CheckoutEventTypes } from "@events/events";
-import { CheckoutGetUserEvent, CheckoutPaymentEvent } from "@events/payloads";
+import {
+  CheckoutCreateOrderEvent,
+  CheckoutGetUserEvent,
+  CheckoutPaymentEvent,
+} from "@events/payloads";
 
 import { User } from "@/auth/entities/user.entity";
 import { Cart } from "@/cart/entities/cart.entity";
-import { CreateOrderCommand } from "@/orders/commands/impl/create-order.command";
 
 import { CheckoutDto } from "./dto/checkout.dto";
 import { PaymentsEnum, PickupEnum } from "./enums/checkout.enums";
@@ -20,10 +22,7 @@ interface CreateOrderProps {
 
 @Injectable()
 export class CheckoutService {
-  constructor(
-    private readonly eventEmitter: EventEmitter2,
-    private readonly commandBus: CommandBus,
-  ) {}
+  constructor(private readonly eventEmitter: EventEmitter2) {}
 
   async proceedCheckout(userId: string | undefined, checkoutDto: CheckoutDto) {
     try {
@@ -76,13 +75,20 @@ export class CheckoutService {
         checkoutData,
       },
     };
-
+    const createOrderEvent: CheckoutCreateOrderEvent = {
+      type: CheckoutEventTypes.CREATE_ORDER,
+      payload: {
+        cart,
+        user,
+        checkoutData,
+      },
+    };
     const [successUrl] = await this.eventEmitter.emitAsync(
       checkoutEvent.type,
       checkoutEvent.payload,
     );
 
-    await this.commandBus.execute(new CreateOrderCommand({ cart, user, checkoutData }));
+    await this.eventEmitter.emitAsync(createOrderEvent.type, createOrderEvent.payload);
 
     return successUrl;
   }
@@ -92,17 +98,17 @@ export class CheckoutService {
     user,
     checkoutData,
   }: CreateOrderProps): Promise<{ url: string }> {
-    // const createOrderEvent: CheckoutCreateOrderEvent = {
-    //   type: CheckoutEventTypes.CREATE_ORDER,
-    //   payload: {
-    //     cart,
-    //     user,
-    //     checkoutData,
-    //   },
-    // };
+    const createOrderEvent: CheckoutCreateOrderEvent = {
+      type: CheckoutEventTypes.CREATE_ORDER,
+      payload: {
+        cart,
+        user,
+        checkoutData,
+      },
+    };
 
-    // await this.eventEmitter.emitAsync(createOrderEvent.type, createOrderEvent.payload);
-    await this.commandBus.execute(new CreateOrderCommand({ cart, user, checkoutData }));
+    await this.eventEmitter.emitAsync(createOrderEvent.type, createOrderEvent.payload);
+
     return { url: process.env.PAYMENT_SUCCESS_URL };
   }
 

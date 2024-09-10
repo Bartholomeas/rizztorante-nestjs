@@ -17,25 +17,35 @@ export class OrdersService {
   constructor(@InjectRepository(Order) private readonly repository: Repository<Order>) {}
 
   async getSingleOrder(orderId: string, userId: string, role: UserRole = UserRole.GUEST) {
-    return await this.repository.findOne({
-      where:
-        role === UserRole.ADMIN
-          ? { id: orderId }
-          : [
-              {
-                id: orderId,
-              },
-              {
-                user: {
-                  id: userId,
-                },
-              },
-            ],
-    });
+    if (role === UserRole.ADMIN)
+      return await this.repository.findOne({
+        where: { id: orderId },
+      });
+    else
+      return await this.repository.findOne({
+        where: [
+          {
+            id: orderId,
+          },
+          {
+            user: {
+              id: userId,
+            },
+          },
+        ],
+      });
   }
 
-  async getAllOrders() {
-    throw new NotImplementedException();
+  async getAllOrders(userId: string, role: UserRole = UserRole.GUEST) {
+    if (role === UserRole.ADMIN) return await this.repository.find({});
+    else
+      return await this.repository.find({
+        where: {
+          user: {
+            id: userId,
+          },
+        },
+      });
   }
 
   async changeStatusOrder() {

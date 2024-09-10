@@ -11,7 +11,6 @@ import {
   UseGuards,
   ValidationPipe,
 } from "@nestjs/common";
-import { CommandBus } from "@nestjs/cqrs";
 import { ApiTags } from "@nestjs/swagger";
 
 import { UserRole } from "@common/types/user-roles.types";
@@ -20,24 +19,20 @@ import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 import { SessionContent } from "@/auth/sessions/types/session.types";
 import { UpdateOrderStatusDto } from "@/orders/dto/update-order-status.dto";
-import { UpdateOrderStatusCommand } from "@/orders/queries/impl/update-order-status.command";
 
 import { OrdersService } from "./orders.service";
 
 @Controller("orders")
 @ApiTags("Orders")
 export class OrdersController {
-  constructor(
-    private readonly ordersService: OrdersService,
-    private readonly commandBus: CommandBus,
-  ) {}
+  constructor(private readonly service: OrdersService) {}
 
   @Get(":id")
   async getSingleOrder(
     @Param("id", new ParseUUIDPipe()) orderId: string,
     @Session() session: SessionContent,
   ) {
-    return this.ordersService.getSingleOrder(
+    return this.service.getSingleOrder(
       orderId,
       session?.passport?.user?.id,
       session?.passport?.user?.role,
@@ -45,8 +40,8 @@ export class OrdersController {
   }
 
   @Get()
-  async getUserOrders() {
-    return this.ordersService.getAllOrders();
+  async getUserOrders(@Session() session: SessionContent) {
+    return this.service.getAllOrders(session?.passport?.user?.id, session?.passport?.user?.role);
   }
 
   @Roles(UserRole.ADMIN)
@@ -57,7 +52,7 @@ export class OrdersController {
     @Body(ValidationPipe) { status }: UpdateOrderStatusDto,
   ) {
     try {
-      return await this.commandBus.execute(new UpdateOrderStatusCommand(orderId, status));
+      return await this.service.updateOrder(orderId, status);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       else throw new InternalServerErrorException();
