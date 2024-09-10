@@ -14,8 +14,8 @@ export enum MenuPublicEventTypes {
   GET_SINGLE_POSITION = "menu.get-single-position",
 }
 
-export enum CheckoutEventTypes {
-  INIT_PAYMENT = "checkout.init-payment",
+export enum PaymentsEventTypes {
+  INIT_PAYMENT = "payments.init",
 }
 
 export enum OrderEventTypes {
