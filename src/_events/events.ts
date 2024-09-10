@@ -10,7 +10,7 @@ export enum CartEventTypes {
   PROCEED_CHECKOUT = "cart.proceed-checkout",
 }
 
-export enum MenuPublicEventTypes {
+export enum MenuEventTypes {
   GET_SINGLE_POSITION = "menu.get-single-position",
 }
 

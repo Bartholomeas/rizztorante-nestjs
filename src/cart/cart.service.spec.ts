@@ -15,13 +15,16 @@ import type { MenuPosition } from "@/menu/entities/menu-position.entity";
 import { CartService } from "./cart.service";
 
 jest.mock("@events/events", () => ({
-  CheckoutEventTypes: {},
-  MenuPublicEventTypes: {},
+  UserEventTypes: {},
+  CartEventTypes: {},
+  OrderEventTypes: {},
+  MenuEventTypes: {},
+  PaymentsEventTypes: {},
 }));
 
 describe("CartService", () => {
   let service: CartService;
-  let eventEmitter: EventEmitter2;
+  // let eventEmitter: EventEmitter2;
 
   beforeEach(async () => {
     const mockEventEmitter = {
@@ -56,12 +59,11 @@ describe("CartService", () => {
     }).compile();
 
     service = module.get<CartService>(CartService);
-    eventEmitter = module.get<EventEmitter2>(EventEmitter2);
+    // eventEmitter = module.get<EventEmitter2>(EventEmitter2);
   });
 
   it("should be defined", () => {
     expect(service).toBeDefined();
-    console.log("Event emitter", eventEmitter);
   });
   it("should initialize a new cart for a user if no cart exists", async () => {
     const userId = "test-user-id";

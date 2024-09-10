@@ -12,7 +12,7 @@ import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
 
 import { UserEventTypes } from "@events/events";
-import { GuestCreatedPayload } from "@events/payloads/auth/auth.payloads";
+import { GuestCreatedPayload } from "@events/payloads";
 
 import { UserRole } from "@/_common/types/user-roles.types";
 import { User } from "@/auth/entities/user.entity";

@@ -13,21 +13,6 @@ import { Cart } from "@/cart/entities/cart.entity";
 import { CartController } from "./cart.controller";
 import { CartService } from "./cart.service";
 
-// jest.mock("@nestjs/event-emitter", () => ({
-//   ...jest.requireActual("@nestjs/event-emitter"),
-//   OnEvent: jest.fn(),
-//   EventEmitter: jest.fn().mockImplementation(() => ({
-//     emit: jest.fn(),
-//     emitAsync: jest.fn(),
-//   })),
-// }));
-
-// jest.mock("@events/events", () => ({
-//   CheckoutEventTypes: {
-//     GET_USER_CART: "mocked_get_user_cart",
-//   },
-// }));
-
 describe("CartController", () => {
   let controller: CartController;
   let eventEmitter: EventEmitter2;

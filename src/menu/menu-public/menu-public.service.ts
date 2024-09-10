@@ -4,7 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { MenuPublicEventTypes } from "@events/events";
+import { MenuEventTypes } from "@events/events";
 
 import { MenuCategory } from "@/menu/entities/menu-category.entity";
 import { MenuPositionDetails } from "@/menu/entities/menu-position-details.entity";
@@ -66,7 +66,7 @@ export class MenuPublicService {
     });
   }
 
-  @OnEvent(MenuPublicEventTypes.GET_SINGLE_POSITION)
+  @OnEvent(MenuEventTypes.GET_SINGLE_POSITION)
   async getSinglePosition(positionId: string): Promise<MenuPosition> {
     return this.menuPositionRepository.findOne({
       where: {
