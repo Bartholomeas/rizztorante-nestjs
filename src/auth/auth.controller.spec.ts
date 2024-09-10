@@ -69,6 +69,7 @@ describe("AuthController", () => {
         ...result,
         id: "1", // Change id to string type
         role: UserRole.USER,
+        orders: [],
       });
 
       expect(await authController.register(createUserDto)).toEqual({

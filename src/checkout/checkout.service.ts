@@ -1,8 +1,9 @@
 import { HttpException, Injectable, NotFoundException } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 
-import { CheckoutEventTypes } from "@events/events";
-import { createOrderEvent, getUserEvent, initPaymentEvent } from "@events/payloads";
+import { getUserCartEvent, initPaymentEvent } from "@events/payloads";
+import { getUserEvent } from "@events/payloads/auth";
+import { createOrderEvent } from "@events/payloads/orders";
 
 import { User } from "@/auth/entities/user.entity";
 import { Cart } from "@/cart/entities/cart.entity";
@@ -23,10 +24,7 @@ export class CheckoutService {
   async proceedCheckout(userId: string | undefined, checkoutDto: CheckoutDto) {
     try {
       if (!userId) throw new NotFoundException("User is not found");
-      const [cart] = (await this.eventEmitter.emitAsync(
-        CheckoutEventTypes.GET_USER_CART,
-        userId,
-      )) as [Cart];
+      const [cart] = (await this.eventEmitter.emitAsync(...getUserCartEvent(userId))) as [Cart];
 
       // 1. Get user cart
       // 2. Get user

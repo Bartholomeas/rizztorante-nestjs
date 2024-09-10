@@ -5,7 +5,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { IsNull, LessThan, Not, Repository } from "typeorm";
 
-import { GuestEventTypes } from "@events/events";
+import { UserEventTypes } from "@events/events";
 import { GuestCreatedPayload } from "@events/payloads";
 
 import { User } from "@/auth/entities/user.entity";
@@ -20,10 +20,10 @@ export class SessionService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  @OnEvent(GuestEventTypes.SESSION_CREATED)
+  @OnEvent(UserEventTypes.SESSION_CREATED)
   async addGuestToSession(session: SessionContent) {
     const [user]: User[] = await this.eventEmitter.emitAsync(
-      GuestEventTypes.CREATED,
+      UserEventTypes.GUEST_CREATED,
       new GuestCreatedPayload(session?.passport?.user?.id, session?.id),
     );
     session.passport = {

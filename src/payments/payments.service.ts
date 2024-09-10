@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 
-import { CheckoutEventTypes } from "@events/events";
-import { CheckoutPaymentPayload } from "@events/payloads";
+import { PaymentsEventTypes } from "@events/events";
+import { InitPaymentPayload } from "@events/payloads";
 
 import { StripeService } from "@/payments/stripe/stripe.service";
 
@@ -10,9 +10,9 @@ import { StripeService } from "@/payments/stripe/stripe.service";
 export class PaymentsService {
   constructor(private readonly stripeService: StripeService) {}
 
-  @OnEvent(CheckoutEventTypes.INIT_PAYMENT)
-  async createPayment(payload: CheckoutPaymentPayload) {
-    return this.stripeService.createPayment<CheckoutPaymentPayload["checkoutData"]>(
+  @OnEvent(PaymentsEventTypes.INIT_PAYMENT)
+  async createPayment(payload: InitPaymentPayload) {
+    return this.stripeService.createPayment<InitPaymentPayload["checkoutData"]>(
       payload.cart,
       payload.checkoutData,
     );
