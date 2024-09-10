@@ -11,8 +11,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
 
-import { GuestEventTypes } from "@events/events";
-import { GuestCreatedPayload } from "@events/payloads";
+import { UserEventTypes } from "@events/events";
+import { GuestCreatedPayload } from "@events/payloads/auth/auth.payloads";
 
 import { UserRole } from "@/_common/types/user-roles.types";
 import { User } from "@/auth/entities/user.entity";
@@ -69,7 +69,7 @@ export class AuthService {
     return AuthUtils.removePasswordFromResponse(user);
   }
 
-  @OnEvent(GuestEventTypes.CREATED)
+  @OnEvent(UserEventTypes.GUEST_CREATED)
   async createOrRetrieveGuestUser({ userId, sessionId }: GuestCreatedPayload = {}): Promise<User> {
     if (userId) {
       const session = await this.getActiveSession(sessionId);

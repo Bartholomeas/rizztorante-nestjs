@@ -1,9 +1,15 @@
 import { IsOptional, IsString, IsUUID } from "class-validator";
 
-import { GuestEventTypes } from "@events/events";
+import { UserEventTypes } from "@events/events";
 import { EventBody } from "@events/events.types";
 
 import type { SessionContent } from "@/auth/sessions/types/session.types";
+
+export type UserEventPayloads = {
+  [UserEventTypes.GET_USER_PROFILE]: string;
+  [UserEventTypes.GUEST_CREATED]: GuestCreatedPayload;
+  [UserEventTypes.SESSION_CREATED]: string;
+};
 
 export class GuestCreatedPayload {
   @IsUUID()
@@ -21,6 +27,6 @@ export class GuestCreatedPayload {
 }
 
 export type GuestSessionCreatedEvent = EventBody<
-  typeof GuestEventTypes.SESSION_CREATED,
+  typeof UserEventTypes.SESSION_CREATED,
   SessionContent
 >;

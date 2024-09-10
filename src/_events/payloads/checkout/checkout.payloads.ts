@@ -6,9 +6,7 @@ import type { CheckoutDto } from "@/checkout/dto/checkout.dto";
 
 export interface CheckoutEventPayloads {
   [CheckoutEventTypes.INIT_PAYMENT]: CheckoutPaymentPayload;
-  [CheckoutEventTypes.GET_USER_PROFILE]: CheckoutGetUserProfilePayload;
   [CheckoutEventTypes.CREATE_ORDER]: CheckoutCreateOrderPayload;
-  [CheckoutEventTypes.GET_USER_CART]: CheckoutGetUserCartPayload;
 }
 
 export class CheckoutPaymentPayload {
@@ -21,6 +19,3 @@ export class CheckoutCreateOrderPayload {
   public readonly user: User;
   public readonly checkoutData: CheckoutDto;
 }
-
-export type CheckoutGetUserProfilePayload = string;
-export type CheckoutGetUserCartPayload = string;

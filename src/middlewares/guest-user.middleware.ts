@@ -3,7 +3,7 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 
 import { NextFunction, Request, Response } from "express";
 
-import { GuestEventTypes } from "@events/events";
+import { UserEventTypes } from "@events/events";
 import { GuestSessionCreatedEvent } from "@events/payloads";
 
 import { SessionContent } from "@/auth/sessions/types/session.types";
@@ -17,7 +17,7 @@ export class GuestUserMiddleware implements NestMiddleware {
 
     if (!session?.passport?.user) {
       const guestCreatedEvent: GuestSessionCreatedEvent = {
-        type: GuestEventTypes.SESSION_CREATED,
+        type: UserEventTypes.SESSION_CREATED,
         payload: session,
       };
       await this.eventEmitter.emitAsync(guestCreatedEvent.type, guestCreatedEvent.payload);
