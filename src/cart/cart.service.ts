@@ -4,8 +4,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { CheckoutEventTypes, MenuPublicEventTypes } from "@events/events";
-import { GetSinglePositionEvent } from "@events/payloads";
+import { CartEventTypes } from "@events/events";
+import { getSinglePositionEvent } from "@events/payloads";
 
 import { User } from "@/auth/entities/user.entity";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
@@ -27,7 +27,7 @@ export class CartService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  @OnEvent(CheckoutEventTypes.GET_USER_CART)
+  @OnEvent(CartEventTypes.GET_USER_CART)
   async getUserCart(userId: string): Promise<Cart> {
     const userCart = await this.retrieveUserCart(userId);
     if (userCart) return userCart;
@@ -41,14 +41,8 @@ export class CartService {
   async addItem(userId: string, addCartItemDto: AddCartItemDto): Promise<Cart> {
     const userCart = await this.getUserCart(userId);
 
-    const menuPositionEvent: GetSinglePositionEvent = {
-      type: MenuPublicEventTypes.GET_SINGLE_POSITION,
-      payload: addCartItemDto.menuPositionId,
-    };
-
     const [menuPosition]: MenuPosition[] = await this.eventEmitter.emitAsync(
-      menuPositionEvent.type,
-      menuPositionEvent.payload,
+      ...getSinglePositionEvent(addCartItemDto.menuPositionId),
     );
 
     if (!menuPosition)

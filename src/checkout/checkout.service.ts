@@ -1,13 +1,21 @@
 import { HttpException, Injectable, NotFoundException } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 
-import { CheckoutEventTypes } from "@events/events";
-import { CheckoutPaymentEvent } from "@events/payloads";
+import { getUserCartEvent, initPaymentEvent } from "@events/payloads";
+import { getUserEvent } from "@events/payloads/auth";
+import { createOrderEvent } from "@events/payloads/orders";
 
+import { User } from "@/auth/entities/user.entity";
 import { Cart } from "@/cart/entities/cart.entity";
 
 import { CheckoutDto } from "./dto/checkout.dto";
 import { PaymentsEnum, PickupEnum } from "./enums/checkout.enums";
+
+interface CreateOrderProps {
+  cart: Cart;
+  user: User;
+  checkoutData: CheckoutDto;
+}
 
 @Injectable()
 export class CheckoutService {
@@ -16,36 +24,72 @@ export class CheckoutService {
   async proceedCheckout(userId: string | undefined, checkoutDto: CheckoutDto) {
     try {
       if (!userId) throw new NotFoundException("User is not found");
+      const [cart] = (await this.eventEmitter.emitAsync(...getUserCartEvent(userId))) as [Cart];
 
-      const [userCart] = (await this.eventEmitter.emitAsync(
-        CheckoutEventTypes.GET_USER_CART,
-        userId,
-      )) as [Cart];
+      // 1. Get user cart
+      // 2. Get user
+      // 3. Create order with PENDING status
+      // 4. Try make PAYMENT for order (if its online)
+      // 5. Notify restaurant about new order
+
+      const [user] = await this.eventEmitter.emitAsync(...getUserEvent(userId));
 
       if (checkoutDto.paymentType === PaymentsEnum.ONLINE) {
-        const checkoutPayload: CheckoutPaymentEvent = {
-          type: CheckoutEventTypes.INIT_PAYMENT,
-          payload: {
-            cart: userCart,
-            userCheckoutData: checkoutDto,
-          },
-        };
-
-        const [successUrl] = await this.eventEmitter.emitAsync(
-          checkoutPayload.type,
-          checkoutPayload.payload,
-        );
-        return successUrl;
+        return await this.createOnlineOrder({
+          cart,
+          user,
+          checkoutData: checkoutDto,
+        });
+      } else {
+        return await this.createInPersonOrder({
+          cart,
+          user,
+          checkoutData: checkoutDto,
+        });
       }
-
-      await this.eventEmitter.emitAsync(CheckoutEventTypes.CREATE_ORDER, {});
-      // TODO: Clear cart after successful order
-
-      return { url: process.env.PAYMENT_SUCCESS_URL };
     } catch (err) {
       // TODO: Handle better
       if (err instanceof HttpException) throw new HttpException(err?.message, 400);
     }
+  }
+
+  private async createOnlineOrder({
+    cart,
+    user,
+    checkoutData,
+  }: CreateOrderProps): Promise<{ url: string }> {
+    const [successUrl] = await this.eventEmitter.emitAsync(
+      ...initPaymentEvent({
+        cart,
+        checkoutData,
+      }),
+    );
+
+    await this.eventEmitter.emitAsync(
+      ...createOrderEvent({
+        cart,
+        user,
+        checkoutData,
+      }),
+    );
+
+    return successUrl;
+  }
+
+  private async createInPersonOrder({
+    cart,
+    user,
+    checkoutData,
+  }: CreateOrderProps): Promise<{ url: string }> {
+    await this.eventEmitter.emitAsync(
+      ...createOrderEvent({
+        cart,
+        user,
+        checkoutData,
+      }),
+    );
+
+    return { url: process.env.PAYMENT_SUCCESS_URL };
   }
 
   async getPickupOptions() {

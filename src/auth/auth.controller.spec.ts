@@ -11,21 +11,26 @@ import { AuthService } from "./auth.service";
 import type { CreateUserDto } from "./dto/create-user.dto";
 import type { LoginUserDto } from "./dto/login-user.dto";
 
-jest.mock("@nestjs/event-emitter", () => ({
-  ...jest.requireActual("@nestjs/event-emitter"),
-  OnEvent: jest.fn(),
-  EventEmitter: jest.fn().mockImplementation(() => ({
-    emit: jest.fn(),
-    emitAsync: jest.fn(),
-  })),
-}));
+// jest.mock("@nestjs/common", () => ({
+//   ...jest.requireActual("@nestjs/common"),
+//   Injectable: jest.fn(),
+// }));
+
+// jest.mock("@nestjs/event-emitter", () => ({
+//   ...jest.requireActual("@nestjs/event-emitter"),
+//   OnEvent: jest.fn(),
+//   EventEmitter: jest.fn().mockImplementation(() => ({
+//     emit: jest.fn(),
+//     emitAsync: jest.fn(),
+//   })),
+// }));
+
 jest.mock("@events/events", () => ({
-  GuestEventTypes: {
-    CREATED: "mocked_created",
-  },
-  CheckoutEventTypes: {
-    GET_USER_CART: "mocked_get_user_cart",
-  },
+  UserEventTypes: {},
+  CartEventTypes: {},
+  MenuEventTypes: {},
+  OrderEventTypes: {},
+  PaymentsEventTypes: {},
 }));
 
 describe("AuthController", () => {
@@ -69,12 +74,14 @@ describe("AuthController", () => {
         ...result,
         id: "1", // Change id to string type
         role: UserRole.USER,
+        orders: [],
       });
 
       expect(await authController.register(createUserDto)).toEqual({
         ...result,
         id: "1",
         role: UserRole.USER,
+        orders: [],
       });
     });
 
@@ -130,6 +137,7 @@ describe("AuthController", () => {
             updatedAt: new Date(),
             password: null,
             role: UserRole.GUEST,
+            orders: [],
           },
         },
         cookie: {
@@ -143,6 +151,7 @@ describe("AuthController", () => {
         updatedAt: new Date(),
         password: null,
         role: UserRole.GUEST,
+        orders: [],
       };
       jest.spyOn(authService, "createOrRetrieveGuestUser").mockResolvedValue(guestUser);
 
@@ -163,6 +172,7 @@ describe("AuthController", () => {
         updatedAt: new Date(),
         email: "test@gmail.com",
         role: UserRole.USER,
+        orders: [],
       };
       jest.spyOn(authService, "authenticateUser").mockResolvedValue({
         ...result,

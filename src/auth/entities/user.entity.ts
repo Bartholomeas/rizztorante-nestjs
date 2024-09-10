@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -11,6 +12,7 @@ import {
 
 import { UserRole } from "@/_common/types/user-roles.types";
 import { Cart } from "@/cart/entities/cart.entity";
+import { Order } from "@/orders/entities/order.entity";
 
 @Entity()
 export class User {
@@ -48,4 +50,8 @@ export class User {
   })
   @JoinColumn()
   cart?: Cart;
+
+  @OneToMany(() => Order, (order) => order.user)
+  @JoinColumn()
+  orders: Order[];
 }
