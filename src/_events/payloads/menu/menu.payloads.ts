@@ -1,6 +1,6 @@
-import type { MenuPublicEventTypes } from "@events/events";
+import type { MenuEventTypes } from "@events/events";
 
 export type MenuPayloads = {
-  [MenuPublicEventTypes.GET_SINGLE_POSITION]: GetSinglePositionPayload;
+  [MenuEventTypes.GET_SINGLE_POSITION]: GetSinglePositionPayload;
 };
 export type GetSinglePositionPayload = string;

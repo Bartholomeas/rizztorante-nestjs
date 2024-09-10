@@ -1,5 +1,12 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+
+import { Repository } from "typeorm";
+
+import { User } from "@/auth/entities/user.entity";
+import { Cart } from "@/cart/entities/cart.entity";
+import { Order } from "@/orders/entities/order.entity";
 
 import { OrdersController } from "./orders.controller";
 import { OrdersService } from "./orders.service";
@@ -10,7 +17,21 @@ describe("OrdersController", () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OrdersController],
-      providers: [OrdersService],
+      providers: [
+        OrdersService,
+        {
+          provide: getRepositoryToken(Order),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(Cart),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(User),
+          useClass: Repository,
+        },
+      ],
     }).compile();
 
     controller = module.get<OrdersController>(OrdersController);
