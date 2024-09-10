@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 
-import { CheckoutEventTypes } from "@events/events";
-import { CheckoutCreateOrderPayload } from "@events/payloads";
+import { OrderEventTypes } from "@events/events";
+import { OrdersCreateOrderPayload } from "@events/payloads/orders";
 
 import { OrdersService } from "./orders.service";
 
@@ -10,8 +10,8 @@ import { OrdersService } from "./orders.service";
 export class OrdersListener {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @OnEvent(CheckoutEventTypes.CREATE_ORDER)
-  async createOrder(payload: CheckoutCreateOrderPayload) {
+  @OnEvent(OrderEventTypes.CREATE_ORDER)
+  async createOrder(payload: OrdersCreateOrderPayload) {
     return await this.ordersService.createOrder(payload);
   }
 }

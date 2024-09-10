@@ -5,7 +5,7 @@ import { Repository } from "typeorm";
 
 import { UserRole } from "@common/types/user-roles.types";
 
-import { CheckoutCreateOrderPayload } from "@events/payloads";
+import { OrdersCreateOrderPayload } from "@events/payloads/orders";
 
 import { Order } from "@/orders/entities/order.entity";
 
@@ -66,7 +66,7 @@ export class OrdersService {
     throw new NotImplementedException();
   }
 
-  async createOrder(payload: CheckoutCreateOrderPayload) {
+  async createOrder(payload: OrdersCreateOrderPayload) {
     const orderNumber = OrdersUtils.createOrderId(
       `order-${Date.now()}-${payload.cart?.id}-${payload.user?.id}-${JSON.stringify(payload.checkoutData)}`,
     );
