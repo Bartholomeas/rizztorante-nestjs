@@ -2,11 +2,7 @@ import { HttpException, Injectable, NotFoundException } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 
 import { CheckoutEventTypes } from "@events/events";
-import {
-  CheckoutCreateOrderEvent,
-  CheckoutGetUserEvent,
-  CheckoutPaymentEvent,
-} from "@events/payloads";
+import { createOrderEvent, getUserEvent, initPaymentEvent } from "@events/payloads";
 
 import { User } from "@/auth/entities/user.entity";
 import { Cart } from "@/cart/entities/cart.entity";
@@ -38,11 +34,7 @@ export class CheckoutService {
       // 4. Try make PAYMENT for order (if its online)
       // 5. Notify restaurant about new order
 
-      const getUserEvent: CheckoutGetUserEvent = {
-        type: CheckoutEventTypes.GET_USER_PROFILE,
-        payload: userId,
-      };
-      const [user] = await this.eventEmitter.emitAsync(getUserEvent.type, getUserEvent.payload);
+      const [user] = await this.eventEmitter.emitAsync(...getUserEvent(userId));
 
       if (checkoutDto.paymentType === PaymentsEnum.ONLINE) {
         return await this.createOnlineOrder({
@@ -68,27 +60,20 @@ export class CheckoutService {
     user,
     checkoutData,
   }: CreateOrderProps): Promise<{ url: string }> {
-    const checkoutEvent: CheckoutPaymentEvent = {
-      type: CheckoutEventTypes.INIT_PAYMENT,
-      payload: {
+    const [successUrl] = await this.eventEmitter.emitAsync(
+      ...initPaymentEvent({
         cart,
         checkoutData,
-      },
-    };
-    const createOrderEvent: CheckoutCreateOrderEvent = {
-      type: CheckoutEventTypes.CREATE_ORDER,
-      payload: {
+      }),
+    );
+
+    await this.eventEmitter.emitAsync(
+      ...createOrderEvent({
         cart,
         user,
         checkoutData,
-      },
-    };
-    const [successUrl] = await this.eventEmitter.emitAsync(
-      checkoutEvent.type,
-      checkoutEvent.payload,
+      }),
     );
-
-    await this.eventEmitter.emitAsync(createOrderEvent.type, createOrderEvent.payload);
 
     return successUrl;
   }
@@ -98,16 +83,13 @@ export class CheckoutService {
     user,
     checkoutData,
   }: CreateOrderProps): Promise<{ url: string }> {
-    const createOrderEvent: CheckoutCreateOrderEvent = {
-      type: CheckoutEventTypes.CREATE_ORDER,
-      payload: {
+    await this.eventEmitter.emitAsync(
+      ...createOrderEvent({
         cart,
         user,
         checkoutData,
-      },
-    };
-
-    await this.eventEmitter.emitAsync(createOrderEvent.type, createOrderEvent.payload);
+      }),
+    );
 
     return { url: process.env.PAYMENT_SUCCESS_URL };
   }
