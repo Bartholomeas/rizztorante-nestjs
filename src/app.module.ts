@@ -5,6 +5,8 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { LoggerModule } from "nestjs-pino";
+
 import { AppController } from "@/app.controller";
 import { AppService } from "@/app.service";
 import { AuthModule } from "@/auth/auth.module";
@@ -13,14 +15,30 @@ import { CheckoutModule } from "@/checkout/checkout.module";
 import { MenuModule } from "@/menu/menu.module";
 import { OrdersModule } from "@/orders/orders.module";
 import { PaymentsModule } from "@/payments/payments.module";
-
-import { UploadsModule } from "./uploads/uploads.module";
+import { UploadsModule } from "@/uploads/uploads.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: [".env"],
       isGlobal: true,
+    }),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport: {
+          target: "pino-pretty",
+          options: {
+            singleLine: true,
+            colorize: true,
+            translateTime: "SYS:standard",
+            ignore: "pid,hostname,context",
+            messageFormat: "{context}: {msg}",
+          },
+        },
+        customProps: () => ({
+          context: "HTTP",
+        }),
+      },
     }),
     TypeOrmModule.forRoot({
       type: "postgres",

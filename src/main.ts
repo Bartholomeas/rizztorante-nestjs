@@ -14,7 +14,10 @@ import { APP_NAME } from "./_common/constants";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+    bufferLogs: true,
+  });
 
   const dataSource = app.get(DataSource);
   const sessionRepository = dataSource.getRepository(SessionEntity);
@@ -27,6 +30,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  // app.use(app.get(Logger));
   app.use(
     session({
       name: process.env.SESSION_NAME,
