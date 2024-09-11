@@ -10,10 +10,16 @@ import {
   ParseFilePipe,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
+
+import { UserRole } from "@common/types/user-roles.types";
+
+import { Roles } from "@/auth/decorators/roles.decorator";
+import { RolesGuard } from "@/auth/guards/roles.guard";
 
 import { UploadsService } from "./uploads.service";
 
@@ -33,9 +39,11 @@ export class UploadsController {
     }
   }
 
+  @Roles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
   @Post()
   @UseInterceptors(FileInterceptor("file"))
-  @ApiOperation({ summary: "Upload file" })
+  @ApiOperation({ summary: "Upload file (admin only)" })
   @ApiConsumes("multipart/form-data")
   @ApiBody({
     description: "File upload",
@@ -72,8 +80,10 @@ export class UploadsController {
     }
   }
 
+  @Roles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
   @Delete(":id")
-  @ApiOperation({ summary: "Delete file" })
+  @ApiOperation({ summary: "Delete file (admin only)" })
   async deleteFile(@Param("id") id: string) {
     try {
       return await this.service.deleteFile(id);
