@@ -1,6 +1,8 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { APP_GUARD } from "@nestjs/core";
 import { EventEmitterModule } from "@nestjs/event-emitter";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AppController } from "@/app.controller";
@@ -11,6 +13,8 @@ import { CheckoutModule } from "@/checkout/checkout.module";
 import { MenuModule } from "@/menu/menu.module";
 import { OrdersModule } from "@/orders/orders.module";
 import { PaymentsModule } from "@/payments/payments.module";
+
+import { UploadsModule } from "./uploads/uploads.module";
 
 @Module({
   imports: [
@@ -30,6 +34,12 @@ import { PaymentsModule } from "@/payments/payments.module";
       autoLoadEntities: true,
       // dropSchema: true, //To clearing DB in each app restart
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 6000,
+        limit: 30,
+      },
+    ]),
     EventEmitterModule.forRoot({ delimiter: "." }),
     AuthModule,
     MenuModule,
@@ -37,9 +47,16 @@ import { PaymentsModule } from "@/payments/payments.module";
     CartModule,
     CheckoutModule,
     PaymentsModule,
+    UploadsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {
   constructor() {}

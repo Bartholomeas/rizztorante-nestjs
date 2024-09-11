@@ -1,8 +1,8 @@
 import { DynamicModule, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
-import { STRIPE_KEY } from "@/payments/stripe/stripe.constants";
-import { StripeService } from "@/payments/stripe/stripe.service";
+import { STRIPE_KEY } from "./stripe.constants";
+import { StripeService } from "./stripe.service";
 
 @Module({})
 export class StripeModule {

@@ -3,7 +3,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import Stripe from "stripe";
 
 import { Cart } from "@/cart/entities/cart.entity";
-import { STRIPE_KEY } from "@/payments/stripe/stripe.constants";
+
+import { STRIPE_KEY } from "./stripe.constants";
 
 @Injectable()
 export class StripeService {
