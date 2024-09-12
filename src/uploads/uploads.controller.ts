@@ -15,6 +15,7 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Throttle } from "@nestjs/throttler";
 
 import { UserRole } from "@common/types/user-roles.types";
 
@@ -23,6 +24,12 @@ import { RolesGuard } from "@/auth/guards/roles.guard";
 
 import { UploadsService } from "./uploads.service";
 
+@Throttle({
+  default: {
+    ttl: 8000,
+    limit: 5,
+  },
+})
 @Controller("uploads")
 @ApiTags("Uploads")
 export class UploadsController {

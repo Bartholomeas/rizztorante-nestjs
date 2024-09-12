@@ -15,9 +15,8 @@ import { CheckoutModule } from "@/checkout/checkout.module";
 import { MenuModule } from "@/menu/menu.module";
 import { OrdersModule } from "@/orders/orders.module";
 import { PaymentsModule } from "@/payments/payments.module";
+import { RestaurantConfigModule } from "@/restaurant-config/restaurant-config.module";
 import { UploadsModule } from "@/uploads/uploads.module";
-
-import { RestaurantConfigModule } from "./restaurant-config/restaurant-config.module";
 
 @Module({
   imports: [
@@ -62,13 +61,13 @@ import { RestaurantConfigModule } from "./restaurant-config/restaurant-config.mo
     ]),
     EventEmitterModule.forRoot({ delimiter: "." }),
     AuthModule,
+    RestaurantConfigModule,
     MenuModule,
     OrdersModule,
     CartModule,
     CheckoutModule,
     PaymentsModule,
     UploadsModule,
-    RestaurantConfigModule,
   ],
   controllers: [AppController],
   providers: [
