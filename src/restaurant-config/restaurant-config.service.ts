@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
@@ -6,14 +6,11 @@ import { Repository } from "typeorm";
 import { CreateOperatingHourDto, UpdateOperatingHourDto } from "./dto/operating-hour.dto";
 import { CreateSpecialDateDto, UpdateSpecialDateDto } from "./dto/special-dates.dto";
 import { OperatingHours } from "./entities/operating-hours.entity";
-import { RestaurantConfig } from "./entities/restaurant-config.entity";
 import { SpecialDate } from "./entities/special-dates.entity";
 
 @Injectable()
 export class RestaurantConfigService {
   constructor(
-    @InjectRepository(RestaurantConfig)
-    private readonly restaurantConfigRepository: Repository<RestaurantConfig>,
     @InjectRepository(OperatingHours)
     private readonly operatingHoursRepository: Repository<OperatingHours>,
     @InjectRepository(SpecialDate)
@@ -88,13 +85,5 @@ export class RestaurantConfigService {
 
     const newSpecialDate = this.specialDatesRepository.create(dto);
     return await this.specialDatesRepository.save(newSpecialDate);
-  }
-
-  async initRestaurantConfig() {
-    const config = (await this.restaurantConfigRepository.find())?.length > 0;
-    if (config) throw new ConflictException("Restaurant config already exists!");
-
-    const newConfig = this.restaurantConfigRepository.create();
-    return this.restaurantConfigRepository.save(newConfig);
   }
 }

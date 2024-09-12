@@ -3,9 +3,7 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   HttpException,
-  HttpStatus,
   InternalServerErrorException,
   Param,
   ParseUUIDPipe,
@@ -34,19 +32,6 @@ export class RestaurantConfigController {
   async getRestaurantConfig() {
     try {
       return this.service.getRestaurantConfig();
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException();
-    }
-  }
-
-  @Roles(UserRole.ADMIN)
-  @UseGuards(RolesGuard)
-  @Post("init")
-  @HttpCode(HttpStatus.CREATED)
-  async initRestaurantConfig() {
-    try {
-      return this.service.initRestaurantConfig();
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException();
