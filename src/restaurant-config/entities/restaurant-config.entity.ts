@@ -1,7 +1,7 @@
 import { Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 import { OperatingHours } from "./operating-hours.entity";
-import { SpecialDates } from "./special-dates.entity";
+import { SpecialDate } from "./special-dates.entity";
 
 @Entity()
 export class RestaurantConfig {
@@ -11,6 +11,6 @@ export class RestaurantConfig {
   @OneToMany(() => OperatingHours, (operatingHours) => operatingHours.config)
   operatingHours: OperatingHours[];
 
-  @OneToMany(() => SpecialDates, (specialDates) => specialDates.config)
-  specialDates: SpecialDates[];
+  @OneToMany(() => SpecialDate, (specialDate) => specialDate.config)
+  specialDates: SpecialDate[];
 }
