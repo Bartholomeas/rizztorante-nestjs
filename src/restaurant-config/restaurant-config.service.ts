@@ -64,7 +64,9 @@ export class RestaurantConfigService {
   }
 
   async createSpecialDate(dto: CreateSpecialDateDto) {
-    return await this.specialDatesRepository.save(this.specialDatesRepository.create(dto));
+    const newSpecialDate = this.specialDatesRepository.create(dto);
+    console.log("FF", newSpecialDate);
+    return await this.specialDatesRepository.save(newSpecialDate);
   }
 
   async initRestaurantConfig() {

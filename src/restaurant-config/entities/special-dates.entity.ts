@@ -7,11 +7,11 @@ export class SpecialDate {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: "date" })
-  date: Date;
-
   @Column({ default: false })
   isClosed: boolean;
+
+  @Column({ type: "date" })
+  date: Date;
 
   @Column({ type: "time" })
   openingTime: string;

@@ -1,6 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { IsBoolean, IsInt, IsOptional, IsString, Matches, Max, Min } from "class-validator";
+import {
+  IsBoolean,
+  IsInt,
+  IsOptional,
+  IsString,
+  Matches,
+  Max,
+  Min,
+  ValidateIf,
+} from "class-validator";
 
 import { HOUR_FORMAT_REGEX } from "@common/constants";
 
@@ -12,8 +21,8 @@ abstract class BaseOperatingHourDto {
   dayOfWeek: number;
 
   @ApiProperty({ default: false })
-  @IsOptional()
   @IsBoolean()
+  @IsOptional()
   isClosed: boolean;
 
   @ApiProperty({ default: false })
@@ -25,6 +34,7 @@ abstract class BaseOperatingHourDto {
     default: "00:00",
   })
   @IsString()
+  @ValidateIf((dto) => !dto.isClosed)
   @Matches(HOUR_FORMAT_REGEX, {
     message: "Opening time must be in the format HH:MM (00:00 to 23:59)",
   })
@@ -34,6 +44,7 @@ abstract class BaseOperatingHourDto {
     default: "00:00",
   })
   @IsString()
+  @ValidateIf((dto) => !dto.isClosed)
   @Matches(HOUR_FORMAT_REGEX, {
     message: "Closing time must be in the format HH:MM (00:00 to 23:59)",
   })

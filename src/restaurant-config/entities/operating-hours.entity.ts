@@ -17,10 +17,10 @@ export class OperatingHours {
   @Column({ default: false })
   isClosed: boolean;
 
-  @Column({ type: "time" })
+  @Column({ type: "time", nullable: true })
   openingTime: string;
 
-  @Column({ type: "time" })
+  @Column({ type: "time", nullable: true })
   closingTime: string;
 
   @ManyToOne(() => RestaurantConfig, (config) => config.operatingHours)
