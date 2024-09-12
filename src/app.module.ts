@@ -17,6 +17,8 @@ import { OrdersModule } from "@/orders/orders.module";
 import { PaymentsModule } from "@/payments/payments.module";
 import { UploadsModule } from "@/uploads/uploads.module";
 
+import { RestaurantConfigModule } from "./restaurant-config/restaurant-config.module";
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -66,6 +68,7 @@ import { UploadsModule } from "@/uploads/uploads.module";
     CheckoutModule,
     PaymentsModule,
     UploadsModule,
+    RestaurantConfigModule,
   ],
   controllers: [AppController],
   providers: [
