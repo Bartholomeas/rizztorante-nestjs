@@ -12,11 +12,13 @@ import { CreateMenuCategoryDto } from "@/menu/menu-admin/dto/create/create-categ
 import { CreateMenuDto } from "@/menu/menu-admin/dto/create/create-menu.dto";
 import { CreateMenuPositionDto } from "@/menu/menu-admin/dto/create/create-position.dto";
 
-import { CreateMenuPositionDetailsDto } from "./dto/update/create-position-details.dto";
+import { CreateMenuPositionDetailsDto } from "./dto/create/create-position-details.dto";
 import { UpdateMenuCategoryDto } from "./dto/update/update-category.dto";
 import { UpdateMenuDto } from "./dto/update/update-menu.dto";
 import { UpdateMenuPositionDetailsDto } from "./dto/update/update-position-details.dto";
+import { UpdatePositionImageDto } from "./dto/update/update-position-image.dto";
 import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
+import { MenuPositionImage } from "../entities/menu-images.entity";
 
 @Injectable()
 export class MenuAdminService {
@@ -29,6 +31,8 @@ export class MenuAdminService {
     private readonly menuPositionRepository: Repository<MenuPosition>,
     @InjectRepository(MenuPositionDetails)
     private readonly menuPositionDetailsRepository: Repository<MenuPositionDetails>,
+    @InjectRepository(MenuPositionImage)
+    private readonly menuPositionImageRepository: Repository<MenuPositionImage>,
   ) {}
 
   // Create operations
@@ -57,6 +61,19 @@ export class MenuAdminService {
       category,
     });
     return this.menuPositionRepository.save(position);
+  }
+
+  async createPositionDetails(
+    positionId: string,
+    createMenuPositionDetailsDto: CreateMenuPositionDetailsDto,
+  ): Promise<MenuPositionDetails> {
+    const position = await this.findPositionById(positionId);
+    if (position?.details) throw new ConflictException("Position details already exist");
+    const details = this.menuPositionDetailsRepository.create({
+      ...createMenuPositionDetailsDto,
+      menuPosition: position,
+    });
+    return this.menuPositionDetailsRepository.save(details);
   }
 
   // Update operations
@@ -94,17 +111,12 @@ export class MenuAdminService {
     return await this.menuPositionRepository.save(position);
   }
 
-  async createPositionDetails(
-    positionId: string,
-    createMenuPositionDetailsDto: CreateMenuPositionDetailsDto,
-  ): Promise<MenuPositionDetails> {
-    const position = await this.findPositionById(positionId);
-    if (position?.details) throw new ConflictException("Position details already exist");
-    const details = this.menuPositionDetailsRepository.create({
-      ...createMenuPositionDetailsDto,
-      menuPosition: position,
-    });
-    return this.menuPositionDetailsRepository.save(details);
+  async updatePositionImage(id: string, dto: UpdatePositionImageDto) {
+    const position = await this.findPositionById(id);
+    const image = await this.menuPositionImageRepository.create(dto);
+    position.coreImage = image;
+
+    return await this.menuPositionRepository.save(position);
   }
 
   async updatePositionDetails(

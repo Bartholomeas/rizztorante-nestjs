@@ -23,7 +23,7 @@ export class MenuPositionDetails {
     cascade: true,
     onDelete: "CASCADE",
   })
-  images: MenuPositionDetailsImage[];
+  images?: MenuPositionDetailsImage[];
 
   @Column({ type: "int", nullable: true })
   calories?: number;

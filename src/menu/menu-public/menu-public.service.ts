@@ -44,7 +44,9 @@ export class MenuPublicService {
         },
       },
       relations: {
-        positions: true,
+        positions: {
+          coreImage: true,
+        },
       },
     });
   }
