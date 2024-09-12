@@ -24,7 +24,7 @@ export class StripeService {
           unit_amount: item.menuPosition.price,
           product_data: {
             name: item.menuPosition.name,
-            images: item?.menuPosition?.images ?? [],
+            images: item?.menuPosition?.coreImage?.url ? [item.menuPosition.coreImage.url] : [],
             description: item.menuPosition.description,
           },
         },

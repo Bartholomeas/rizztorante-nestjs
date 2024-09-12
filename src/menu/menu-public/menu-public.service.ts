@@ -44,7 +44,9 @@ export class MenuPublicService {
         },
       },
       relations: {
-        positions: true,
+        positions: {
+          coreImage: true,
+        },
       },
     });
   }
@@ -87,7 +89,10 @@ export class MenuPublicService {
         milliseconds: 1000 * 60,
       },
       relations: {
-        menuPosition: true,
+        menuPosition: {
+          coreImage: true,
+        },
+        images: true,
       },
     });
     if (!positionDetails) throw new NotFoundException("Position details not found");

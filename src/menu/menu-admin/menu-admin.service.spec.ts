@@ -11,6 +11,7 @@ import { MenuPosition } from "@/menu/entities/menu-position.entity";
 import { Menu } from "@/menu/entities/menu.entity";
 
 import { MenuAdminService } from "./menu-admin.service";
+import { MenuPositionImage } from "../entities/menu-images.entity";
 
 import type { CreateMenuCategoryDto } from "./dto/create/create-category.dto";
 import type { CreateMenuDto } from "./dto/create/create-menu.dto";
@@ -43,6 +44,10 @@ describe("MenuAdminService", () => {
         },
         {
           provide: getRepositoryToken(MenuPositionDetails),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(MenuPositionImage),
           useClass: Repository,
         },
       ],

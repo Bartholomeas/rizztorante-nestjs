@@ -81,7 +81,7 @@ async function bootstrap() {
 
     await menuService.createPositionDetails(createdPosition.id, {
       longDescription: "Updated long description",
-      images: ["image1", "image2"],
+      // images: ["image1", "image2"],
       allergens: ["peanuts", "gluten"],
       nutritionalInfo: {
         protein: 10,
@@ -92,7 +92,7 @@ async function bootstrap() {
 
     await menuService.updatePositionDetails(createdPosition.id, {
       longDescription: "Updated long description",
-      images: ["image1", "image2"],
+      // images: ["image1", "image2"],
       allergens: ["peanuts", "gluten"],
       nutritionalInfo: {
         protein: 10,

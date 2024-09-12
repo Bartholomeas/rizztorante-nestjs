@@ -23,10 +23,11 @@ import { CreateMenuDto } from "@/menu/menu-admin/dto/create/create-menu.dto";
 import { CreateMenuPositionDto } from "@/menu/menu-admin/dto/create/create-position.dto";
 import { MenuAdminService } from "@/menu/menu-admin/menu-admin.service";
 
-import { CreateMenuPositionDetailsDto } from "./dto/update/create-position-details.dto";
+import { CreateMenuPositionDetailsDto } from "./dto/create/create-position-details.dto";
 import { UpdateMenuCategoryDto } from "./dto/update/update-category.dto";
 import { UpdateMenuDto } from "./dto/update/update-menu.dto";
 import { UpdateMenuPositionDetailsDto } from "./dto/update/update-position-details.dto";
+import { UpdatePositionImageDto } from "./dto/update/update-position-image.dto";
 import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
 
 @ApiTags("Menu Admin")
@@ -164,6 +165,16 @@ export class MenuAdminController {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
     }
+  }
+
+  @Put("positions/:id/image")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Update menu position image" })
+  async updatePositionImage(
+    @Param("id", new ParseUUIDPipe()) id: string,
+    @Body(ValidationPipe) updateMenuPositionImageDto: UpdatePositionImageDto,
+  ) {
+    return await this.menuService.updatePositionImage(id, updateMenuPositionImageDto);
   }
 
   @Put("positions/:id/details")
