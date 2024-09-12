@@ -11,12 +11,12 @@ export class SpecialDate {
   isClosed: boolean;
 
   @Column({ type: "date" })
-  date: Date;
+  date: string;
 
-  @Column({ type: "time" })
+  @Column({ type: "time", nullable: true })
   openingTime: string;
 
-  @Column({ type: "time" })
+  @Column({ type: "time", nullable: true })
   closingTime: string;
 
   @Column({ type: "text", nullable: true })

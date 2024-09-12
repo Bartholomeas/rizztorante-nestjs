@@ -110,12 +110,9 @@ export class RestaurantConfigController {
   @Roles(UserRole.ADMIN)
   @UseGuards(RolesGuard)
   @Delete("operating-hours/:id")
-  async deleteOperatingHour(
-    @Param("id", new ParseUUIDPipe()) id: string,
-    @Body(ValidationPipe) dto: UpdateOperatingHourDto,
-  ) {
+  async deleteOperatingHour(@Param("id", new ParseUUIDPipe()) id: string) {
     try {
-      return this.service.updateOperatingHour(id, dto);
+      return this.service.deleteOperatingHour(id);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException();

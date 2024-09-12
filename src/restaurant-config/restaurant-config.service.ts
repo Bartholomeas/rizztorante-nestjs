@@ -21,16 +21,27 @@ export class RestaurantConfigService {
   ) {}
 
   async getRestaurantConfig() {
-    return await this.restaurantConfigRepository.find({
+    const operatingHours = await this.operatingHoursRepository.find({
       cache: {
-        id: "restaurant-config",
-        milliseconds: 1000 * 60 * 60 * 6,
+        id: "operating-hours",
+        milliseconds: 1000 * 60 * 60 * 4,
       },
-      relations: {
-        operatingHours: true,
-        specialDates: true,
+      order: {
+        dayOfWeek: "ASC",
       },
     });
+
+    const specialDates = await this.specialDatesRepository.find({
+      cache: {
+        id: "special-dates",
+        milliseconds: 1000 * 60 * 60 * 4,
+      },
+      order: {
+        date: "ASC",
+      },
+    });
+
+    return { operatingHours, specialDates };
   }
 
   async createOperatingHour(dto: CreateOperatingHourDto) {
@@ -56,6 +67,9 @@ export class RestaurantConfigService {
     await this.specialDatesRepository.delete({ id });
   }
 
+  async deleteOperatingHour(id: string) {
+    await this.operatingHoursRepository.delete({ id });
+  }
   async updateSpecialDate(id: string, dto: UpdateSpecialDateDto) {
     const specialDate = await this.specialDatesRepository.findOneBy({ id });
     if (!specialDate) throw new NotFoundException("Special date with this ID doesnt exist!");
@@ -64,8 +78,15 @@ export class RestaurantConfigService {
   }
 
   async createSpecialDate(dto: CreateSpecialDateDto) {
+    const specialDate = await this.specialDatesRepository.findOne({
+      where: {
+        date: dto.date,
+      },
+    });
+
+    if (specialDate) return await this.updateSpecialDate(specialDate.id, dto);
+
     const newSpecialDate = this.specialDatesRepository.create(dto);
-    console.log("FF", newSpecialDate);
     return await this.specialDatesRepository.save(newSpecialDate);
   }
 
