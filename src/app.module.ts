@@ -15,6 +15,7 @@ import { CheckoutModule } from "@/checkout/checkout.module";
 import { MenuModule } from "@/menu/menu.module";
 import { OrdersModule } from "@/orders/orders.module";
 import { PaymentsModule } from "@/payments/payments.module";
+import { RestaurantConfigModule } from "@/restaurant-config/restaurant-config.module";
 import { UploadsModule } from "@/uploads/uploads.module";
 
 @Module({
@@ -50,6 +51,9 @@ import { UploadsModule } from "@/uploads/uploads.module";
       synchronize: process.env.NODE_ENV !== "production",
       // logging: process.env.NODE_ENV !== "production",
       autoLoadEntities: true,
+      cache: {
+        duration: 1000 * 60 * 5,
+      },
       // dropSchema: true, //To clearing DB in each app restart
     }),
     ThrottlerModule.forRoot([
@@ -60,6 +64,7 @@ import { UploadsModule } from "@/uploads/uploads.module";
     ]),
     EventEmitterModule.forRoot({ delimiter: "." }),
     AuthModule,
+    RestaurantConfigModule,
     MenuModule,
     OrdersModule,
     CartModule,
