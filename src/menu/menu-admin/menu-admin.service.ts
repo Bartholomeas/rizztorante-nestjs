@@ -83,6 +83,7 @@ export class MenuAdminService {
     updateMenuPositionDto: UpdateMenuPositionDto,
   ): Promise<MenuPosition> {
     const position = await this.findPositionById(id);
+
     if (
       updateMenuPositionDto.menuCategoryId &&
       updateMenuPositionDto.menuCategoryId !== position.category.id
