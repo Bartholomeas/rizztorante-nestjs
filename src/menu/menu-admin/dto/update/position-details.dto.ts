@@ -24,10 +24,10 @@ export class PositionDetailsDto {
   @IsOptional()
   longDescription?: string;
 
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
-  images?: string[];
+  // @IsArray()
+  // @IsString({ each: true })
+  // @IsOptional()
+  // images?: string[];
 
   @IsNumber()
   @IsOptional()

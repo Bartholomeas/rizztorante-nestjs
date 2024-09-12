@@ -12,6 +12,7 @@ import {
 import { CartItem } from "@/cart/entities/cart-item.entity";
 import { MenuCategory } from "@/menu/entities/menu-category.entity";
 
+import { MenuPositionImage } from "./menu-images.entity";
 import { MenuPositionDetails } from "./menu-position-details.entity";
 
 @Entity()
@@ -26,8 +27,11 @@ export class MenuPosition {
   @Column({ type: "int" })
   price: number;
 
-  @Column({ type: "simple-array", nullable: true, array: true })
-  images?: string[];
+  @OneToOne(() => MenuPositionImage, (img) => img.menuPosition, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  coreImage?: MenuPositionImage;
 
   @Column({ default: null, nullable: true })
   description?: string;

@@ -1,5 +1,14 @@
-import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
+import { MenuPositionDetailsImage } from "./menu-images.entity";
 import { MenuPosition } from "./menu-position.entity";
 
 @Entity()
@@ -10,8 +19,11 @@ export class MenuPositionDetails {
   @Column({ type: "text", nullable: true })
   longDescription?: string;
 
-  @Column({ type: "simple-array", nullable: true })
-  images?: string[];
+  @OneToMany(() => MenuPositionDetailsImage, (img) => img.menuPositionDetails, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  images: MenuPositionDetailsImage[];
 
   @Column({ type: "int", nullable: true })
   calories?: number;
