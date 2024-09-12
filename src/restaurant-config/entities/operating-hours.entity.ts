@@ -1,6 +1,4 @@
-import { Check, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-
-import { RestaurantConfig } from "./restaurant-config.entity";
+import { Check, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 @Check(`"closingTime" > "openingTime"`)
@@ -22,7 +20,4 @@ export class OperatingHours {
 
   @Column({ type: "time", nullable: true })
   closingTime: string;
-
-  @ManyToOne(() => RestaurantConfig, (config) => config.operatingHours)
-  config: RestaurantConfig;
 }

@@ -5,7 +5,6 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 import { OperatingHours } from "./entities/operating-hours.entity";
-import { RestaurantConfig } from "./entities/restaurant-config.entity";
 import { SpecialDate } from "./entities/special-dates.entity";
 import { RestaurantConfigController } from "./restaurant-config.controller";
 import { RestaurantConfigService } from "./restaurant-config.service";
@@ -18,10 +17,7 @@ describe("RestaurantConfigController", () => {
       controllers: [RestaurantConfigController],
       providers: [
         RestaurantConfigService,
-        {
-          provide: getRepositoryToken(RestaurantConfig),
-          useClass: Repository,
-        },
+
         {
           provide: getRepositoryToken(OperatingHours),
           useClass: Repository,

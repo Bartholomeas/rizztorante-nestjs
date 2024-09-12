@@ -1,6 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-
-import { RestaurantConfig } from "./restaurant-config.entity";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class SpecialDate {
@@ -21,7 +19,4 @@ export class SpecialDate {
 
   @Column({ type: "text", nullable: true })
   description?: string;
-
-  @ManyToOne(() => RestaurantConfig, (config) => config.specialDates)
-  config: RestaurantConfig;
 }
