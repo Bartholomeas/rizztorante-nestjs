@@ -8,21 +8,20 @@ import { PageOptionsDto } from "@common/dto/pagination/page-options.dto";
 import { PageDto } from "@common/dto/pagination/page.dto";
 import { UserRole } from "@common/types/user-roles.type";
 
+import { ApproveOpinionDto } from "./dto/approve-opinion.dto";
 import { CreateOpinionDto } from "./dto/create-opinion.dto";
 import { OpinionDto } from "./dto/opinion.dto";
 import { Opinion } from "./entities/opinion.entity";
 
 @Injectable()
 export class OpinionsService {
-  approveOpinion(id: string) {
-    throw new Error("Method not implemented.", id);
-  }
   constructor(@InjectRepository(Opinion) private readonly repository: Repository<Opinion>) {}
   async getAllOpinions(
     pageOptionsDto: PageOptionsDto,
     role = UserRole.GUEST,
   ): Promise<PageDto<OpinionDto>> {
     const queryBuilder = this.repository.createQueryBuilder("opinion");
+    // await queryBuilder.cache("opinions", 1000 * 60 * 5);
 
     queryBuilder
       .orderBy("opinion.createdAt", pageOptionsDto.order)
@@ -42,5 +41,10 @@ export class OpinionsService {
   async addOpinion(dto: CreateOpinionDto) {
     const newOpinion = await this.repository.create(dto);
     return await this.repository.save(newOpinion);
+  }
+
+  async approveOpinion(id: string, { isApproved }: ApproveOpinionDto) {
+    await this.repository.update(id, { isApproved });
+    return await this.repository.findOneBy({ id });
   }
 }

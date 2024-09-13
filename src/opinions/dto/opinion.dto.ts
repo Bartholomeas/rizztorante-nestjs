@@ -18,6 +18,7 @@ export class OpinionDto extends BaseOpinionDto {
   @IsBoolean()
   @Exclude()
   isApproved: boolean;
+
   // constructor() {
   //   super();
   //   // Object.assign(this, partial);
