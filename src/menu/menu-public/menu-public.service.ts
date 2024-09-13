@@ -12,7 +12,10 @@ import { MenuPositionDetails } from "@/menu/entities/menu-position-details.entit
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 import { Menu } from "@/menu/entities/menu.entity";
 
+import { CategoryDto } from "../dto/category.dto";
 import { MenuDto } from "../dto/menu.dto";
+import { PositionDetailsDto } from "../dto/position-details.dto";
+import { PositionDto } from "../dto/position.dto";
 
 @Injectable()
 export class MenuPublicService {
@@ -34,11 +37,9 @@ export class MenuPublicService {
     });
 
     return plainToInstance(MenuDto, menus);
-    // return menus.map((menu) => new MenuDto(menu));
   }
-
-  async getMenuCategories(menuId: string): Promise<MenuCategory[]> {
-    return this.menuCategoryRepository.find({
+  async getMenuCategories(menuId: string): Promise<CategoryDto[]> {
+    const categories = await this.menuCategoryRepository.find({
       cache: {
         id: `menu-categories-${menuId}`,
         milliseconds: 1000 * 60,
@@ -54,10 +55,12 @@ export class MenuPublicService {
         },
       },
     });
+
+    return plainToInstance(CategoryDto, categories);
   }
 
-  async getPositions(categoryId: string): Promise<MenuPosition[]> {
-    return this.menuPositionRepository.find({
+  async getPositions(categoryId: string): Promise<PositionDto[]> {
+    const positions = await this.menuPositionRepository.find({
       cache: {
         id: `menu-positions-${categoryId}`,
         milliseconds: 1000 * 60,
@@ -71,6 +74,8 @@ export class MenuPublicService {
         category: true,
       },
     });
+
+    return plainToInstance(PositionDto, positions);
   }
 
   @OnEvent(MenuEventTypes.GET_SINGLE_POSITION)
@@ -82,7 +87,7 @@ export class MenuPublicService {
     });
   }
 
-  async getPositionDetails(positionId: string): Promise<MenuPositionDetails> {
+  async getPositionDetails(positionId: string): Promise<PositionDetailsDto> {
     const positionDetails = await this.menuPositionDetailsRepository.findOne({
       where: {
         menuPosition: {
@@ -102,6 +107,6 @@ export class MenuPublicService {
     });
     if (!positionDetails) throw new NotFoundException("Position details not found");
 
-    return positionDetails;
+    return plainToInstance(PositionDetailsDto, positionDetails);
   }
 }

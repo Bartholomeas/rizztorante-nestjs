@@ -1,3 +1,3 @@
-import { PositionDetailsDto } from "./position-details.dto";
+import { BasePositionDetailsDto } from "../base/base-position-details.dto";
 
-export class UpdateMenuPositionDetailsDto extends PositionDetailsDto {}
+export class UpdateMenuPositionDetailsDto extends BasePositionDetailsDto {}

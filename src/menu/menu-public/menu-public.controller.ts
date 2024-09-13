@@ -14,6 +14,8 @@ import { MenuPublicService } from "@/menu/menu-public/menu-public.service";
 
 import { CategoryDto } from "../dto/category.dto";
 import { MenuDto } from "../dto/menu.dto";
+import { PositionDetailsDto } from "../dto/position-details.dto";
+import { PositionDto } from "../dto/position.dto";
 
 @ApiTags("Menu Public")
 @Controller("menus")
@@ -45,7 +47,9 @@ export class MenuPublicController {
       $ref: getSchemaPath(CategoryDto),
     },
   })
-  async getMenuCategories(@Param("menuId", new ParseUUIDPipe()) menuId: string) {
+  async getMenuCategories(
+    @Param("menuId", new ParseUUIDPipe()) menuId: string,
+  ): Promise<CategoryDto[]> {
     try {
       return await this.menuService.getMenuCategories(menuId);
     } catch (err) {
@@ -57,7 +61,12 @@ export class MenuPublicController {
   @Get("categories/:categoryId/positions")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Get all positions for a specific category" })
-  async getCategoryPositions(@Param("categoryId", new ParseUUIDPipe()) categoryId: string) {
+  @ApiResponse({
+    type: [PositionDto],
+  })
+  async getCategoryPositions(
+    @Param("categoryId", new ParseUUIDPipe()) categoryId: string,
+  ): Promise<PositionDto[]> {
     try {
       return await this.menuService.getPositions(categoryId);
     } catch (err) {
@@ -69,7 +78,12 @@ export class MenuPublicController {
   @Get("positions/:positionId")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Get details of a specific position" })
-  async getPositionDetails(@Param("positionId", new ParseUUIDPipe()) positionId: string) {
+  @ApiResponse({
+    type: PositionDetailsDto,
+  })
+  async getPositionDetails(
+    @Param("positionId", new ParseUUIDPipe()) positionId: string,
+  ): Promise<PositionDetailsDto> {
     try {
       return await this.menuService.getPositionDetails(positionId);
     } catch (err) {
