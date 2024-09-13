@@ -66,7 +66,10 @@ export class OpinionsController {
   @UseGuards(RolesGuard)
   @Put(":id/approve")
   @ApiOperation({ summary: "Approve opinion" })
-  async approveOpinion(@Param("id") id: string, @Body() approveOpinionDto: ApproveOpinionDto) {
+  async approveOpinion(
+    @Param("id") id: string,
+    @Body() approveOpinionDto: ApproveOpinionDto,
+  ): Promise<OpinionDto> {
     try {
       return await this.service.approveOpinion(id, approveOpinionDto);
     } catch (err) {

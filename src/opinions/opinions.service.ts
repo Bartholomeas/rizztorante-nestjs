@@ -28,12 +28,24 @@ export class OpinionsService {
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take);
 
-    if (role !== UserRole.ADMIN)
+    if (role === UserRole.ADMIN) {
       queryBuilder.andWhere("opinion.isApproved = :isApproved", { isApproved: true });
+      await queryBuilder.select([
+        "opinion.id",
+        "opinion.name",
+        "opinion.rate",
+        "opinion.createdAt",
+        "opinion.isApproved",
+      ]);
+    } else
+      await queryBuilder.select([
+        "opinion.id",
+        "opinion.name",
+        "opinion.rate",
+        "opinion.createdAt",
+      ]);
 
-    const totalItems = await queryBuilder.getCount();
-    const { entities } = await queryBuilder.getRawAndEntities();
-
+    const [entities, totalItems] = await queryBuilder.getManyAndCount();
     const pageMetaDto = new PageMetadataDto({ pageOptionsDto, totalItems });
 
     return new PageDto(entities, pageMetaDto);
@@ -43,7 +55,7 @@ export class OpinionsService {
     return await this.repository.save(newOpinion);
   }
 
-  async approveOpinion(id: string, { isApproved }: ApproveOpinionDto) {
+  async approveOpinion(id: string, { isApproved }: ApproveOpinionDto): Promise<OpinionDto> {
     await this.repository.update(id, { isApproved });
     return await this.repository.findOneBy({ id });
   }

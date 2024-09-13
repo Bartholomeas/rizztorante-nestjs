@@ -19,8 +19,10 @@ export class OpinionDto extends BaseOpinionDto {
   @Exclude()
   isApproved: boolean;
 
-  // constructor() {
-  //   super();
-  //   // Object.assign(this, partial);
-  // }
+  constructor(partial: Partial<OpinionDto>) {
+    super();
+    Object.assign(this, partial);
+    // this.rate = parseFloat(this.rate.toString());
+    console.log("FFRJFRJFRJFRJ", this);
+  }
 }
