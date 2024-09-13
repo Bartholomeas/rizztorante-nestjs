@@ -18,33 +18,19 @@ export class OpinionsService {
   constructor(@InjectRepository(Opinion) private readonly repository: Repository<Opinion>) {}
   async getAllOpinions(
     pageOptionsDto: PageOptionsDto,
-    role = UserRole.GUEST,
-  ): Promise<PageDto<OpinionDto>> {
+    userRole: UserRole,
+  ): Promise<PageDto<Opinion>> {
     const queryBuilder = this.repository.createQueryBuilder("opinion");
-    // await queryBuilder.cache("opinions", 1000 * 60 * 5);
+
+    if (userRole === UserRole.GUEST) {
+      queryBuilder.andWhere("opinion.isApproved = :isApproved", { isApproved: true });
+    }
 
     queryBuilder
       .orderBy("opinion.createdAt", pageOptionsDto.order)
       .skip(pageOptionsDto.skip)
-      .take(pageOptionsDto.take);
-
-    if (role === UserRole.ADMIN)
-      await queryBuilder.select([
-        "opinion.id",
-        "opinion.name",
-        "opinion.rate",
-        "opinion.createdAt",
-        "opinion.isApproved",
-      ]);
-    else {
-      queryBuilder.andWhere("opinion.isApproved = :isApproved", { isApproved: true });
-      await queryBuilder.select([
-        "opinion.id",
-        "opinion.name",
-        "opinion.rate",
-        "opinion.createdAt",
-      ]);
-    }
+      .take(pageOptionsDto.take)
+      .select(["opinion.id", "opinion.name", "opinion.rate", "opinion.createdAt"]);
 
     const [entities, totalItems] = await queryBuilder.getManyAndCount();
     const pageMetaDto = new PageMetadataDto({ pageOptionsDto, totalItems });

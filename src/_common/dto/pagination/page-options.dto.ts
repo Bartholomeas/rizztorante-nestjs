@@ -36,5 +36,7 @@ export class PageOptionsDto {
   get skip(): number {
     return (this.page - 1) * this.take;
   }
-  constructor() {}
+  constructor(partial: Partial<PageOptionsDto>) {
+    Object.assign(this, partial);
+  }
 }
