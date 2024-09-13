@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 
 import { IsNotEmpty, IsString, MinLength } from "class-validator";
 
-export class MenuDto {
+export abstract class BaseMenuDto {
   @ApiProperty({ description: "The name of the menu item", example: "Veggie Burger" })
   @IsString()
   @IsNotEmpty()

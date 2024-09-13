@@ -18,17 +18,17 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { UserRole } from "@/_common/types/user-roles.type";
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
-import { CreateMenuCategoryDto } from "@/menu/menu-admin/dto/create/create-category.dto";
-import { CreateMenuDto } from "@/menu/menu-admin/dto/create/create-menu.dto";
-import { CreateMenuPositionDto } from "@/menu/menu-admin/dto/create/create-position.dto";
+import { CreateMenuCategoryDto } from "@/menu/dto/create/create-category.dto";
+import { CreateMenuDto } from "@/menu/dto/create/create-menu.dto";
+import { CreateMenuPositionDto } from "@/menu/dto/create/create-position.dto";
 import { MenuAdminService } from "@/menu/menu-admin/menu-admin.service";
 
-import { CreateMenuPositionDetailsDto } from "./dto/create/create-position-details.dto";
-import { UpdateMenuCategoryDto } from "./dto/update/update-category.dto";
-import { UpdateMenuDto } from "./dto/update/update-menu.dto";
-import { UpdateMenuPositionDetailsDto } from "./dto/update/update-position-details.dto";
-import { UpdatePositionImageDto } from "./dto/update/update-position-image.dto";
-import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
+import { CreateMenuPositionDetailsDto } from "../dto/create/create-position-details.dto";
+import { UpdateMenuCategoryDto } from "../dto/update/update-category.dto";
+import { UpdateMenuDto } from "../dto/update/update-menu.dto";
+import { UpdateMenuPositionDetailsDto } from "../dto/update/update-position-details.dto";
+import { UpdatePositionImageDto } from "../dto/update/update-position-image.dto";
+import { UpdateMenuPositionDto } from "../dto/update/update-position.dto";
 
 @ApiTags("Menu Admin")
 @Roles(UserRole.ADMIN)

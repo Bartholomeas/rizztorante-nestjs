@@ -8,9 +8,12 @@ import {
   Param,
   ParseUUIDPipe,
 } from "@nestjs/common";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags, getSchemaPath } from "@nestjs/swagger";
 
 import { MenuPublicService } from "@/menu/menu-public/menu-public.service";
+
+import { CategoryDto } from "../dto/category.dto";
+import { MenuDto } from "../dto/menu.dto";
 
 @ApiTags("Menu Public")
 @Controller("menus")
@@ -20,7 +23,10 @@ export class MenuPublicController {
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Get all menus" })
-  async getAllMenus() {
+  @ApiResponse({
+    type: [MenuDto],
+  })
+  async getAllMenus(): Promise<MenuDto[]> {
     try {
       return await this.menuService.getMenus();
     } catch (err) {
@@ -32,6 +38,13 @@ export class MenuPublicController {
   @Get(":menuId/categories")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Get all categories for a specific menu" })
+  @ApiResponse({
+    type: CategoryDto,
+    isArray: true,
+    schema: {
+      $ref: getSchemaPath(CategoryDto),
+    },
+  })
   async getMenuCategories(@Param("menuId", new ParseUUIDPipe()) menuId: string) {
     try {
       return await this.menuService.getMenuCategories(menuId);

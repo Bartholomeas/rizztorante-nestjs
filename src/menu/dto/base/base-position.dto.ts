@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 import { IsArray, IsBoolean, IsInt, IsOptional, IsString, Min, MinLength } from "class-validator";
 
-export class PositionDto {
+export abstract class BasePositionDto {
   @ApiProperty({ description: "The name of the position" })
   @IsString()
   @MinLength(2)

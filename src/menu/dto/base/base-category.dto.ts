@@ -1,17 +1,19 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
+import { Exclude } from "class-transformer";
 import { IsOptional, IsString, IsUUID, MinLength } from "class-validator";
 
-export class CategoryDto {
-  @ApiProperty({ description: "The name of the category", example: "Beverages" })
+export abstract class BaseCategoryDto {
+  @ApiProperty({ description: "The name of the category", example: "Beverages", nullable: true })
   @IsString()
+  @IsOptional()
   @MinLength(2)
   name: string;
 
   @ApiPropertyOptional({
     description: "Optional description for the category",
-    nullable: true,
     example: "A selection of drinks",
+    nullable: true,
   })
   @IsString()
   @IsOptional()
@@ -22,5 +24,6 @@ export class CategoryDto {
     example: "123e4567-e89b-12d3-a456-426614174000",
   })
   @IsUUID()
+  @Exclude()
   menuId: string;
 }

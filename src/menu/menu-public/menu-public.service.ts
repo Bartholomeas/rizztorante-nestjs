@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 
+import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
 
 import { MenuEventTypes } from "@events/events";
@@ -10,6 +11,8 @@ import { MenuCategory } from "@/menu/entities/menu-category.entity";
 import { MenuPositionDetails } from "@/menu/entities/menu-position-details.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 import { Menu } from "@/menu/entities/menu.entity";
+
+import { MenuDto } from "../dto/menu.dto";
 
 @Injectable()
 export class MenuPublicService {
@@ -22,14 +25,16 @@ export class MenuPublicService {
     @InjectRepository(MenuPositionDetails)
     private readonly menuPositionDetailsRepository: Repository<MenuPositionDetails>,
   ) {}
-
-  async getMenus(): Promise<Menu[]> {
-    return this.menuRepository.find({
+  async getMenus(): Promise<MenuDto[]> {
+    const menus = await this.menuRepository.find({
       cache: {
         id: "menus",
         milliseconds: 1000 * 60,
       },
     });
+
+    return plainToInstance(MenuDto, menus);
+    // return menus.map((menu) => new MenuDto(menu));
   }
 
   async getMenuCategories(menuId: string): Promise<MenuCategory[]> {
