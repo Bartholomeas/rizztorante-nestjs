@@ -115,11 +115,6 @@ export class CartService {
     return this.cartRepository.findOne({
       where: { user: { id: userId } },
       relations: ["items", "items.menuPosition"],
-      // select: { user: { id: true } },
-      cache: {
-        id: `${userId}-user-cart`,
-        milliseconds: 1000 * 60 * 5,
-      },
     });
   }
 

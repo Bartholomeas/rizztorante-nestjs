@@ -14,8 +14,8 @@ import { MenuPublicService } from "@/menu/menu-public/menu-public.service";
 
 import { CategoryDto } from "../dto/category.dto";
 import { MenuDto } from "../dto/menu.dto";
+import { MenuPositionDto } from "../dto/menuPositionDto";
 import { PositionDetailsDto } from "../dto/position-details.dto";
-import { PositionDto } from "../dto/position.dto";
 
 @ApiTags("Menu Public")
 @Controller("menus")
@@ -62,11 +62,11 @@ export class MenuPublicController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Get all positions for a specific category" })
   @ApiResponse({
-    type: [PositionDto],
+    type: [MenuPositionDto],
   })
   async getCategoryPositions(
     @Param("categoryId", new ParseUUIDPipe()) categoryId: string,
-  ): Promise<PositionDto[]> {
+  ): Promise<MenuPositionDto[]> {
     try {
       return await this.menuService.getPositions(categoryId);
     } catch (err) {

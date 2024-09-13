@@ -14,8 +14,8 @@ import { Menu } from "@/menu/entities/menu.entity";
 
 import { CategoryDto } from "../dto/category.dto";
 import { MenuDto } from "../dto/menu.dto";
+import { MenuPositionDto } from "../dto/menuPositionDto";
 import { PositionDetailsDto } from "../dto/position-details.dto";
-import { PositionDto } from "../dto/position.dto";
 
 @Injectable()
 export class MenuPublicService {
@@ -59,7 +59,7 @@ export class MenuPublicService {
     return plainToInstance(CategoryDto, categories);
   }
 
-  async getPositions(categoryId: string): Promise<PositionDto[]> {
+  async getPositions(categoryId: string): Promise<MenuPositionDto[]> {
     const positions = await this.menuPositionRepository.find({
       cache: {
         id: `menu-positions-${categoryId}`,
@@ -75,7 +75,7 @@ export class MenuPublicService {
       },
     });
 
-    return plainToInstance(PositionDto, positions);
+    return plainToInstance(MenuPositionDto, positions);
   }
 
   @OnEvent(MenuEventTypes.GET_SINGLE_POSITION)

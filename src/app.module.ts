@@ -53,9 +53,9 @@ import { OpinionsModule } from "./opinions/opinions.module";
       synchronize: process.env.NODE_ENV !== "production",
       // logging: process.env.NODE_ENV !== "production",
       autoLoadEntities: true,
-      cache: {
-        duration: 1000 * 60 * 5,
-      },
+      // cache: {
+      //   duration: 1000 * 60 * 5,
+      // },
       // dropSchema: true, //To clearing DB in each app restart
     }),
     ThrottlerModule.forRoot([
