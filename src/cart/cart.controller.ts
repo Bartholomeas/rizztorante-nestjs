@@ -14,12 +14,13 @@ import {
   Session,
   ValidationPipe,
 } from "@nestjs/common";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { SessionContent } from "@/auth/sessions/types/session.types";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 
 import { CartService } from "./cart.service";
+import { CartDto } from "./dto/cart.dto";
 import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
 
 @Controller("cart")
@@ -29,10 +30,11 @@ export class CartController {
 
   @Get()
   @ApiOperation({ summary: "Get cart" })
+  @ApiResponse({ type: CartDto })
   async getCart(
     @Session()
     session: SessionContent,
-  ) {
+  ): Promise<CartDto> {
     try {
       return this.cartService.getUserCart(session?.passport?.user?.id);
     } catch (err) {
@@ -47,7 +49,7 @@ export class CartController {
   async addItem(
     @Session()
     session: SessionContent,
-    @Body(ValidationPipe) addCartItemDto: AddCartItemDto,
+    @Body() addCartItemDto: AddCartItemDto,
   ) {
     try {
       return await this.cartService.addItem(session?.passport?.user?.id, addCartItemDto);

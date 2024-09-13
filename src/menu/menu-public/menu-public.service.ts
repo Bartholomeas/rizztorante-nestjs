@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 
+import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
 
 import { MenuEventTypes } from "@events/events";
@@ -10,6 +11,11 @@ import { MenuCategory } from "@/menu/entities/menu-category.entity";
 import { MenuPositionDetails } from "@/menu/entities/menu-position-details.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 import { Menu } from "@/menu/entities/menu.entity";
+
+import { CategoryDto } from "../dto/category.dto";
+import { MenuDto } from "../dto/menu.dto";
+import { MenuPositionDto } from "../dto/menuPositionDto";
+import { PositionDetailsDto } from "../dto/position-details.dto";
 
 @Injectable()
 export class MenuPublicService {
@@ -22,18 +28,18 @@ export class MenuPublicService {
     @InjectRepository(MenuPositionDetails)
     private readonly menuPositionDetailsRepository: Repository<MenuPositionDetails>,
   ) {}
-
-  async getMenus(): Promise<Menu[]> {
-    return this.menuRepository.find({
+  async getMenus(): Promise<MenuDto[]> {
+    const menus = await this.menuRepository.find({
       cache: {
         id: "menus",
         milliseconds: 1000 * 60,
       },
     });
-  }
 
-  async getMenuCategories(menuId: string): Promise<MenuCategory[]> {
-    return this.menuCategoryRepository.find({
+    return plainToInstance(MenuDto, menus);
+  }
+  async getMenuCategories(menuId: string): Promise<CategoryDto[]> {
+    const categories = await this.menuCategoryRepository.find({
       cache: {
         id: `menu-categories-${menuId}`,
         milliseconds: 1000 * 60,
@@ -49,10 +55,12 @@ export class MenuPublicService {
         },
       },
     });
+
+    return plainToInstance(CategoryDto, categories);
   }
 
-  async getPositions(categoryId: string): Promise<MenuPosition[]> {
-    return this.menuPositionRepository.find({
+  async getPositions(categoryId: string): Promise<MenuPositionDto[]> {
+    const positions = await this.menuPositionRepository.find({
       cache: {
         id: `menu-positions-${categoryId}`,
         milliseconds: 1000 * 60,
@@ -66,6 +74,8 @@ export class MenuPublicService {
         category: true,
       },
     });
+
+    return plainToInstance(MenuPositionDto, positions);
   }
 
   @OnEvent(MenuEventTypes.GET_SINGLE_POSITION)
@@ -77,7 +87,7 @@ export class MenuPublicService {
     });
   }
 
-  async getPositionDetails(positionId: string): Promise<MenuPositionDetails> {
+  async getPositionDetails(positionId: string): Promise<PositionDetailsDto> {
     const positionDetails = await this.menuPositionDetailsRepository.findOne({
       where: {
         menuPosition: {
@@ -97,6 +107,6 @@ export class MenuPublicService {
     });
     if (!positionDetails) throw new NotFoundException("Position details not found");
 
-    return positionDetails;
+    return plainToInstance(PositionDetailsDto, positionDetails);
   }
 }

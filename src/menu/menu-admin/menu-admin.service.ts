@@ -4,20 +4,20 @@ import { InjectRepository } from "@nestjs/typeorm";
 import slugify from "slugify";
 import { Repository } from "typeorm";
 
+import { CreateMenuCategoryDto } from "@/menu/dto/create/create-category.dto";
+import { CreateMenuDto } from "@/menu/dto/create/create-menu.dto";
+import { CreateMenuPositionDto } from "@/menu/dto/create/create-position.dto";
 import { MenuCategory } from "@/menu/entities/menu-category.entity";
 import { MenuPositionDetails } from "@/menu/entities/menu-position-details.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 import { Menu } from "@/menu/entities/menu.entity";
-import { CreateMenuCategoryDto } from "@/menu/menu-admin/dto/create/create-category.dto";
-import { CreateMenuDto } from "@/menu/menu-admin/dto/create/create-menu.dto";
-import { CreateMenuPositionDto } from "@/menu/menu-admin/dto/create/create-position.dto";
 
-import { CreateMenuPositionDetailsDto } from "./dto/create/create-position-details.dto";
-import { UpdateMenuCategoryDto } from "./dto/update/update-category.dto";
-import { UpdateMenuDto } from "./dto/update/update-menu.dto";
-import { UpdateMenuPositionDetailsDto } from "./dto/update/update-position-details.dto";
-import { UpdatePositionImageDto } from "./dto/update/update-position-image.dto";
-import { UpdateMenuPositionDto } from "./dto/update/update-position.dto";
+import { CreateMenuPositionDetailsDto } from "../dto/create/create-position-details.dto";
+import { UpdateMenuCategoryDto } from "../dto/update/update-category.dto";
+import { UpdateMenuDto } from "../dto/update/update-menu.dto";
+import { UpdateMenuPositionDetailsDto } from "../dto/update/update-position-details.dto";
+import { UpdatePositionImageDto } from "../dto/update/update-position-image.dto";
+import { UpdateMenuPositionDto } from "../dto/update/update-position.dto";
 import { MenuPositionImage } from "../entities/menu-images.entity";
 
 @Injectable()

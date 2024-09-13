@@ -41,7 +41,7 @@ class NutritionalInfoDto {
   fiber?: number;
 }
 
-export class PositionDetailsDto {
+export abstract class BasePositionDetailsDto {
   @ApiProperty({
     description: "The short description of the menu position",
     example: "Delicious and nutritious",
