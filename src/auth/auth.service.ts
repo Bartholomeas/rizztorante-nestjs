@@ -14,7 +14,7 @@ import { Repository } from "typeorm";
 import { UserEventTypes } from "@events/events";
 import { GuestCreatedPayload } from "@events/payloads";
 
-import { UserRole } from "@/_common/types/user-roles.types";
+import { UserRole } from "@/_common/types/user-roles.type";
 import { User } from "@/auth/entities/user.entity";
 import { SessionEntity } from "@/auth/sessions/entity/session.entity";
 
