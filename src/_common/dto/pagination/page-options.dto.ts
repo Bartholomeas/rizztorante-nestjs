@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
 
+import { Transform } from "class-transformer";
 import { IsEnum, IsInt, IsOptional, Max, Min } from "class-validator";
 
 import { SortOrder } from "@common/types/sort-order.type";
@@ -16,6 +17,8 @@ export class PageOptionsDto {
   })
   @IsInt()
   @Min(1)
+  @IsOptional()
+  @Transform(({ value }) => parseInt(value, 10) || 1)
   readonly page?: number = 1;
 
   @ApiPropertyOptional({
@@ -27,9 +30,11 @@ export class PageOptionsDto {
   @Min(1)
   @Max(100)
   @IsOptional()
-  readonly pageSize?: number = 24;
+  @Transform(({ value }) => parseInt(value, 10) || 24)
+  readonly take?: number = 24;
 
   get skip(): number {
-    return (this.page - 1) * this.pageSize;
+    return (this.page - 1) * this.take;
   }
+  constructor() {}
 }

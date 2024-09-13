@@ -13,7 +13,7 @@ export class PageMetadataDto {
   @ApiProperty()
   @IsNumber()
   @IsPositive()
-  readonly pageSize: number;
+  readonly take: number;
 
   @ApiProperty()
   @IsNumber()
@@ -35,10 +35,10 @@ export class PageMetadataDto {
 
   constructor({ pageOptionsDto, totalItems }: PageMetadataParams) {
     this.page = pageOptionsDto.page;
-    this.pageSize = pageOptionsDto.pageSize;
+    this.take = pageOptionsDto.take;
 
     this.totalItems = totalItems;
-    this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+    this.totalPages = Math.ceil(this.totalItems / this.take);
     this.hasPreviousPage = this.page > 1;
     this.hasNextPage = this.page < this.totalPages;
   }
