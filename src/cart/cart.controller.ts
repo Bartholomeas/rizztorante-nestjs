@@ -34,7 +34,7 @@ export class CartController {
   async getCart(
     @Session()
     session: SessionContent,
-  ) {
+  ): Promise<CartDto> {
     try {
       return this.cartService.getUserCart(session?.passport?.user?.id);
     } catch (err) {

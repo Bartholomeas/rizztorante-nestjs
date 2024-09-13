@@ -5,6 +5,8 @@ import { IsString, IsNumber, ValidateNested, IsUUID, IsPositive, Min } from "cla
 import { MenuPositionImageDto } from "@/menu/dto/menu-position-image.dto";
 import { MenuPositionDto } from "@/menu/dto/menuPositionDto";
 
+import { CartItem } from "../entities/cart-item.entity";
+
 export class CartItemDto {
   @ApiProperty({
     format: "uuid",
@@ -34,4 +36,8 @@ export class CartItemDto {
   @ApiProperty({ type: MenuPositionImageDto })
   @ValidateNested()
   menuPosition: MenuPositionDto;
+
+  constructor(partial: Partial<CartItem>) {
+    Object.assign(this, partial);
+  }
 }

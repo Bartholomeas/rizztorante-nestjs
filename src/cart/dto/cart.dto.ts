@@ -3,6 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNumber, IsUUID, Min } from "class-validator";
 
 import { CartItemDto } from "./cart-item.dto";
+import { Cart } from "../entities/cart.entity";
 
 export class CartDto {
   @ApiProperty({
@@ -20,4 +21,8 @@ export class CartDto {
 
   @ApiProperty({ type: [CartItemDto] })
   items: CartItemDto[];
+
+  constructor(partial: Partial<Cart>) {
+    Object.assign(this, partial);
+  }
 }
