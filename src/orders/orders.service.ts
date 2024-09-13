@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { UserRole } from "@common/types/user-roles.types";
+import { UserRole } from "@common/types/user-roles.type";
 
 import { OrdersCreateOrderPayload } from "@events/payloads/orders";
 

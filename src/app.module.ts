@@ -71,9 +71,9 @@ import { OpinionsModule } from "./opinions/opinions.module";
     OrdersModule,
     CartModule,
     CheckoutModule,
+    OpinionsModule,
     PaymentsModule,
     UploadsModule,
-    OpinionsModule,
   ],
   controllers: [AppController],
   providers: [

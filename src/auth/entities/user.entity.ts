@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-import { UserRole } from "@/_common/types/user-roles.types";
+import { UserRole } from "@/_common/types/user-roles.type";
 import { Cart } from "@/cart/entities/cart.entity";
 import { Order } from "@/orders/entities/order.entity";
 

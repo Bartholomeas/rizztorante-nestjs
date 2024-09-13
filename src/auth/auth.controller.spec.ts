@@ -2,7 +2,8 @@ import { InternalServerErrorException } from "@nestjs/common";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import { UserRole } from "@/_common/types/user-roles.types";
+import { UserRole } from "@common/types/user-roles.type";
+
 import { AuthUtils } from "@/auth/auth.utils";
 
 import { AuthController } from "./auth.controller";

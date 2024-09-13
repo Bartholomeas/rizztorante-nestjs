@@ -17,7 +17,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
 
-import { UserRole } from "@common/types/user-roles.types";
+import { UserRole } from "@common/types/user-roles.type";
 
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
