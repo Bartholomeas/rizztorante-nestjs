@@ -28,8 +28,7 @@ export class OpinionsService {
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take);
 
-    if (role === UserRole.ADMIN) {
-      queryBuilder.andWhere("opinion.isApproved = :isApproved", { isApproved: true });
+    if (role === UserRole.ADMIN)
       await queryBuilder.select([
         "opinion.id",
         "opinion.name",
@@ -37,13 +36,15 @@ export class OpinionsService {
         "opinion.createdAt",
         "opinion.isApproved",
       ]);
-    } else
+    else {
+      queryBuilder.andWhere("opinion.isApproved = :isApproved", { isApproved: true });
       await queryBuilder.select([
         "opinion.id",
         "opinion.name",
         "opinion.rate",
         "opinion.createdAt",
       ]);
+    }
 
     const [entities, totalItems] = await queryBuilder.getManyAndCount();
     const pageMetaDto = new PageMetadataDto({ pageOptionsDto, totalItems });
