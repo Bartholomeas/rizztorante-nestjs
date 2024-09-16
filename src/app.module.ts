@@ -34,9 +34,14 @@ import { OpinionsModule } from "./opinions/opinions.module";
             singleLine: true,
             colorize: true,
             translateTime: "SYS:standard",
-            ignore: "pid,hostname,context",
-            messageFormat: "{context}: {msg}",
+            ignore: "pid,hostname",
+            messageFormat: "{context}",
           },
+        },
+        autoLogging: false,
+        serializers: {
+          req: () => undefined,
+          res: () => undefined,
         },
         customProps: () => ({
           context: "HTTP",
@@ -45,7 +50,7 @@ import { OpinionsModule } from "./opinions/opinions.module";
     }),
     TypeOrmModule.forRoot({
       type: "postgres",
-      host: "localhost",
+      host: process.env.DB_HOST ?? "localhost",
       port: parseInt(process.env.DB_PORT ?? "5432"),
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,

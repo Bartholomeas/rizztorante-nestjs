@@ -8,6 +8,8 @@ import * as session from "express-session";
 import * as passport from "passport";
 import { DataSource } from "typeorm";
 
+import { LoggingInterceptor } from "@common/interceptors/logging.interceptor";
+
 import { SessionEntity } from "@/auth/sessions/entity/session.entity";
 
 import { APP_NAME } from "./_common/constants";
@@ -24,6 +26,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api/v1");
   app.use(compression());
+  app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
