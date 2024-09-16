@@ -1,24 +1,22 @@
-FROM node:20-alpine AS development
-WORKDIR /usr/src/app
-RUN npm install -g pnpm
+# Build stage
+FROM node:20 AS build
 
-COPY --chown=node:node package*.json ./
-RUN pnpm install
-COPY --chown=node:node . .
-USER node
+WORKDIR /app
 
-FROM node:20-alpine AS build
-WORKDIR /usr/src/app
 RUN npm install -g pnpm
-COPY --chown=node:node package*.json ./
-COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node . . 
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+COPY . .
 RUN pnpm run build
-RUN pnpm install --prod --frozen-lockfile
-USER node
 
-FROM node:20-alpine AS production
+# Production stage
+FROM node:20-slim AS production
+WORKDIR /app
+
+RUN npm install -g pnpm
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --prod --frozen-lockfile
+COPY --from=build /app/dist ./dist
 ENV NODE_ENV=production
-COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node --from=build /usr/src/app/dist ./dist
-CMD ["node", "dist/main"]
+
+CMD ["pnpm", "run", "start:dev"]
