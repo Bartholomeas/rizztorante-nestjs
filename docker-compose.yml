@@ -1,7 +1,9 @@
+version: "3.5"
+
 services:
   db:
     image: postgres:13
-    container_name: postgres_db
+    container_name: rizztorante-db
     restart: always
     ports:
       - "${DB_PORT}:5432"
