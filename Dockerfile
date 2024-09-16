@@ -1,22 +1,20 @@
-# Build stage
-FROM node:20 AS build
-
+FROM node:20-alpine AS development
 WORKDIR /app
-
-RUN npm install -g pnpm
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY package*.json ./
+COPY tsconfig.json ./
 COPY . .
-RUN pnpm run build
+RUN npm install -g pnpm && pnpm install
 
-# Production stage
-FROM node:20-slim AS production
+FROM node:20-alpine AS build
 WORKDIR /app
+COPY --from=development /app ./
+RUN npm install -g pnpm && pnpm run build
+RUN pnpm install --only=production --ignore-scripts
 
-RUN npm install -g pnpm
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --prod --frozen-lockfile
-COPY --from=build /app/dist ./dist
+FROM node:20-alpine AS production
 ENV NODE_ENV=production
-
-CMD ["pnpm", "run", "start:dev"]
+WORKDIR /app
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/tsconfig.json ./tsconfig.json
+CMD ["node", "dist/src/main.js"]
