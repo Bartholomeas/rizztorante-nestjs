@@ -6,8 +6,10 @@ services:
     container_name: rizztorante-db
     restart: always
     ports:
-      - "${DB_PORT}:5432"
+      - "${DB_HOST_PORT}:${DB_PORT}"
     environment:
+      DB_PORT: ${DB_PORT}
+      DB_HOST_PORT: ${DB_HOST_PORT}
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -31,6 +33,7 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_PORT: ${DB_PORT}
+      DB_HOST_PORT: ${DB_HOST_PORT}
       SESSION_NAME: ${SESSION_NAME}
       SESSION_SECRET: ${SESSION_SECRET}
       STRIPE_API_KEY: ${STRIPE_API_KEY}
