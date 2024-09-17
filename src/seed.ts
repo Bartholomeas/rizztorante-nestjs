@@ -1,13 +1,37 @@
+import type { INestApplicationContext } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 
 import { Connection, DataSource } from "typeorm";
 
 import { AppModule } from "./app.module";
 import { AuthService } from "./auth/auth.service";
+import { UpdatePositionImageDto } from "./menu/dto/update/update-position-image.dto";
 import { MenuAdminService } from "./menu/menu-admin/menu-admin.service";
 import { CreateOperatingHourDto } from "./restaurant-config/dto/operating-hour.dto";
 import { CreateSpecialDateDto } from "./restaurant-config/dto/special-dates.dto";
 import { RestaurantConfigService } from "./restaurant-config/restaurant-config.service";
+
+(async function bootstrap() {
+  const app = await NestFactory.createApplicationContext(AppModule);
+
+  const menuService = app.get(MenuAdminService);
+  const authService = app.get(AuthService);
+  const restaurantConfigService = app.get(RestaurantConfigService);
+
+  try {
+    // Clean the database
+    await cleanDatabase(app.get(DataSource));
+    await createRestaurantConfig(restaurantConfigService);
+    await createMenu(menuService);
+    await createUsers(authService, app);
+
+    console.log("Seeding completed");
+  } catch (err) {
+    console.log("Error seeding db: ", err);
+  } finally {
+    await app.close();
+  }
+})();
 
 async function cleanDatabase(dataSource: DataSource) {
   const queryRunner = dataSource.createQueryRunner();
@@ -78,94 +102,82 @@ async function createRestaurantConfig(restaurantConfigService: RestaurantConfigS
   await restaurantConfigService.createSpecialDate(specialDate2);
 }
 
-async function bootstrap() {
-  const app = await NestFactory.createApplicationContext(AppModule);
+async function createMenu(menuService: MenuAdminService) {
+  const menu1 = await menuService.createMenu({ name: "Lunch Menu", description: "Lunch Menu" });
+  const menu2 = await menuService.createMenu({ name: "Dinner Menu", description: "Dinner Menu" });
 
-  const menuService = app.get(MenuAdminService);
-  const authService = app.get(AuthService);
-  const restaurantConfigService = app.get(RestaurantConfigService);
+  const appetizers = await menuService.createCategory({ name: "Appetizers", menuId: menu1.id });
+  const mainCourses = await menuService.createCategory({
+    name: "Main Courses",
+    menuId: menu2.id,
+  });
 
-  try {
-    // Clean the database
-    await cleanDatabase(app.get(DataSource));
-    await createRestaurantConfig(restaurantConfigService);
+  await menuService.createPosition({
+    name: "Caprese Salad",
+    price: 1000,
+    description: "Fresh mozzarella, tomatoes, and basil drizzled with balsamic glaze",
+    ingredients: ["mozzarella", "tomatoes", "basil", "balsamic glaze"],
+    isVegetarian: true,
+    isVegan: false,
+    isGlutenFree: true,
+    menuCategoryId: appetizers.id,
+  });
 
-    const menu1 = await menuService.createMenu({ name: "Lunch Menu", description: "Lunch Menu" });
-    const menu2 = await menuService.createMenu({ name: "Dinner Menu", description: "Dinner Menu" });
+  const createdPosition = await menuService.createPosition({
+    name: "Spaghetti Carbonara",
+    price: 1500,
+    description: "Classic Italian pasta dish with eggs, cheese, pancetta, and black pepper",
+    ingredients: ["spaghetti", "eggs", "pecorino cheese", "pancetta", "black pepper"],
+    isVegetarian: false,
+    isVegan: false,
+    isGlutenFree: false,
+    menuCategoryId: mainCourses.id,
+  });
 
-    const appetizers = await menuService.createCategory({ name: "Appetizers", menuId: menu1.id });
-    const mainCourses = await menuService.createCategory({
-      name: "Main Courses",
-      menuId: menu2.id,
-    });
+  const positionImage = new UpdatePositionImageDto();
+  positionImage.id = "3d6535c9-be17-4f5d-b82f-566486919053";
+  positionImage.url =
+    "https://s3-rizztorante.s3.eu-central-1.amazonaws.com/3d6535c9-be17-4f5d-b82f-566486919053";
+  positionImage.alt = "Spaghetti carbonara hehe";
+  await menuService.updatePositionImage(createdPosition.id, positionImage);
 
-    await menuService.createPosition({
-      name: "Caprese Salad",
-      price: 1000,
-      description: "Fresh mozzarella, tomatoes, and basil drizzled with balsamic glaze",
-      ingredients: ["mozzarella", "tomatoes", "basil", "balsamic glaze"],
-      isVegetarian: true,
-      isVegan: false,
-      isGlutenFree: true,
-      menuCategoryId: appetizers.id,
-    });
+  await menuService.createPositionDetails(createdPosition.id, {
+    longDescription: "Updated long description",
+    // images: ["image1", "image2"],
+    allergens: ["peanuts", "gluten"],
+    nutritionalInfo: {
+      protein: 10,
+      carbs: 20,
+      fat: 30,
+    },
+  });
 
-    const createdPosition = await menuService.createPosition({
-      name: "Spaghetti Carbonara",
-      price: 1500,
-      description: "Classic Italian pasta dish with eggs, cheese, pancetta, and black pepper",
-      ingredients: ["spaghetti", "eggs", "pecorino cheese", "pancetta", "black pepper"],
-      isVegetarian: false,
-      isVegan: false,
-      isGlutenFree: false,
-      menuCategoryId: mainCourses.id,
-    });
-
-    await menuService.createPositionDetails(createdPosition.id, {
-      longDescription: "Updated long description",
-      // images: ["image1", "image2"],
-      allergens: ["peanuts", "gluten"],
-      nutritionalInfo: {
-        protein: 10,
-        carbs: 20,
-        fat: 30,
-      },
-    });
-
-    await menuService.updatePositionDetails(createdPosition.id, {
-      longDescription: "Updated long description",
-      // images: ["image1", "image2"],
-      allergens: ["peanuts", "gluten"],
-      nutritionalInfo: {
-        protein: 10,
-        carbs: 20,
-        fat: 30,
-        fiber: 40,
-      },
-    });
-
-    const user = await authService.registerUser({
-      email: "test@gmail.com",
-      password: "!23Haslo",
-      confirmPassword: "!23Haslo",
-    });
-
-    await authService.registerUser({
-      email: "test2@gmail.com",
-      password: "!23Haslo",
-      confirmPassword: "!23Haslo",
-    });
-
-    await authService.createOrRetrieveGuestUser();
-
-    await app.get(Connection).query(`UPDATE "user" SET role = 'ADMIN' WHERE id = $1`, [user.id]);
-
-    console.log("Seeding completed");
-  } catch (err) {
-    console.log("Error seeding db: ", err);
-  } finally {
-    await app.close();
-  }
+  await menuService.updatePositionDetails(createdPosition.id, {
+    longDescription: "Updated long description",
+    // images: ["image1", "image2"],
+    allergens: ["peanuts", "gluten"],
+    nutritionalInfo: {
+      protein: 10,
+      carbs: 20,
+      fat: 30,
+      fiber: 40,
+    },
+  });
 }
 
-bootstrap();
+async function createUsers(authService: AuthService, app: INestApplicationContext) {
+  const user = await authService.registerUser({
+    email: "test@gmail.com",
+    password: "!23Haslo",
+    confirmPassword: "!23Haslo",
+  });
+
+  await authService.registerUser({
+    email: "test2@gmail.com",
+    password: "!23Haslo",
+    confirmPassword: "!23Haslo",
+  });
+
+  await authService.createOrRetrieveGuestUser();
+  await app.get(Connection).query(`UPDATE "user" SET role = 'ADMIN' WHERE id = $1`, [user.id]);
+}
