@@ -5,6 +5,9 @@ import { Connection, DataSource } from "typeorm";
 import { AppModule } from "./app.module";
 import { AuthService } from "./auth/auth.service";
 import { MenuAdminService } from "./menu/menu-admin/menu-admin.service";
+import { CreateOperatingHourDto } from "./restaurant-config/dto/operating-hour.dto";
+import { CreateSpecialDateDto } from "./restaurant-config/dto/special-dates.dto";
+import { RestaurantConfigService } from "./restaurant-config/restaurant-config.service";
 
 async function cleanDatabase(dataSource: DataSource) {
   const queryRunner = dataSource.createQueryRunner();
@@ -39,15 +42,54 @@ async function cleanDatabase(dataSource: DataSource) {
   console.log("Database cleaned");
 }
 
+async function createRestaurantConfig(restaurantConfigService: RestaurantConfigService) {
+  // Add operating hours
+  const operatingHours: CreateOperatingHourDto[] = [];
+  for (let dayOfWeek = 0; dayOfWeek <= 6; dayOfWeek++) {
+    const singleOperatingHour = new CreateOperatingHourDto();
+    singleOperatingHour.dayOfWeek = dayOfWeek;
+    singleOperatingHour.isClosed = false;
+    singleOperatingHour.isFullDay = false;
+    singleOperatingHour.openingTime = "10:00";
+    singleOperatingHour.closingTime = "22:00";
+
+    operatingHours.push(singleOperatingHour);
+  }
+  for (const hour of operatingHours) {
+    await restaurantConfigService.createOperatingHour(hour);
+  }
+
+  // Add special dates
+  // const spceialDates: CreateSpecialDateDto[] = [];
+
+  const specialDate1 = new CreateSpecialDateDto();
+  specialDate1.openingTime = "10:00";
+  specialDate1.closingTime = "16:00";
+  specialDate1.isClosed = false;
+  specialDate1.date = new Date("2024-12-12").toISOString();
+  specialDate1.description = "Christmas Event SPOKO OK";
+  await restaurantConfigService.createSpecialDate(specialDate1);
+
+  const specialDate2 = new CreateSpecialDateDto();
+
+  specialDate2.isClosed = true;
+  specialDate2.date = new Date("2024-12-13").toISOString();
+  specialDate2.description = "Zamkniete całe te";
+  await restaurantConfigService.createSpecialDate(specialDate2);
+}
+
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
 
   const menuService = app.get(MenuAdminService);
   const authService = app.get(AuthService);
+  const restaurantConfigService = app.get(RestaurantConfigService);
 
   try {
     // Clean the database
     await cleanDatabase(app.get(DataSource));
+    await createRestaurantConfig(restaurantConfigService);
+
     const menu1 = await menuService.createMenu({ name: "Lunch Menu", description: "Lunch Menu" });
     const menu2 = await menuService.createMenu({ name: "Dinner Menu", description: "Dinner Menu" });
 
