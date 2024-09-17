@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 
 import Stripe from "stripe";
 
@@ -31,6 +31,8 @@ export class StripeService {
         quantity: item.quantity,
       }),
     );
+
+    if (!lineItems.length) throw new BadRequestException("Cart is empty");
 
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ["card", "blik", "p24"],

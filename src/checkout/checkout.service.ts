@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, HttpException, Injectable, NotFoundException } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 
 import { getUserCartEvent, initPaymentEvent } from "@events/payloads";
@@ -31,6 +31,8 @@ export class CheckoutService {
       // 3. Create order with PENDING status
       // 4. Try make PAYMENT for order (if its online)
       // 5. Notify restaurant about new order
+
+      if (!cart?.items?.length) throw new BadRequestException("Cart is empty");
 
       const [user] = await this.eventEmitter.emitAsync(...getUserEvent(userId));
 
