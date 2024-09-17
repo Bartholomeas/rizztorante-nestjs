@@ -1,4 +1,5 @@
 import { ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
@@ -65,10 +66,12 @@ async function bootstrap() {
     .setDescription("API for handling orders in restaurant")
     .setVersion("1.0")
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
 
-  await app.listen(process.env.APP_PORT);
+  const configService = app.get(ConfigService);
+  await app.listen(configService.get<number>("PORT"));
 }
 
 bootstrap();
