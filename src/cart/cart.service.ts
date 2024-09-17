@@ -116,7 +116,7 @@ export class CartService {
   private async retrieveUserCart(userId: string): Promise<Cart | null> {
     return this.cartRepository.findOne({
       where: { user: { id: userId } },
-      relations: ["items", "items.menuPosition"],
+      relations: ["items", "items.menuPosition", "items.menuPosition.coreImage"],
       // select: { user: { id: true } },
       // cache: {
       //   id: `${userId}-user-cart`,
