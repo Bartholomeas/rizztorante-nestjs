@@ -52,7 +52,7 @@ export class CheckoutDto {
   @Matches(/^\d{2}-\d{3}$/)
   zipCode: string;
 
-  @ApiProperty({ example: "123456789" })
+  @ApiProperty({ example: "+48123456789" })
   @IsString()
   @IsPhoneNumber()
   @ValidateIf(({ pickupType }) => pickupType === PickupEnum.DELIVERY)

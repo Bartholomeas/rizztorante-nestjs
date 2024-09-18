@@ -6,13 +6,13 @@ import { getUserEvent } from "@events/payloads/auth";
 import { createOrderEvent } from "@events/payloads/orders";
 
 import { User } from "@/auth/entities/user.entity";
-import { Cart } from "@/cart/entities/cart.entity";
+import { CartDto } from "@/cart/dto/cart.dto";
 
 import { CheckoutDto } from "./dto/checkout.dto";
 import { PaymentsEnum, PickupEnum } from "./enums/checkout.enums";
 
 interface CreateOrderProps {
-  cart: Cart;
+  cart: CartDto;
   user: User;
   checkoutData: CheckoutDto;
 }
@@ -24,7 +24,7 @@ export class CheckoutService {
   async proceedCheckout(userId: string | undefined, checkoutDto: CheckoutDto) {
     try {
       if (!userId) throw new NotFoundException("User is not found");
-      const [cart] = (await this.eventEmitter.emitAsync(...getUserCartEvent(userId))) as [Cart];
+      const [cart] = (await this.eventEmitter.emitAsync(...getUserCartEvent(userId))) as [CartDto];
 
       // 1. Get user cart
       // 2. Get user
@@ -62,14 +62,14 @@ export class CheckoutService {
   }: CreateOrderProps): Promise<{ url: string }> {
     const [successUrl] = await this.eventEmitter.emitAsync(
       ...initPaymentEvent({
-        cart,
+        lineItems: cart.toStripeLineItems(),
         checkoutData,
       }),
     );
 
     await this.eventEmitter.emitAsync(
       ...createOrderEvent({
-        cart,
+        cartDto: cart,
         user,
         checkoutData,
       }),
@@ -85,7 +85,7 @@ export class CheckoutService {
   }: CreateOrderProps): Promise<{ url: string }> {
     await this.eventEmitter.emitAsync(
       ...createOrderEvent({
-        cart,
+        cartDto: cart,
         user,
         checkoutData,
       }),

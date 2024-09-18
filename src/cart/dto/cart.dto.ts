@@ -2,6 +2,8 @@ import { ApiProperty } from "@nestjs/swagger";
 
 import { IsNumber, IsUUID, Min } from "class-validator";
 
+import { StripeLineItem } from "@/payments/stripe/interfaces/stripe.interfaces";
+
 import { CartItemDto } from "./cart-item.dto";
 import { Cart } from "../entities/cart.entity";
 
@@ -21,6 +23,23 @@ export class CartDto {
 
   @ApiProperty({ type: [CartItemDto] })
   items: CartItemDto[];
+
+  public toStripeLineItems(): StripeLineItem[] {
+    return this?.items?.map(
+      (item): StripeLineItem => ({
+        price_data: {
+          currency: "pln",
+          unit_amount: item.menuPosition.price,
+          product_data: {
+            name: item.menuPosition.name,
+            images: item?.menuPosition?.coreImage?.url ? [item.menuPosition.coreImage.url] : [],
+            description: item.menuPosition.description,
+          },
+        },
+        quantity: item.quantity,
+      }),
+    );
+  }
 
   constructor(partial: Partial<Cart>) {
     Object.assign(this, partial);

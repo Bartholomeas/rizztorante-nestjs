@@ -4,6 +4,7 @@ import Stripe from "stripe";
 
 import { Cart } from "@/cart/entities/cart.entity";
 
+import { StripeLineItem } from "./interfaces/stripe.interfaces";
 import { STRIPE_KEY } from "./stripe.constants";
 
 @Injectable()
@@ -16,22 +17,11 @@ export class StripeService {
     });
   }
 
-  async createPayment<T extends Record<string, any>>(cart: Cart, additionalInfo?: Partial<T>) {
-    const lineItems = cart?.items?.map(
-      (item): Stripe.Checkout.SessionCreateParams.LineItem => ({
-        price_data: {
-          currency: "pln",
-          unit_amount: item.menuPosition.price,
-          product_data: {
-            name: item.menuPosition.name,
-            images: item?.menuPosition?.coreImage?.url ? [item.menuPosition.coreImage.url] : [],
-            description: item.menuPosition.description,
-          },
-        },
-        quantity: item.quantity,
-      }),
-    );
-
+  // async createPayment<T extends Record<string, any>>(cart: Cart, additionalInfo?: Partial<T>)
+  async createPayment<T extends Record<string, any>>(
+    lineItems: StripeLineItem[],
+    additionalInfo?: Partial<T>,
+  ) {
     if (!lineItems.length) throw new BadRequestException("Cart is empty");
 
     const session = await this.stripe.checkout.sessions.create({
@@ -47,5 +37,22 @@ export class StripeService {
       locale: "pl",
     });
     return { url: session?.url };
+  }
+
+  convertCartToLineItems(cart: Cart): StripeLineItem[] {
+    return cart?.items?.map(
+      (item): StripeLineItem => ({
+        price_data: {
+          currency: "pln",
+          unit_amount: item.menuPosition.price,
+          product_data: {
+            name: item.menuPosition.name,
+            images: item?.menuPosition?.coreImage?.url ? [item.menuPosition.coreImage.url] : [],
+            description: item.menuPosition.description,
+          },
+        },
+        quantity: item.quantity,
+      }),
+    );
   }
 }

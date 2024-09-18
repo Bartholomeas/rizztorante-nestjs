@@ -7,6 +7,7 @@ import { UserRole } from "@common/types/user-roles.type";
 
 import { OrdersCreateOrderPayload } from "@events/payloads/orders";
 
+import { Cart } from "@/cart/entities/cart.entity";
 import { Order } from "@/orders/entities/order.entity";
 
 import { OrdersUtils } from "./orders.utils";
@@ -68,15 +69,15 @@ export class OrdersService {
 
   async createOrder(payload: OrdersCreateOrderPayload) {
     const orderNumber = OrdersUtils.createOrderId(
-      `order-${Date.now()}-${payload.cart?.id}-${payload.user?.id}-${JSON.stringify(payload.checkoutData)}`,
+      `order-${Date.now()}-${payload.cartDto?.id}-${payload.user?.id}-${JSON.stringify(payload.checkoutData)}`,
     );
 
     const order = new Order();
     order.orderNumber = orderNumber;
-    order.cart = payload.cart;
+    order.cart = { id: payload?.cartDto.id } as Cart;
     order.user = payload.user;
     order.checkoutData = payload.checkoutData;
 
-    return await this.repository.save(this.repository.create(order));
+    return await this.repository.save(order);
   }
 }
