@@ -13,7 +13,7 @@ export class PaymentsService {
   @OnEvent(PaymentsEventTypes.INIT_PAYMENT)
   async createPayment(payload: InitPaymentPayload) {
     return this.stripeService.createPayment<InitPaymentPayload["checkoutData"]>(
-      payload.cart,
+      payload.lineItems,
       payload.checkoutData,
     );
   }

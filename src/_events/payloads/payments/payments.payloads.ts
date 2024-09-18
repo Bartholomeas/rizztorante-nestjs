@@ -1,13 +1,13 @@
 import type { PaymentsEventTypes } from "@events/events";
 
-import type { Cart } from "@/cart/entities/cart.entity";
 import type { CheckoutDto } from "@/checkout/dto/checkout.dto";
+import type { StripeLineItem } from "@/payments/stripe/interfaces/stripe.interfaces";
 
 export type PaymentsPayloads = {
   [PaymentsEventTypes.INIT_PAYMENT]: InitPaymentPayload;
 };
 
 export class InitPaymentPayload {
-  public readonly cart: Cart;
+  public readonly lineItems: StripeLineItem[];
   public readonly checkoutData: CheckoutDto;
 }
