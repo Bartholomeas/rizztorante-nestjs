@@ -23,7 +23,7 @@ import { OpinionsModule } from "./opinions/opinions.module";
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [".env"],
+      envFilePath: ["./.env"],
       isGlobal: true,
     }),
     LoggerModule.forRoot({
@@ -51,7 +51,7 @@ import { OpinionsModule } from "./opinions/opinions.module";
     TypeOrmModule.forRoot({
       type: "postgres",
       host: process.env.DB_HOST ?? "localhost",
-      port: parseInt(process.env.APP_DB_PORT ?? "5434"),
+      port: parseInt(process.env.APP_DB_PORT ?? "5432"),
       username: process.env.APP_DB_USERNAME,
       password: process.env.APP_DB_PASSWORD,
       database: process.env.APP_DB_NAME,

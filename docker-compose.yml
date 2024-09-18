@@ -1,5 +1,3 @@
-version: "3.5"
-
 services:
   db:
     image: postgres:13
@@ -30,7 +28,7 @@ services:
       APP_DB_NAME: ${APP_DB_NAME}
       APP_DB_USERNAME: ${APP_DB_USERNAME}
       APP_DB_PASSWORD: ${APP_DB_PASSWORD}
-      APP_DB_PORT: ${APP_DB_PORT}
+      APP_DB_PORT: ${APP_DB_HOST_PORT}
       APP_DB_HOST_PORT: ${APP_DB_HOST_PORT}
       SESSION_NAME: ${SESSION_NAME}
       SESSION_SECRET: ${SESSION_SECRET}
