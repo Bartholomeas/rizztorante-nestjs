@@ -221,6 +221,8 @@ async function createIngredients(ingredientsService: IngredientsService) {
       name: "Pepperoni",
       description: "A type of Italian-American cured meat",
     },
+    { name: "Mozarella Fior Di Latte" },
+    { name: "Mozarella Di Buffala" },
   ];
 
   await Promise.all(ingredients.map((ingredient) => ingredientsService.create(ingredient)));
