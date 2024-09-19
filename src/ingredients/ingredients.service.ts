@@ -10,18 +10,26 @@ import { PageDto } from "@common/dto/pagination/page.dto";
 import { CreateIngredientDto } from "./dto/create-ingredient.dto";
 import { IngredientDto } from "./dto/ingredient-dto";
 import { UpdateIngredientDto } from "./dto/update-ingredient.dto";
+import { ConfigurableIngredient } from "./entities/configurable-ingredient.entity";
 import { Ingredient } from "./entities/ingredient.entity";
+import { IngredientsConfiguration } from "./entities/ingredients-configuration.entity";
 
 @Injectable()
 export class IngredientsService {
   constructor(
     @InjectRepository(Ingredient) private readonly ingredientRepository: Repository<Ingredient>,
+    @InjectRepository(IngredientsConfiguration)
+    private readonly ingredientsConfigurationRepository: Repository<IngredientsConfiguration>,
+
+    @InjectRepository(ConfigurableIngredient)
+    private readonly configurableIngredientRepository: Repository<ConfigurableIngredient>,
   ) {}
 
   async findAll(pageOptionsDto: PageOptionsWithSearchDto): Promise<PageDto<IngredientDto>> {
     const queryBuilder = this.ingredientRepository.createQueryBuilder("ingredient");
 
     queryBuilder
+      .leftJoinAndSelect("ingredient.image", "image")
       .orderBy("ingredient.name", pageOptionsDto.order)
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take);

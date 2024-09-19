@@ -1,8 +1,9 @@
-import { Column, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import { Ingredient } from "./ingredient.entity";
 import { IngredientsConfiguration } from "./ingredients-configuration.entity";
 
+@Entity()
 export class ConfigurableIngredient {
   @PrimaryGeneratedColumn("uuid")
   id: string;
