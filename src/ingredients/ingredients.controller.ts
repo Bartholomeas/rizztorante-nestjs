@@ -17,7 +17,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { ApiPaginatedResponse } from "@common/decorators/api-paginated-response.decorator";
-import { PageOptionsDto } from "@common/dto/pagination/page-options.dto";
+import { PageOptionsWithSearchDto } from "@common/dto/pagination/page-options-with-search.dto";
 
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
@@ -37,7 +37,7 @@ export class IngredientsController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Get all ingredients" })
   @ApiPaginatedResponse(IngredientDto)
-  findAll(@Query() pageOptionsDto: PageOptionsDto) {
+  findAll(@Query() pageOptionsDto: PageOptionsWithSearchDto) {
     try {
       return this.ingredientsService.findAll(pageOptionsDto);
     } catch (err) {
