@@ -77,8 +77,9 @@ export class IngredientsConfigurationService {
     throw new Error("Method not implemented.");
   }
 
-  deleteConfiguration(id: string) {
-    console.log(id);
-    throw new Error("Method not implemented.");
+  async deleteConfiguration(id: string): Promise<unknown> {
+    const configuration = await this.ingredientsConfigurationRepository.findOneBy({ id });
+    if (!configuration) throw new NotFoundException(`Configuration with id ${id} not found`);
+    return await this.ingredientsConfigurationRepository.delete(configuration);
   }
 }
