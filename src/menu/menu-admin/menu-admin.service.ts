@@ -58,6 +58,7 @@ export class MenuAdminService {
     const category = await this.findCategoryById(createMenuPositionDto.menuCategoryId);
     const position = this.menuPositionRepository.create({
       ...createMenuPositionDto,
+      ingredients: [],
       category,
     });
     return this.menuPositionRepository.save(position);

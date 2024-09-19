@@ -13,8 +13,8 @@ import { MenuPosition } from "@/menu/entities/menu-position.entity";
 import { Menu } from "@/menu/entities/menu.entity";
 
 import { CategoryDto } from "../dto/category.dto";
+import { MenuPositionDto } from "../dto/menu-position.dto";
 import { MenuDto } from "../dto/menu.dto";
-import { MenuPositionDto } from "../dto/menuPositionDto";
 import { PositionDetailsDto } from "../dto/position-details.dto";
 
 @Injectable()

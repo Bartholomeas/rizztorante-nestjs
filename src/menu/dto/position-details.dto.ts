@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsUUID } from "class-validator";
 
 import { BasePositionDetailsDto } from "./base/base-position-details.dto";
-import { MenuPositionDto } from "./menuPositionDto";
+import { MenuPositionDto } from "./menu-position.dto";
 
 export class PositionDetailsDto extends BasePositionDetailsDto {
   @ApiProperty({

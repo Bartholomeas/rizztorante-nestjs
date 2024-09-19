@@ -16,6 +16,7 @@ import { Opinion } from "./entities/opinion.entity";
 @Injectable()
 export class OpinionsService {
   constructor(@InjectRepository(Opinion) private readonly repository: Repository<Opinion>) {}
+
   async getAllOpinions(
     pageOptionsDto: PageOptionsDto,
     userRole: UserRole,
@@ -37,6 +38,7 @@ export class OpinionsService {
 
     return new PageDto(entities, pageMetaDto);
   }
+
   async addOpinion(dto: CreateOpinionDto) {
     const newOpinion = await this.repository.create(dto);
     return await this.repository.save(newOpinion);

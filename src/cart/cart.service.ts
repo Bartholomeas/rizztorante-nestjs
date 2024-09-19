@@ -37,7 +37,7 @@ export class CartService {
     const currentUser = await this.userRepository.findOne({ where: { id: userId } });
     if (!currentUser) throw new NotFoundException(`User with id ${userId} not found`);
 
-    return this.initUserCart(currentUser);
+    return await this.initUserCart(currentUser);
   }
 
   async addItem(userId: string, addCartItemDto: AddCartItemDto): Promise<Cart> {
@@ -89,7 +89,8 @@ export class CartService {
 
     cart.total = cart.total - oldAmount + item.amount;
 
-    return this.cartRepository.save(cart);
+    await this.cartRepository.save(cart);
+    return cart;
   }
 
   async removeItem(userId: string, itemId: string): Promise<CartDto> {
@@ -103,11 +104,12 @@ export class CartService {
     cart.total -= removedItem.amount;
 
     await this.cartItemRepository.remove(removedItem as CartItem);
-    return this.cartRepository.save(cart);
+    await this.cartRepository.save(cart);
+    return cart;
   }
 
   private async initUserCart(user: User): Promise<CartDto> {
-    const createdCart = this.cartRepository.create({ user, items: [], total: 0 });
+    const createdCart = this.cartRepository.create({ user, items: [], total: 0 } as Partial<Cart>);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { user: _, ...rest } = await this.cartRepository.save(createdCart);
     return new CartDto(rest);

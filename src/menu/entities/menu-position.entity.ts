@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   Index,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -14,6 +15,7 @@ import { MenuCategory } from "@/menu/entities/menu-category.entity";
 
 import { MenuPositionImage } from "./menu-images.entity";
 import { MenuPositionDetails } from "./menu-position-details.entity";
+import { Ingredient } from "../../ingredients/entities/ingredient.entity";
 
 @Entity()
 @Check(`"price" >= 0`)
@@ -36,8 +38,11 @@ export class MenuPosition {
   @Column({ default: null, nullable: true })
   description?: string;
 
-  @Column({ type: "simple-array", nullable: true })
-  ingredients?: string[];
+  // @Column({ type: "simple-array", nullable: true })
+  @ManyToMany(() => Ingredient, (ingredient) => ingredient.menuPosition, {
+    nullable: true,
+  })
+  ingredients?: Ingredient[];
 
   @Column({ type: "boolean", default: false })
   isVegetarian: boolean;
