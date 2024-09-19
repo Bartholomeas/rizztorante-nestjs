@@ -12,13 +12,13 @@ import { AppService } from "@/app.service";
 import { AuthModule } from "@/auth/auth.module";
 import { CartModule } from "@/cart/cart.module";
 import { CheckoutModule } from "@/checkout/checkout.module";
+import { IngredientsModule } from "@/ingredients/ingredients.module";
 import { MenuModule } from "@/menu/menu.module";
+import { OpinionsModule } from "@/opinions/opinions.module";
 import { OrdersModule } from "@/orders/orders.module";
 import { PaymentsModule } from "@/payments/payments.module";
 import { RestaurantConfigModule } from "@/restaurant-config/restaurant-config.module";
 import { UploadsModule } from "@/uploads/uploads.module";
-
-import { OpinionsModule } from "./opinions/opinions.module";
 
 @Module({
   imports: [
@@ -72,6 +72,7 @@ import { OpinionsModule } from "./opinions/opinions.module";
     EventEmitterModule.forRoot({ delimiter: "." }),
     AuthModule,
     RestaurantConfigModule,
+    IngredientsModule,
     MenuModule,
     OrdersModule,
     CartModule,

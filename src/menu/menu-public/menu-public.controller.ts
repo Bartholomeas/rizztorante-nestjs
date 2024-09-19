@@ -13,8 +13,8 @@ import { ApiOperation, ApiResponse, ApiTags, getSchemaPath } from "@nestjs/swagg
 import { MenuPublicService } from "@/menu/menu-public/menu-public.service";
 
 import { CategoryDto } from "../dto/category.dto";
+import { MenuPositionDto } from "../dto/menu-position.dto";
 import { MenuDto } from "../dto/menu.dto";
-import { MenuPositionDto } from "../dto/menuPositionDto";
 import { PositionDetailsDto } from "../dto/position-details.dto";
 
 @ApiTags("Menu Public")

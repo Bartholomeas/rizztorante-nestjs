@@ -5,11 +5,14 @@ import { Connection, DataSource } from "typeorm";
 
 import { AppModule } from "./app.module";
 import { AuthService } from "./auth/auth.service";
+import { IngredientsService } from "./ingredients/ingredients.service";
 import { UpdatePositionImageDto } from "./menu/dto/update/update-position-image.dto";
 import { MenuAdminService } from "./menu/menu-admin/menu-admin.service";
 import { CreateOperatingHourDto } from "./restaurant-config/dto/operating-hour.dto";
 import { CreateSpecialDateDto } from "./restaurant-config/dto/special-dates.dto";
 import { RestaurantConfigService } from "./restaurant-config/restaurant-config.service";
+
+import type { CreateIngredientDto } from "./ingredients/dto/create-ingredient.dto";
 
 (async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -17,6 +20,7 @@ import { RestaurantConfigService } from "./restaurant-config/restaurant-config.s
   const menuService = app.get(MenuAdminService);
   const authService = app.get(AuthService);
   const restaurantConfigService = app.get(RestaurantConfigService);
+  const ingredientsService = app.get(IngredientsService);
 
   try {
     // Clean the database
@@ -24,6 +28,7 @@ import { RestaurantConfigService } from "./restaurant-config/restaurant-config.s
     await createRestaurantConfig(restaurantConfigService);
     await createMenu(menuService);
     await createUsers(authService, app);
+    await createIngredients(ingredientsService);
 
     console.log("Seeding completed");
   } catch (err) {
@@ -180,4 +185,43 @@ async function createUsers(authService: AuthService, app: INestApplicationContex
 
   await authService.createOrRetrieveGuestUser();
   await app.get(Connection).query(`UPDATE "user" SET role = 'ADMIN' WHERE id = $1`, [user.id]);
+}
+
+async function createIngredients(ingredientsService: IngredientsService) {
+  const ingredients: CreateIngredientDto[] = [
+    {
+      name: "Cheese",
+      description: "A type of dairy product",
+    },
+    {
+      name: "Tomato",
+      description: "A juicy red fruit",
+    },
+    {
+      name: "Mortadela",
+      description: "A type of Italian sausage",
+    },
+    {
+      name: "Guanchale",
+      description: "A type of cured meat",
+    },
+    {
+      name: "Ham",
+      description: "A type of cured meat",
+    },
+    {
+      name: "Salami",
+      description: "A type of Italian cured meat",
+    },
+    {
+      name: "Provolone",
+      description: "A type of Italian cheese",
+    },
+    {
+      name: "Pepperoni",
+      description: "A type of Italian-American cured meat",
+    },
+  ];
+
+  await Promise.all(ingredients.map((ingredient) => ingredientsService.create(ingredient)));
 }

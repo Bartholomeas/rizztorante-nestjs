@@ -141,7 +141,7 @@ describe("CartService", () => {
     const result = await service.removeItem(userId, itemId);
 
     expect(result.items.length).toBe(0);
-    expect(result.total).toBe(10);
+    expect(result.total).toBe(0);
   });
 
   it("should throw NotFoundException if item to remove is not found", async () => {
@@ -167,7 +167,7 @@ describe("CartService", () => {
 
     expect(result.items[0].quantity).toBe(2);
     expect(result.items[0].amount).toBe(20);
-    expect(result.total).toBe(10);
+    expect(result.total).toBe(20);
   });
 
   it("should throw NotFoundException if item to update quantity is not found", async () => {

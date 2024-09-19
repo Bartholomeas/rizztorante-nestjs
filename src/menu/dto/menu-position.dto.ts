@@ -17,4 +17,7 @@ export class MenuPositionDto extends BasePositionDto {
 
   @ApiProperty({ type: MenuPositionImageDto })
   coreImage: MenuPositionImageDto;
+
+  @ApiProperty({ type: [String] })
+  ingredients: any[];
 }

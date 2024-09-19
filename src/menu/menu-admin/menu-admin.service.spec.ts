@@ -187,6 +187,7 @@ describe("MenuAdminService", () => {
       });
       expect(menuPositionRepository.create).toHaveBeenCalledWith({
         ...createPositionDto,
+        ingredients: [],
         category: menuCategory,
       });
       expect(menuPositionRepository.save).toHaveBeenCalledWith(createdPosition);

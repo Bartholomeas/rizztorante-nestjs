@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsString, IsNumber, ValidateNested, IsUUID, IsPositive, Min } from "class-validator";
 
 import { MenuPositionImageDto } from "@/menu/dto/menu-position-image.dto";
-import { MenuPositionDto } from "@/menu/dto/menuPositionDto";
+import { MenuPositionDto } from "@/menu/dto/menu-position.dto";
 
 import { CartItem } from "../entities/cart-item.entity";
 
