@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
-import { Ingredient } from "./ingredient.entity";
 import { IngredientsConfiguration } from "./ingredients-configuration.entity";
+import { Ingredient } from "../../entities/ingredient.entity";
 
 @Entity()
 export class ConfigurableIngredient {

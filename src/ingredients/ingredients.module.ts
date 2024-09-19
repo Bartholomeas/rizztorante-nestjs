@@ -1,21 +1,16 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { ConfigurableIngredient } from "./entities/configurable-ingredient.entity";
 import { IngredientImage } from "./entities/ingredient-image.entity";
 import { Ingredient } from "./entities/ingredient.entity";
-import { IngredientsConfiguration } from "./entities/ingredients-configuration.entity";
+import { IngredientsConfigurationModule } from "./ingredients-configuration/ingredients-configuration.module";
 import { IngredientsController } from "./ingredients.controller";
 import { IngredientsService } from "./ingredients.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Ingredient,
-      IngredientsConfiguration,
-      ConfigurableIngredient,
-      IngredientImage,
-    ]),
+    TypeOrmModule.forFeature([Ingredient, IngredientImage]),
+    IngredientsConfigurationModule,
   ],
   providers: [IngredientsService],
   controllers: [IngredientsController],

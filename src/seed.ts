@@ -225,5 +225,7 @@ async function createIngredients(ingredientsService: IngredientsService) {
     { name: "Mozarella Di Buffala" },
   ];
 
-  await Promise.all(ingredients.map((ingredient) => ingredientsService.create(ingredient)));
+  await Promise.all(
+    ingredients.map((ingredient) => ingredientsService.createIngredient(ingredient)),
+  );
 }
