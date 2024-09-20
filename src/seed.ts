@@ -7,9 +7,11 @@ import { IngredientsConfigService } from "@/ingredients/ingredients-config/ingre
 
 import { AppModule } from "./app.module";
 import { AuthService } from "./auth/auth.service";
+import { CreateIngredientsConfigDto } from "./ingredients/ingredients-config/dto/create-ingredients-config.dto";
 import { IngredientsService } from "./ingredients/ingredients.service";
 import { UpdatePositionImageDto } from "./menu/dto/update/update-position-image.dto";
 import { MenuAdminService } from "./menu/menu-admin/menu-admin.service";
+import { MenuPublicService } from "./menu/menu-public/menu-public.service";
 import { CreateOperatingHourDto } from "./restaurant-config/dto/operating-hour.dto";
 import { CreateSpecialDateDto } from "./restaurant-config/dto/special-dates.dto";
 import { RestaurantConfigService } from "./restaurant-config/restaurant-config.service";
@@ -19,20 +21,23 @@ import type { CreateIngredientDto } from "./ingredients/dto/create-ingredient.dt
 (async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
 
-  const menuService = app.get(MenuAdminService);
+  const menuAdminService = app.get(MenuAdminService);
+  const menuPublicService = app.get(MenuPublicService);
   const authService = app.get(AuthService);
   const restaurantConfigService = app.get(RestaurantConfigService);
   const ingredientsService = app.get(IngredientsService);
   const ingredientsConfigurationService = app.get(IngredientsConfigService);
-  console.log(ingredientsConfigurationService);
 
   try {
     // Clean the database
     await cleanDatabase(app.get(DataSource));
+
+    // Create seed data
     await createRestaurantConfig(restaurantConfigService);
-    await createMenu(menuService);
+    await createMenu(menuAdminService);
     await createUsers(authService, app);
     await createIngredients(ingredientsService);
+    await createIngredientsConfiguration(ingredientsConfigurationService, menuPublicService);
 
     console.log("Seeding completed");
   } catch (err) {
@@ -232,4 +237,27 @@ async function createIngredients(ingredientsService: IngredientsService) {
   await Promise.all(
     ingredients.map((ingredient) => ingredientsService.createIngredient(ingredient)),
   );
+}
+
+async function createIngredientsConfiguration(
+  ingredientsConfigurationService: IngredientsConfigService,
+  menuService: MenuPublicService,
+) {
+  try {
+    const menus = await menuService.getMenus();
+    const menuCategories1 = await menuService.getMenuCategories(menus[0].id);
+    const menuCategories2 = await menuService.getMenuCategories(menus[1].id);
+
+    const ingredientsConfiguration = new CreateIngredientsConfigDto();
+    ingredientsConfiguration.name = "Pizza";
+    ingredientsConfiguration.ingredientIds = [];
+    ingredientsConfiguration.menuPositionIds = [
+      menuCategories1[0]?.positions[0]?.id,
+      menuCategories2[0]?.positions[0]?.id,
+    ];
+
+    await ingredientsConfigurationService.createConfiguration(ingredientsConfiguration);
+  } catch (err) {
+    console.log("Error creating ingredients configuration: ", err);
+  }
 }

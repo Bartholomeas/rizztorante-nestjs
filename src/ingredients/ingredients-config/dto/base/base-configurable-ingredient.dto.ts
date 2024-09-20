@@ -6,7 +6,7 @@ export abstract class BaseConfigurableIngredientDto {
   @ApiProperty()
   @IsNumber()
   @IsInt()
-  priceAdjustment: number;
+  priceAdjustment: number = 0;
 
   @ApiProperty()
   quantity: number;

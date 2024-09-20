@@ -5,17 +5,17 @@ import { IsArray, IsOptional, IsString, IsUUID } from "class-validator";
 export abstract class BaseIngredientsConfigDto {
   @ApiProperty({ description: "Name of the ingredients configuration" })
   @IsString()
-  readonly name: string;
+  name: string;
 
   @ApiProperty({ description: "Menu position ids", default: [] })
   @IsOptional()
   @IsArray()
   @IsUUID("all", { each: true })
-  readonly menuPositionIds: string[] = [];
+  menuPositionIds: string[] = [];
 
   @ApiProperty({ description: "Ingredient ids", default: [] })
   @IsOptional()
   @IsArray()
   @IsUUID("all", { each: true })
-  readonly ingredientIds: string[] = [];
+  ingredientIds: string[] = [];
 }
