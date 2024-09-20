@@ -1,17 +1,15 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { IngredientsConfigModule } from "@/ingredients/ingredients-config/ingredients-config.module";
+
 import { IngredientImage } from "./entities/ingredient-image.entity";
 import { Ingredient } from "./entities/ingredient.entity";
-import { IngredientsConfigurationModule } from "./ingredients-configuration/ingredients-configuration.module";
 import { IngredientsController } from "./ingredients.controller";
 import { IngredientsService } from "./ingredients.service";
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Ingredient, IngredientImage]),
-    IngredientsConfigurationModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Ingredient, IngredientImage]), IngredientsConfigModule],
   providers: [IngredientsService],
   controllers: [IngredientsController],
 })

@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 
 import { IsArray, IsOptional, IsString, IsUUID } from "class-validator";
 
-export abstract class BaseIngredientsConfigurationDto {
+export abstract class BaseIngredientsConfigDto {
   @ApiProperty({ description: "Name of the ingredients configuration" })
   @IsString()
   readonly name: string;

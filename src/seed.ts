@@ -3,6 +3,8 @@ import { NestFactory } from "@nestjs/core";
 
 import { Connection, DataSource } from "typeorm";
 
+import { IngredientsConfigService } from "@/ingredients/ingredients-config/ingredients-config.service";
+
 import { AppModule } from "./app.module";
 import { AuthService } from "./auth/auth.service";
 import { IngredientsService } from "./ingredients/ingredients.service";
@@ -21,6 +23,8 @@ import type { CreateIngredientDto } from "./ingredients/dto/create-ingredient.dt
   const authService = app.get(AuthService);
   const restaurantConfigService = app.get(RestaurantConfigService);
   const ingredientsService = app.get(IngredientsService);
+  const ingredientsConfigurationService = app.get(IngredientsConfigService);
+  console.log(ingredientsConfigurationService);
 
   try {
     // Clean the database

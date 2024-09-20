@@ -4,9 +4,10 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
+import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
+import { IngredientsConfig } from "@/ingredients/ingredients-config/entities/ingredients-config.entity";
+
 import { Ingredient } from "./entities/ingredient.entity";
-import { ConfigurableIngredient } from "./ingredients-configuration/entities/configurable-ingredient.entity";
-import { IngredientsConfiguration } from "./ingredients-configuration/entities/ingredients-configuration.entity";
 import { IngredientsService } from "./ingredients.service";
 
 describe("IngredientsService", () => {
@@ -21,7 +22,7 @@ describe("IngredientsService", () => {
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(IngredientsConfiguration),
+          provide: getRepositoryToken(IngredientsConfig),
           useClass: Repository,
         },
         {

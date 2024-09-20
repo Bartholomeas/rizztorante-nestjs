@@ -1,8 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
+import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
+
 import { IngredientImage } from "./ingredient-image.entity";
 import { MenuPosition } from "../../menu/entities/menu-position.entity";
-import { ConfigurableIngredient } from "../ingredients-configuration/entities/configurable-ingredient.entity";
 
 @Entity()
 export class Ingredient {
