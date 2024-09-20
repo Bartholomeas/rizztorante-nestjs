@@ -23,7 +23,7 @@ import { UserRole } from "@common/types/user-roles.type";
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 
-import { CreateConfigurableIngredientDto } from "./dto/create-configurable-ingredient.dto";
+import { CreateCustomIngredientDto } from "./dto/create-custom-ingredient.dto";
 import { CreateIngredientsConfigDto } from "./dto/create-ingredients-config.dto";
 import { UpdateIngredientsConfigDto } from "./dto/update-ingredients-config.dto";
 import { IngredientsConfig } from "./entities/ingredients-config.entity";
@@ -36,7 +36,7 @@ export class IngredientsConfigController {
 
   @Roles(UserRole.ADMIN)
   @UseGuards(RolesGuard)
-  @Get("")
+  @Get()
   @ApiOperation({ summary: "Find all ingredients configuration (restricted)" })
   @ApiPaginatedResponse(IngredientsConfig)
   async findAllConfigurations(@Query() pageOptionsDto: PageOptionsWithSearchDto) {
@@ -78,10 +78,11 @@ export class IngredientsConfigController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Create new configurable ingredients" })
   async createConfigurableIngredients(
-    @Body() createConfigurableIngredientDto: CreateConfigurableIngredientDto,
+    @Body() createConfigurableIngredientDto: CreateCustomIngredientDto,
   ) {
     try {
-      return this.ingredientsConfigService.createConfigurableIngredients(
+      return this.ingredientsConfigService.createCustomIngredients(
+        "TEST",
         createConfigurableIngredientDto,
       );
     } catch (err) {

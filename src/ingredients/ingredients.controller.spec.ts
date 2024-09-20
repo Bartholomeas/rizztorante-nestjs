@@ -4,7 +4,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
+import { CustomIngredient } from "@/ingredients/ingredients-config/entities/custom-ingredient.entity";
 import { IngredientsConfig } from "@/ingredients/ingredients-config/entities/ingredients-config.entity";
 
 import { Ingredient } from "./entities/ingredient.entity";
@@ -28,7 +28,7 @@ describe("IngredientsController", () => {
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(ConfigurableIngredient),
+          provide: getRepositoryToken(CustomIngredient),
           useClass: Repository,
         },
       ],

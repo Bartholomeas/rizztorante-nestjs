@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 
-import { ConfigurableIngredient } from "./configurable-ingredient.entity";
+import { CustomIngredient } from "./custom-ingredient.entity";
 
 @Entity()
 export class IngredientsConfig {
@@ -12,11 +12,11 @@ export class IngredientsConfig {
   @Column({ unique: true })
   name: string;
 
-  @OneToMany(() => ConfigurableIngredient, (ingredient) => ingredient.ingredientsConfiguration, {
+  @OneToMany(() => CustomIngredient, (ingredient) => ingredient.ingredientsConfiguration, {
     nullable: true,
     cascade: true,
   })
-  ingredients?: ConfigurableIngredient[];
+  ingredients?: CustomIngredient[];
 
   @OneToMany(() => MenuPosition, (menuPosition) => menuPosition.ingredientsConfiguration, {
     nullable: true,

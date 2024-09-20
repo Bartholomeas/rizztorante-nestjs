@@ -1,9 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
-import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
-
 import { IngredientImage } from "./ingredient-image.entity";
 import { MenuPosition } from "../../menu/entities/menu-position.entity";
+import { CustomIngredient } from "../ingredients-config/entities/custom-ingredient.entity";
 
 @Entity()
 export class Ingredient {
@@ -37,10 +36,10 @@ export class Ingredient {
   })
   menuPosition?: MenuPosition[];
 
-  @OneToOne(() => ConfigurableIngredient, (config) => config.ingredient, {
+  @OneToOne(() => CustomIngredient, (config) => config.ingredient, {
     nullable: true,
     cascade: true,
     onDelete: "CASCADE",
   })
-  config?: ConfigurableIngredient;
+  config?: CustomIngredient;
 }

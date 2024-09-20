@@ -91,7 +91,7 @@ describe("CartService", () => {
     jest.spyOn(service["eventEmitter"], "emitAsync").mockResolvedValue([menuPosition]);
     jest.spyOn(service["cartRepository"], "save").mockResolvedValue(userCart);
 
-    const result = await service.addItem(userId, addCartItemDto);
+    const result = await service.addToCart(userId, addCartItemDto);
 
     expect(result.items.length).toBe(1);
     expect(result.items[0].menuPosition).toEqual(menuPosition);
@@ -110,7 +110,7 @@ describe("CartService", () => {
     jest.spyOn(service["eventEmitter"], "emitAsync").mockResolvedValue([menuPosition]);
     jest.spyOn(service["cartRepository"], "save").mockResolvedValue(userCart);
 
-    const result = await service.addItem(userId, addCartItemDto);
+    const result = await service.addToCart(userId, addCartItemDto);
 
     expect(result.items.length).toBe(1);
     expect(result.items[0].quantity).toBe(2);
@@ -125,7 +125,7 @@ describe("CartService", () => {
     jest.spyOn(service, "getUserCart").mockResolvedValue(new CartDto(userCart));
     jest.spyOn(service["eventEmitter"], "emitAsync").mockResolvedValue([]);
 
-    await expect(service.addItem(userId, addCartItemDto)).rejects.toThrow(NotFoundException);
+    await expect(service.addToCart(userId, addCartItemDto)).rejects.toThrow(NotFoundException);
   });
 
   it("should remove an item from the cart", async () => {

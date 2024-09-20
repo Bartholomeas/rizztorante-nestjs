@@ -20,4 +20,7 @@ export class CartItem {
 
   @ManyToOne(() => MenuPosition, (menuPosition) => menuPosition.cartItems)
   menuPosition: MenuPosition;
+
+  // @ManyToMany(() => CustomIngredient, (ingredient) => ingredient.cartItems)
+  // customIngredients: CustomIngredient[];
 }

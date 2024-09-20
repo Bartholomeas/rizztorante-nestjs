@@ -4,7 +4,7 @@ import { IngredientsConfig } from "./ingredients-config.entity";
 import { Ingredient } from "../../entities/ingredient.entity";
 
 @Entity()
-export class ConfigurableIngredient {
+export class CustomIngredient {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -19,6 +19,9 @@ export class ConfigurableIngredient {
 
   @OneToOne(() => Ingredient, (ingredient) => ingredient.config)
   ingredient: Ingredient;
+
+  // @ManyToMany(() => CartItem, (cartItem) => cartItem.customIngredients)
+  // cartItems: CartItem[];
 
   @ManyToMany(() => IngredientsConfig, (config) => config.ingredients, { nullable: true })
   ingredientsConfiguration: IngredientsConfig;

@@ -12,10 +12,10 @@ import { getSinglePositionEvent } from "@events/payloads";
 
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 
-import { CreateConfigurableIngredientDto } from "./dto/create-configurable-ingredient.dto";
+import { CreateCustomIngredientDto } from "./dto/create-custom-ingredient.dto";
 import { CreateIngredientsConfigDto } from "./dto/create-ingredients-config.dto";
 import { UpdateIngredientsConfigDto } from "./dto/update-ingredients-config.dto";
-import { ConfigurableIngredient } from "./entities/configurable-ingredient.entity";
+import { CustomIngredient } from "./entities/custom-ingredient.entity";
 import { IngredientsConfig } from "./entities/ingredients-config.entity";
 
 @Injectable()
@@ -23,8 +23,8 @@ export class IngredientsConfigService {
   constructor(
     @InjectRepository(IngredientsConfig)
     private readonly ingredientsConfigRepository: Repository<IngredientsConfig>,
-    @InjectRepository(ConfigurableIngredient)
-    private readonly configurableIngredientRepository: Repository<ConfigurableIngredient>,
+    @InjectRepository(CustomIngredient)
+    private readonly configurableIngredientRepository: Repository<CustomIngredient>,
     // @InjectRepository(Ingredient)
     // private readonly ingredientRepository: Repository<Ingredient>,
     private readonly eventEmitter: EventEmitter2,
@@ -79,12 +79,17 @@ export class IngredientsConfigService {
   async findConfiguration(id: string) {
     return await this.retrieveConfiguration(id);
   }
-  async createConfigurableIngredients(
-    createConfigurableIngredientDto: CreateConfigurableIngredientDto,
+
+  async createCustomIngredients(
+    configId: string,
+    createConfigurableIngredientDto: CreateCustomIngredientDto,
   ) {
-    console.log("createConfigurableIngredientDto:", createConfigurableIngredientDto);
+    const configuration = await this.retrieveConfiguration(configId);
+
+    console.log("createConfigurableIngredientDto:", configuration, createConfigurableIngredientDto);
     throw new Error("Method not implemented.");
   }
+
   async createConfiguration(createIngredientsConfigurationDto: CreateIngredientsConfigDto) {
     const nameExists = await this.ingredientsConfigRepository.exists({
       where: {
