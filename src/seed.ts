@@ -245,12 +245,17 @@ async function createIngredientsConfiguration(
 ) {
   try {
     const menus = await menuService.getMenus();
+
+    if (menus.length < 2) {
+      console.log("Not enough menus found. Exiting function.");
+      return;
+    }
     const menuCategories1 = await menuService.getMenuCategories(menus[0].id);
     const menuCategories2 = await menuService.getMenuCategories(menus[1].id);
 
     const ingredientsConfiguration = new CreateIngredientsConfigDto();
     ingredientsConfiguration.name = "Pizza";
-    ingredientsConfiguration.ingredientIds = [];
+    ingredientsConfiguration.configurableIngredientIds = [];
     ingredientsConfiguration.menuPositionIds = [
       menuCategories1[0]?.positions[0]?.id,
       menuCategories2[0]?.positions[0]?.id,

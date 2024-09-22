@@ -23,14 +23,14 @@ import { UserRole } from "@common/types/user-roles.type";
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 
-import { CreateCustomIngredientDto } from "./dto/create-custom-ingredient.dto";
+import { CreateConfigurableIngredientDto } from "./dto/create-configurable-ingredient.dto";
 import { CreateIngredientsConfigDto } from "./dto/create-ingredients-config.dto";
 import { UpdateIngredientsConfigDto } from "./dto/update-ingredients-config.dto";
 import { IngredientsConfig } from "./entities/ingredients-config.entity";
 import { IngredientsConfigService } from "./ingredients-config.service";
 
 @Controller("ingredients-config")
-@ApiTags("Ingredients Configuration")
+@ApiTags("Ingredients Config")
 export class IngredientsConfigController {
   constructor(private readonly ingredientsConfigService: IngredientsConfigService) {}
 
@@ -74,15 +74,16 @@ export class IngredientsConfigController {
 
   @Roles(UserRole.ADMIN)
   @UseGuards(RolesGuard)
-  @Post("/configurable")
+  @Post("/custom-ingredient/:ingredientId")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Create new configurable ingredients" })
-  async createConfigurableIngredients(
-    @Body() createConfigurableIngredientDto: CreateCustomIngredientDto,
+  async createConfigurableIngredient(
+    @Param("ingredientId", new ParseUUIDPipe()) ingredientId: string,
+    @Body() createConfigurableIngredientDto: CreateConfigurableIngredientDto,
   ) {
     try {
-      return this.ingredientsConfigService.createCustomIngredients(
-        "TEST",
+      return this.ingredientsConfigService.createConfigurableIngredient(
+        ingredientId,
         createConfigurableIngredientDto,
       );
     } catch (err) {
@@ -99,6 +100,46 @@ export class IngredientsConfigController {
   async createConfiguration(@Body() createIngredientsConfigurationDto: CreateIngredientsConfigDto) {
     try {
       return this.ingredientsConfigService.createConfiguration(createIngredientsConfigurationDto);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException();
+    }
+  }
+
+  @Roles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
+  @Post("/:configId/configurable-ingredient/:configurableIngredientId")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: "Add configurable ingredient to configuration" })
+  async addConfigurableIngredientToConfig(
+    @Param("configId", new ParseUUIDPipe()) configId: string,
+    @Param("configurableIngredientId", new ParseUUIDPipe()) configurableIngredientId: string,
+  ) {
+    try {
+      return await this.ingredientsConfigService.addConfigurableIngredientToConfig(
+        configId,
+        configurableIngredientId,
+      );
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException();
+    }
+  }
+
+  @Roles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
+  @Delete("/:configId/configurable-ingredient/:configurableIngredientId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: "Remove configurable ingredient from configuration" })
+  async removeConfigurableIngredientFromConfig(
+    @Param("configId", new ParseUUIDPipe()) configId: string,
+    @Param("configurableIngredientId", new ParseUUIDPipe()) configurableIngredientId: string,
+  ) {
+    try {
+      return await this.ingredientsConfigService.removeConfigurableIngredientFromConfig(
+        configId,
+        configurableIngredientId,
+      );
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException();

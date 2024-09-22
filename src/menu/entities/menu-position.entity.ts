@@ -68,12 +68,12 @@ export class MenuPosition {
   @OneToMany(() => CartItem, (cartItem) => cartItem.menuPosition)
   cartItems: CartItem[];
 
-  @ManyToOne(
+  @ManyToMany(
     () => IngredientsConfig,
     (ingredientsConfiguration) => ingredientsConfiguration.menuPositions,
     {
       nullable: true,
     },
   )
-  ingredientsConfiguration?: IngredientsConfig;
+  ingredientsConfiguration?: IngredientsConfig[];
 }

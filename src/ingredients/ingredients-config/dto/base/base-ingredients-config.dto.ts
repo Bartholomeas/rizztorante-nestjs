@@ -17,5 +17,5 @@ export abstract class BaseIngredientsConfigDto {
   @IsOptional()
   @IsArray()
   @IsUUID("all", { each: true })
-  ingredientIds: string[] = [];
+  configurableIngredientIds?: string[] = [];
 }

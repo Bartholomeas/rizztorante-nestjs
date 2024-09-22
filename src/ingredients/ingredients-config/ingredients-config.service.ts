@@ -12,21 +12,22 @@ import { getSinglePositionEvent } from "@events/payloads";
 
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 
-import { CreateCustomIngredientDto } from "./dto/create-custom-ingredient.dto";
+import { CreateConfigurableIngredientDto } from "./dto/create-configurable-ingredient.dto";
 import { CreateIngredientsConfigDto } from "./dto/create-ingredients-config.dto";
 import { UpdateIngredientsConfigDto } from "./dto/update-ingredients-config.dto";
-import { CustomIngredient } from "./entities/custom-ingredient.entity";
+import { ConfigurableIngredient } from "./entities/configurable-ingredient.entity";
 import { IngredientsConfig } from "./entities/ingredients-config.entity";
+import { Ingredient } from "../entities/ingredient.entity";
 
 @Injectable()
 export class IngredientsConfigService {
   constructor(
     @InjectRepository(IngredientsConfig)
     private readonly ingredientsConfigRepository: Repository<IngredientsConfig>,
-    @InjectRepository(CustomIngredient)
-    private readonly configurableIngredientRepository: Repository<CustomIngredient>,
-    // @InjectRepository(Ingredient)
-    // private readonly ingredientRepository: Repository<Ingredient>,
+    @InjectRepository(ConfigurableIngredient)
+    private readonly configurableIngredientRepository: Repository<ConfigurableIngredient>,
+    @InjectRepository(Ingredient)
+    private readonly ingredientRepository: Repository<Ingredient>,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
@@ -80,16 +81,40 @@ export class IngredientsConfigService {
     return await this.retrieveConfiguration(id);
   }
 
-  async createCustomIngredients(
-    configId: string,
-    createConfigurableIngredientDto: CreateCustomIngredientDto,
+  async createConfigurableIngredient(
+    ingredientId: string,
+    { priceAdjustment, maxQuantity }: CreateConfigurableIngredientDto,
   ) {
-    const configuration = await this.retrieveConfiguration(configId);
+    const ingredient = await this.ingredientRepository.findOneBy({ id: ingredientId });
+    if (!ingredient) throw new NotFoundException("Ingredient not found");
 
-    console.log("createConfigurableIngredientDto:", configuration, createConfigurableIngredientDto);
-    throw new Error("Method not implemented.");
+    const configurableIngredient = this.configurableIngredientRepository.create({
+      priceAdjustment,
+      maxQuantity,
+      ingredient,
+    });
+
+    return await this.configurableIngredientRepository.save(configurableIngredient);
   }
 
+  async addConfigurableIngredientToConfig(configId: string, configurableIngredientId: string) {
+    const config = await this.retrieveConfiguration(configId);
+    console.log("XDD", { config, configurableIngredientId });
+    return;
+    // const configurableIngredient = await this.configurableIngredientRepository.findOneBy({
+    //   id: configurableIngredientId,
+    // });
+    // if (!configurableIngredient) throw new NotFoundException("Configurable ingredient not found");
+
+    // config.ingredients.push(configurableIngredient);
+    // return await this.ingredientsConfigRepository.save(config);
+  }
+
+  async removeConfigurableIngredientFromConfig(configId: string, ingredientId: string) {
+    const config = await this.retrieveConfiguration(configId);
+    config.ingredients = config.ingredients.filter((ingredient) => ingredient.id !== ingredientId);
+    return await this.ingredientsConfigRepository.save(config);
+  }
   async createConfiguration(createIngredientsConfigurationDto: CreateIngredientsConfigDto) {
     const nameExists = await this.ingredientsConfigRepository.exists({
       where: {
@@ -107,9 +132,9 @@ export class IngredientsConfigService {
         createIngredientsConfigurationDto.menuPositionIds,
       );
 
-    if (createIngredientsConfigurationDto.ingredientIds.length > 0)
+    if (createIngredientsConfigurationDto.configurableIngredientIds.length > 0)
       configuration.ingredients = await this.retrieveIngredients(
-        createIngredientsConfigurationDto.ingredientIds,
+        createIngredientsConfigurationDto.configurableIngredientIds,
       );
 
     return await this.ingredientsConfigRepository.save(configuration);
@@ -127,9 +152,9 @@ export class IngredientsConfigService {
         updateIngredientsConfigurationDto.menuPositionIds,
       );
 
-    if (updateIngredientsConfigurationDto.ingredientIds.length > 0)
+    if (updateIngredientsConfigurationDto.configurableIngredientIds.length > 0)
       configuration.ingredients = await this.retrieveIngredients(
-        updateIngredientsConfigurationDto.ingredientIds,
+        updateIngredientsConfigurationDto.configurableIngredientIds,
       );
 
     return await this.ingredientsConfigRepository.save(configuration);
@@ -141,7 +166,9 @@ export class IngredientsConfigService {
   }
 
   private async retrieveConfiguration(id: string): Promise<IngredientsConfig> {
-    const configuration = await this.ingredientsConfigRepository.findOneBy({ id });
+    const configuration = await this.ingredientsConfigRepository.findOne({
+      where: { id },
+    });
     if (!configuration) throw new NotFoundException(`Configuration with id ${id} not found`);
     return configuration;
   }
