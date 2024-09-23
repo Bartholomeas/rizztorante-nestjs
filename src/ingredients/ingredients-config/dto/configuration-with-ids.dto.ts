@@ -14,7 +14,7 @@ export class ConfigurationWithIdsDto {
   @ApiProperty()
   @IsArray()
   @IsUUID("all", { each: true })
-  ingredients?: { id: string }[];
+  configurableIngredients?: { id: string }[];
 
   @ApiProperty()
   @IsArray()

@@ -20,7 +20,7 @@ export class ConfigurableIngredient {
   @JoinColumn()
   ingredient: Ingredient;
 
-  @ManyToMany(() => IngredientsConfig, (config) => config.ingredients, {
+  @ManyToMany(() => IngredientsConfig, (config) => config.configurableIngredients, {
     nullable: true,
     onDelete: "CASCADE",
   })

@@ -17,7 +17,7 @@ export class IngredientsConfig {
     cascade: true,
   })
   @JoinTable()
-  ingredients?: ConfigurableIngredient[];
+  configurableIngredients?: ConfigurableIngredient[];
 
   @ManyToMany(() => MenuPosition, (menuPosition) => menuPosition.ingredientsConfiguration, {
     nullable: true,
