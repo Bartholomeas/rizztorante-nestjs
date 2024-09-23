@@ -15,5 +15,5 @@ export class CartItemCustomConfig {
     () => CartItemConfigurableIngredient,
     (cartItemCustomIngredient) => cartItemCustomIngredient.cartItemCustomConfig,
   )
-  configurableIngredient: CartItemConfigurableIngredient[];
+  configurableIngredient?: CartItemConfigurableIngredient[];
 }

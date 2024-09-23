@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
 
@@ -16,11 +16,13 @@ export class CartItemConfigurableIngredient {
     () => ConfigurableIngredient,
     (configurableIngredient) => configurableIngredient.cartItemConfigurableIngredient,
   )
+  @JoinColumn()
   configurableIngredient: ConfigurableIngredient[];
 
   @ManyToOne(
     () => CartItemCustomConfig,
     (cartItemCustomConfig) => cartItemCustomConfig.configurableIngredient,
   )
+  @JoinColumn()
   cartItemCustomConfig: CartItemCustomConfig;
 }
