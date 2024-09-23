@@ -23,7 +23,7 @@ import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 
 import { CreateIngredientDto } from "./dto/create-ingredient.dto";
-import { IngredientDto } from "./dto/ingredient-dto";
+import { IngredientDto } from "./dto/ingredient.dto";
 import { UpdateIngredientDto } from "./dto/update-ingredient.dto";
 import { INGREDIENTS_ALLOWED_ROLES } from "./ingredients.constants";
 import { IngredientsService } from "./ingredients.service";
@@ -39,7 +39,7 @@ export class IngredientsController {
   @ApiPaginatedResponse(IngredientDto)
   findAll(@Query() pageOptionsDto: PageOptionsWithSearchDto) {
     try {
-      return this.ingredientsService.findAll(pageOptionsDto);
+      return this.ingredientsService.findAllIngredients(pageOptionsDto);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException();
@@ -56,7 +56,7 @@ export class IngredientsController {
   })
   create(@Body() createIngredientDto: CreateIngredientDto) {
     try {
-      return this.ingredientsService.create(createIngredientDto);
+      return this.ingredientsService.createIngredient(createIngredientDto);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -76,7 +76,7 @@ export class IngredientsController {
     @Body() updateIngredientDto: UpdateIngredientDto,
   ) {
     try {
-      return this.ingredientsService.update(id, updateIngredientDto);
+      return this.ingredientsService.updateIngredient(id, updateIngredientDto);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
@@ -90,7 +90,7 @@ export class IngredientsController {
   @ApiOperation({ summary: "Delete ingredient (restricted)" })
   delete(@Param("id", new ParseUUIDPipe()) id: string) {
     try {
-      return this.ingredientsService.delete(id);
+      return this.ingredientsService.deleteIngredient(id);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);

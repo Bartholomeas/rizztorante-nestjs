@@ -40,7 +40,7 @@ export class CartService {
     return await this.initUserCart(currentUser);
   }
 
-  async addItem(userId: string, addCartItemDto: AddCartItemDto): Promise<Cart> {
+  async addToCart(userId: string, addCartItemDto: AddCartItemDto): Promise<Cart> {
     const userCart = await this.getUserCart(userId);
 
     const [menuPosition]: MenuPosition[] = await this.eventEmitter.emitAsync(

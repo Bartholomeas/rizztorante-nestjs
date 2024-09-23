@@ -52,7 +52,7 @@ export class CartController {
     @Body() addCartItemDto: AddCartItemDto,
   ) {
     try {
-      return await this.cartService.addItem(session?.passport?.user?.id, addCartItemDto);
+      return await this.cartService.addToCart(session?.passport?.user?.id, addCartItemDto);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);

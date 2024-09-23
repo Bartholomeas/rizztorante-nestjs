@@ -31,6 +31,7 @@ import { UploadsModule } from "@/uploads/uploads.module";
         transport: {
           target: "pino-pretty",
           options: {
+            level: "info",
             singleLine: true,
             colorize: true,
             translateTime: "SYS:standard",

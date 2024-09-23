@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 
 import { CartItem } from "@/cart/entities/cart-item.entity";
+import { IngredientsConfig } from "@/ingredients/ingredients-config/entities/ingredients-config.entity";
 import { MenuCategory } from "@/menu/entities/menu-category.entity";
 
 import { MenuPositionImage } from "./menu-images.entity";
@@ -66,4 +67,13 @@ export class MenuPosition {
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.menuPosition)
   cartItems: CartItem[];
+
+  @ManyToMany(
+    () => IngredientsConfig,
+    (ingredientsConfiguration) => ingredientsConfiguration.menuPositions,
+    {
+      nullable: true,
+    },
+  )
+  ingredientsConfiguration?: IngredientsConfig[];
 }

@@ -14,6 +14,8 @@ export class AddCartItemDto {
   @Min(1)
   quantity: number;
 
+  // TODO: Add things from IngredientsConfiguration
+
   //   TODO: There will be also a need
   //    to handle category/size/variant
   //    etc (or create separate categories from
