@@ -23,6 +23,7 @@ import { UserRole } from "@common/types/user-roles.type";
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 
+import { ConfigurableIngredientDto } from "./dto/configurable-ingredient.dto";
 import { CreateConfigurableIngredientDto } from "./dto/create-configurable-ingredient.dto";
 import { CreateIngredientsConfigDto } from "./dto/create-ingredients-config.dto";
 import { UpdateIngredientsConfigDto } from "./dto/update-ingredients-config.dto";
@@ -48,7 +49,7 @@ export class IngredientsConfigController {
     }
   }
 
-  @Get("/:id")
+  @Get("/:id/details")
   @ApiOperation({ summary: "Get configuration by id" })
   async findConfiguration(@Param("id", new ParseUUIDPipe()) id: string) {
     try {
@@ -72,9 +73,21 @@ export class IngredientsConfigController {
     }
   }
 
+  @Get("/configurable-ingredients")
+  @ApiOperation({ summary: "Get all configurable ingredients" })
+  @ApiPaginatedResponse(ConfigurableIngredientDto)
+  async findAllConfigurableIngredients(@Query() pageOptionsDto: PageOptionsWithSearchDto) {
+    try {
+      return this.ingredientsConfigService.findAllConfigurableIngredients(pageOptionsDto);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException();
+    }
+  }
+
   @Roles(UserRole.ADMIN)
   @UseGuards(RolesGuard)
-  @Post("/custom-ingredient/:ingredientId")
+  @Post("/configurable-ingredients/:ingredientId/create")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Create new configurable ingredients" })
   async createConfigurableIngredient(

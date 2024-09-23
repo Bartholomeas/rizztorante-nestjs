@@ -23,7 +23,7 @@ import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 
 import { CreateIngredientDto } from "./dto/create-ingredient.dto";
-import { IngredientDto } from "./dto/ingredient-dto";
+import { IngredientDto } from "./dto/ingredient.dto";
 import { UpdateIngredientDto } from "./dto/update-ingredient.dto";
 import { INGREDIENTS_ALLOWED_ROLES } from "./ingredients.constants";
 import { IngredientsService } from "./ingredients.service";

@@ -9,8 +9,5 @@ export abstract class BaseConfigurableIngredientDto {
   priceAdjustment: number = 0;
 
   @ApiProperty()
-  quantity: number;
-
-  @ApiProperty()
   maxQuantity: number;
 }

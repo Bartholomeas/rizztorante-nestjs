@@ -18,9 +18,39 @@ import { UpdateIngredientsConfigDto } from "./dto/update-ingredients-config.dto"
 import { ConfigurableIngredient } from "./entities/configurable-ingredient.entity";
 import { IngredientsConfig } from "./entities/ingredients-config.entity";
 import { Ingredient } from "../entities/ingredient.entity";
+import { ConfigurableIngredientDto } from "./dto/configurable-ingredient.dto";
 
 @Injectable()
 export class IngredientsConfigService {
+  async findAllConfigurableIngredients(
+    pageOptionsDto: PageOptionsWithSearchDto,
+  ): Promise<PageDto<ConfigurableIngredientDto>> {
+    const queryBuilder =
+      this.configurableIngredientRepository.createQueryBuilder("configurableIngredient");
+
+    queryBuilder
+      .orderBy("ingredient.name")
+      .leftJoinAndSelect("configurableIngredient.ingredient", "ingredient")
+      // .leftJoinAndSelect(
+      //   "configurableIngredient.ingredientsConfiguration",
+      //   "ingredientsConfiguration",
+      // )
+      .take(pageOptionsDto.take)
+      .skip(pageOptionsDto.skip)
+      .relation("ingredient");
+    // .relation("ingredientsConfiguration");
+
+    if (pageOptionsDto.search)
+      queryBuilder.where("LOWER(ingredient.name) LIKE LOWER(:search)", {
+        search: `%${pageOptionsDto.search}%`,
+      });
+
+    const [entities, totalItems] = await queryBuilder.getManyAndCount();
+    console.log("fff", { entities, totalItems });
+    const pageMetaDto = new PageMetadataDto({ pageOptionsDto, totalItems });
+
+    return new PageDto(entities, pageMetaDto);
+  }
   constructor(
     @InjectRepository(IngredientsConfig)
     private readonly ingredientsConfigRepository: Repository<IngredientsConfig>,
@@ -36,7 +66,7 @@ export class IngredientsConfigService {
       "ingredientsConfiguration",
     );
     queryBuilder
-      // .leftJoinAndSelect("ingredientsConfiguration.ingredients", "ingredients")
+      .leftJoinAndSelect("ingredientsConfiguration.ingredients", "ingredients")
       .leftJoinAndSelect("ingredientsConfiguration.menuPositions", "menuPositions")
       .orderBy("ingredientsConfiguration.name", pageOptionsDto.order)
       .skip(pageOptionsDto.skip)
@@ -99,15 +129,23 @@ export class IngredientsConfigService {
 
   async addConfigurableIngredientToConfig(configId: string, configurableIngredientId: string) {
     const config = await this.retrieveConfiguration(configId);
-    console.log("XDD", { config, configurableIngredientId });
-    return;
-    // const configurableIngredient = await this.configurableIngredientRepository.findOneBy({
-    //   id: configurableIngredientId,
-    // });
-    // if (!configurableIngredient) throw new NotFoundException("Configurable ingredient not found");
+    const configurableIngredient = await this.configurableIngredientRepository.findOne({
+      where: { id: configurableIngredientId },
+      // relations: ["ingredients"],
+    });
+    console.log("Halko?", configurableIngredient, config);
+    if (!configurableIngredient) throw new NotFoundException("Configurable ingredient not found");
+    if (!config.ingredients) config.ingredients = [];
 
-    // config.ingredients.push(configurableIngredient);
-    // return await this.ingredientsConfigRepository.save(config);
+    const existingIngredient = config.ingredients?.find(
+      (ing) => ing.id === configurableIngredient.id,
+    );
+
+    if (!existingIngredient) config.ingredients = [...config.ingredients, configurableIngredient];
+
+    return await this.ingredientsConfigRepository.save(config).catch((err) => {
+      console.log("kurła", err);
+    });
   }
 
   async removeConfigurableIngredientFromConfig(configId: string, ingredientId: string) {
