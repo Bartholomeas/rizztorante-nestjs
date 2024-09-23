@@ -24,10 +24,10 @@ import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 
 import { ConfigurableIngredientDto } from "./dto/configurable-ingredient.dto";
+import { ConfigurationWithIdsDto } from "./dto/configuration-with-ids.dto";
 import { CreateConfigurableIngredientDto } from "./dto/create-configurable-ingredient.dto";
 import { CreateIngredientsConfigDto } from "./dto/create-ingredients-config.dto";
 import { UpdateIngredientsConfigDto } from "./dto/update-ingredients-config.dto";
-import { IngredientsConfig } from "./entities/ingredients-config.entity";
 import { IngredientsConfigService } from "./ingredients-config.service";
 
 @Controller("ingredients-config")
@@ -39,7 +39,7 @@ export class IngredientsConfigController {
   @UseGuards(RolesGuard)
   @Get()
   @ApiOperation({ summary: "Find all ingredients configuration (restricted)" })
-  @ApiPaginatedResponse(IngredientsConfig)
+  @ApiPaginatedResponse(ConfigurationWithIdsDto)
   async findAllConfigurations(@Query() pageOptionsDto: PageOptionsWithSearchDto) {
     try {
       return await this.ingredientsConfigService.findAllConfigurations(pageOptionsDto);

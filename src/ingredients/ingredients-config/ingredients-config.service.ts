@@ -19,6 +19,7 @@ import { ConfigurableIngredient } from "./entities/configurable-ingredient.entit
 import { IngredientsConfig } from "./entities/ingredients-config.entity";
 import { Ingredient } from "../entities/ingredient.entity";
 import { ConfigurableIngredientDto } from "./dto/configurable-ingredient.dto";
+import { ConfigurationWithIdsDto } from "./dto/configuration-with-ids.dto";
 
 @Injectable()
 export class IngredientsConfigService {
@@ -31,14 +32,9 @@ export class IngredientsConfigService {
     queryBuilder
       .orderBy("ingredient.name")
       .leftJoinAndSelect("configurableIngredient.ingredient", "ingredient")
-      // .leftJoinAndSelect(
-      //   "configurableIngredient.ingredientsConfiguration",
-      //   "ingredientsConfiguration",
-      // )
       .take(pageOptionsDto.take)
       .skip(pageOptionsDto.skip)
       .relation("ingredient");
-    // .relation("ingredientsConfiguration");
 
     if (pageOptionsDto.search)
       queryBuilder.where("LOWER(ingredient.name) LIKE LOWER(:search)", {
@@ -46,7 +42,6 @@ export class IngredientsConfigService {
       });
 
     const [entities, totalItems] = await queryBuilder.getManyAndCount();
-    console.log("fff", { entities, totalItems });
     const pageMetaDto = new PageMetadataDto({ pageOptionsDto, totalItems });
 
     return new PageDto(entities, pageMetaDto);
@@ -61,13 +56,16 @@ export class IngredientsConfigService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  async findAllConfigurations(pageOptionsDto: PageOptionsWithSearchDto): Promise<PageDto<unknown>> {
+  async findAllConfigurations(
+    pageOptionsDto: PageOptionsWithSearchDto,
+  ): Promise<PageDto<ConfigurationWithIdsDto>> {
     const queryBuilder = this.ingredientsConfigRepository.createQueryBuilder(
       "ingredientsConfiguration",
     );
     queryBuilder
-      .leftJoinAndSelect("ingredientsConfiguration.ingredients", "ingredients")
-      .leftJoinAndSelect("ingredientsConfiguration.menuPositions", "menuPositions")
+      .leftJoin("ingredientsConfiguration.ingredients", "ingredients")
+      .leftJoin("ingredientsConfiguration.menuPositions", "menuPositions")
+      .addSelect(["ingredients.id", "menuPositions.id"])
       .orderBy("ingredientsConfiguration.name", pageOptionsDto.order)
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take)
