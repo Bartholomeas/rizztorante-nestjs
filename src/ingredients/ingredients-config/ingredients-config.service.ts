@@ -36,16 +36,18 @@ export class IngredientsConfigService {
       .skip(pageOptionsDto.skip)
       .relation("ingredient");
 
-    if (pageOptionsDto.search)
+    if (pageOptionsDto.search) {
       queryBuilder.where("LOWER(ingredient.name) LIKE LOWER(:search)", {
         search: `%${pageOptionsDto.search}%`,
       });
+    }
 
     const [entities, totalItems] = await queryBuilder.getManyAndCount();
     const pageMetaDto = new PageMetadataDto({ pageOptionsDto, totalItems });
 
     return new PageDto(entities, pageMetaDto);
   }
+
   constructor(
     @InjectRepository(IngredientsConfig)
     private readonly ingredientsConfigRepository: Repository<IngredientsConfig>,
@@ -62,6 +64,7 @@ export class IngredientsConfigService {
     const queryBuilder = this.ingredientsConfigRepository.createQueryBuilder(
       "ingredientsConfiguration",
     );
+
     queryBuilder
       .leftJoin("ingredientsConfiguration.configurableIngredients", "configurableIngredients")
       .leftJoin("ingredientsConfiguration.menuPositions", "menuPositions")
@@ -72,10 +75,11 @@ export class IngredientsConfigService {
       .relation("ingredients")
       .relation("menuPositions");
 
-    if (pageOptionsDto.search)
+    if (pageOptionsDto.search) {
       queryBuilder.where("LOWER(ingredientsConfiguration.name) LIKE LOWER(:search)", {
         search: `%${pageOptionsDto.search}%`,
       });
+    }
 
     const [entities, totalItems] = await queryBuilder.getManyAndCount();
     const pageMetaDto = new PageMetadataDto({ pageOptionsDto, totalItems });
@@ -96,7 +100,6 @@ export class IngredientsConfigService {
       },
       relations: {
         menuPositions: true,
-        // ingredients: true,
       },
     });
 
@@ -153,6 +156,7 @@ export class IngredientsConfigService {
     );
     return await this.ingredientsConfigRepository.save(config);
   }
+
   async createConfiguration(createIngredientsConfigurationDto: CreateIngredientsConfigDto) {
     const nameExists = await this.ingredientsConfigRepository.exists({
       where: {

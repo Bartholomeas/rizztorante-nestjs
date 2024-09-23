@@ -14,7 +14,7 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiSecurity, ApiTags } from "@nestjs/swagger";
 
 import { ApiPaginatedResponse } from "@common/decorators/api-paginated-response.decorator";
 import { PageOptionsWithSearchDto } from "@common/dto/pagination/page-options-with-search.dto";
@@ -40,6 +40,7 @@ export class IngredientsConfigController {
   @Get()
   @ApiOperation({ summary: "Find all ingredients configuration (restricted)" })
   @ApiPaginatedResponse(ConfigurationWithIdsDto)
+  @ApiSecurity("Role")
   async findAllConfigurations(@Query() pageOptionsDto: PageOptionsWithSearchDto) {
     try {
       return await this.ingredientsConfigService.findAllConfigurations(pageOptionsDto);
@@ -90,6 +91,7 @@ export class IngredientsConfigController {
   @Post("/configurable-ingredients/:ingredientId/create")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Create new configurable ingredients (restricted)" })
+  @ApiSecurity("Role")
   async createConfigurableIngredient(
     @Param("ingredientId", new ParseUUIDPipe()) ingredientId: string,
     @Body() createConfigurableIngredientDto: CreateConfigurableIngredientDto,
@@ -110,6 +112,7 @@ export class IngredientsConfigController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Create new ingredients configuration (restricted)" })
+  @ApiSecurity("Role")
   async createConfiguration(@Body() createIngredientsConfigurationDto: CreateIngredientsConfigDto) {
     try {
       return this.ingredientsConfigService.createConfiguration(createIngredientsConfigurationDto);
@@ -124,6 +127,7 @@ export class IngredientsConfigController {
   @Post("/:configId/configurable-ingredient/:configurableIngredientId")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Add configurable ingredient to configuration (restricted)" })
+  @ApiSecurity("Role")
   async addConfigurableIngredientToConfig(
     @Param("configId", new ParseUUIDPipe()) configId: string,
     @Param("configurableIngredientId", new ParseUUIDPipe()) configurableIngredientId: string,
@@ -132,6 +136,27 @@ export class IngredientsConfigController {
       return await this.ingredientsConfigService.addConfigurableIngredientToConfig(
         configId,
         configurableIngredientId,
+      );
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException();
+    }
+  }
+
+  @Roles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
+  @Put("/:id")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Update ingredients configuration (restricted)" })
+  @ApiSecurity("Role")
+  async updateConfiguration(
+    @Param("id", new ParseUUIDPipe()) id: string,
+    @Body() updateIngredientsConfigurationDto: UpdateIngredientsConfigDto,
+  ) {
+    try {
+      return this.ingredientsConfigService.updateConfiguration(
+        id,
+        updateIngredientsConfigurationDto,
       );
     } catch (err) {
       if (err instanceof HttpException) throw err;
@@ -161,29 +186,10 @@ export class IngredientsConfigController {
 
   @Roles(UserRole.ADMIN)
   @UseGuards(RolesGuard)
-  @Put("/:id")
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Update ingredients configuration (restricted)" })
-  async updateConfiguration(
-    @Param("id", new ParseUUIDPipe()) id: string,
-    @Body() updateIngredientsConfigurationDto: UpdateIngredientsConfigDto,
-  ) {
-    try {
-      return this.ingredientsConfigService.updateConfiguration(
-        id,
-        updateIngredientsConfigurationDto,
-      );
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException();
-    }
-  }
-
-  @Roles(UserRole.ADMIN)
-  @UseGuards(RolesGuard)
   @Delete("/:id")
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: "Delete ingredients configuration (restricted)" })
+  @ApiSecurity("Role")
   async deleteConfiguration(@Param("id", new ParseUUIDPipe()) id: string) {
     try {
       return this.ingredientsConfigService.deleteConfiguration(id);
