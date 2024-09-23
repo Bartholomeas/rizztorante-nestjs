@@ -63,9 +63,9 @@ export class IngredientsConfigService {
       "ingredientsConfiguration",
     );
     queryBuilder
-      .leftJoin("ingredientsConfiguration.ingredients", "ingredients")
+      .leftJoin("ingredientsConfiguration.configurableIngredients", "configurableIngredients")
       .leftJoin("ingredientsConfiguration.menuPositions", "menuPositions")
-      .addSelect(["ingredients.id", "menuPositions.id"])
+      .addSelect(["configurableIngredients.id", "menuPositions.id"])
       .orderBy("ingredientsConfiguration.name", pageOptionsDto.order)
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take)
@@ -129,17 +129,17 @@ export class IngredientsConfigService {
     const config = await this.retrieveConfiguration(configId);
     const configurableIngredient = await this.configurableIngredientRepository.findOne({
       where: { id: configurableIngredientId },
-      // relations: ["ingredients"],
     });
-    console.log("Halko?", configurableIngredient, config);
-    if (!configurableIngredient) throw new NotFoundException("Configurable ingredient not found");
-    if (!config.ingredients) config.ingredients = [];
 
-    const existingIngredient = config.ingredients?.find(
+    if (!configurableIngredient) throw new NotFoundException("Configurable ingredient not found");
+    if (!config.configurableIngredients) config.configurableIngredients = [];
+
+    const existingIngredient = config.configurableIngredients?.find(
       (ing) => ing.id === configurableIngredient.id,
     );
 
-    if (!existingIngredient) config.ingredients = [...config.ingredients, configurableIngredient];
+    if (!existingIngredient)
+      config.configurableIngredients = [...config.configurableIngredients, configurableIngredient];
 
     return await this.ingredientsConfigRepository.save(config).catch((err) => {
       console.log("kurła", err);
@@ -148,7 +148,9 @@ export class IngredientsConfigService {
 
   async removeConfigurableIngredientFromConfig(configId: string, ingredientId: string) {
     const config = await this.retrieveConfiguration(configId);
-    config.ingredients = config.ingredients.filter((ingredient) => ingredient.id !== ingredientId);
+    config.configurableIngredients = config.configurableIngredients.filter(
+      (ingredient) => ingredient.id !== ingredientId,
+    );
     return await this.ingredientsConfigRepository.save(config);
   }
   async createConfiguration(createIngredientsConfigurationDto: CreateIngredientsConfigDto) {
@@ -169,7 +171,7 @@ export class IngredientsConfigService {
       );
 
     if (createIngredientsConfigurationDto.configurableIngredientIds.length > 0)
-      configuration.ingredients = await this.retrieveIngredients(
+      configuration.configurableIngredients = await this.retrieveIngredients(
         createIngredientsConfigurationDto.configurableIngredientIds,
       );
 
@@ -189,7 +191,7 @@ export class IngredientsConfigService {
       );
 
     if (updateIngredientsConfigurationDto.configurableIngredientIds.length > 0)
-      configuration.ingredients = await this.retrieveIngredients(
+      configuration.configurableIngredients = await this.retrieveIngredients(
         updateIngredientsConfigurationDto.configurableIngredientIds,
       );
 
@@ -204,6 +206,10 @@ export class IngredientsConfigService {
   private async retrieveConfiguration(id: string): Promise<IngredientsConfig> {
     const configuration = await this.ingredientsConfigRepository.findOne({
       where: { id },
+      relations: {
+        configurableIngredients: true,
+        menuPositions: true,
+      },
     });
     if (!configuration) throw new NotFoundException(`Configuration with id ${id} not found`);
     return configuration;

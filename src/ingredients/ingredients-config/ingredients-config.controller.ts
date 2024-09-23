@@ -89,7 +89,7 @@ export class IngredientsConfigController {
   @UseGuards(RolesGuard)
   @Post("/configurable-ingredients/:ingredientId/create")
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: "Create new configurable ingredients" })
+  @ApiOperation({ summary: "Create new configurable ingredients (restricted)" })
   async createConfigurableIngredient(
     @Param("ingredientId", new ParseUUIDPipe()) ingredientId: string,
     @Body() createConfigurableIngredientDto: CreateConfigurableIngredientDto,
@@ -109,7 +109,7 @@ export class IngredientsConfigController {
   @UseGuards(RolesGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: "Create new ingredients configuration" })
+  @ApiOperation({ summary: "Create new ingredients configuration (restricted)" })
   async createConfiguration(@Body() createIngredientsConfigurationDto: CreateIngredientsConfigDto) {
     try {
       return this.ingredientsConfigService.createConfiguration(createIngredientsConfigurationDto);
@@ -123,7 +123,7 @@ export class IngredientsConfigController {
   @UseGuards(RolesGuard)
   @Post("/:configId/configurable-ingredient/:configurableIngredientId")
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: "Add configurable ingredient to configuration" })
+  @ApiOperation({ summary: "Add configurable ingredient to configuration (restricted)" })
   async addConfigurableIngredientToConfig(
     @Param("configId", new ParseUUIDPipe()) configId: string,
     @Param("configurableIngredientId", new ParseUUIDPipe()) configurableIngredientId: string,
@@ -143,7 +143,7 @@ export class IngredientsConfigController {
   @UseGuards(RolesGuard)
   @Delete("/:configId/configurable-ingredient/:configurableIngredientId")
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: "Remove configurable ingredient from configuration" })
+  @ApiOperation({ summary: "Remove configurable ingredient from configuration (restricted)" })
   async removeConfigurableIngredientFromConfig(
     @Param("configId", new ParseUUIDPipe()) configId: string,
     @Param("configurableIngredientId", new ParseUUIDPipe()) configurableIngredientId: string,
@@ -163,7 +163,7 @@ export class IngredientsConfigController {
   @UseGuards(RolesGuard)
   @Put("/:id")
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Update ingredients configuration" })
+  @ApiOperation({ summary: "Update ingredients configuration (restricted)" })
   async updateConfiguration(
     @Param("id", new ParseUUIDPipe()) id: string,
     @Body() updateIngredientsConfigurationDto: UpdateIngredientsConfigDto,
@@ -183,7 +183,7 @@ export class IngredientsConfigController {
   @UseGuards(RolesGuard)
   @Delete("/:id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: "Delete ingredients configuration" })
+  @ApiOperation({ summary: "Delete ingredients configuration (restricted)" })
   async deleteConfiguration(@Param("id", new ParseUUIDPipe()) id: string) {
     try {
       return this.ingredientsConfigService.deleteConfiguration(id);
