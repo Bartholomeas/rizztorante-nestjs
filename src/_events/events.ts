@@ -21,3 +21,7 @@ export enum PaymentsEventTypes {
 export enum OrderEventTypes {
   CREATE_ORDER = "orders.create-order",
 }
+
+export enum IngredientsConfigEventTypes {
+  FIND_CONFIGURABLE_INGREDIENT = "ingredients-config.find-configurable-ingredient",
+}

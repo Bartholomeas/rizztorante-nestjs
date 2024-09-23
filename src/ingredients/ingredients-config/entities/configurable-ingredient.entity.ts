@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
-import { CartItemConfigurableIngredient } from "@/cart/entities/cart-item-custom-ingredient.entity";
+import { CartItemConfigurableIngredient } from "@/cart/entities/cart-item-configurable-ingredient.entity";
 
 import { IngredientsConfig } from "./ingredients-config.entity";
 import { Ingredient } from "../../entities/ingredient.entity";

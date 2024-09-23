@@ -20,7 +20,7 @@ export class CartItemConfigurableIngredient {
 
   @ManyToOne(
     () => CartItemCustomConfig,
-    (cartItemCustomConfig) => cartItemCustomConfig.customIngredient,
+    (cartItemCustomConfig) => cartItemCustomConfig.configurableIngredient,
   )
   cartItemCustomConfig: CartItemCustomConfig;
 }

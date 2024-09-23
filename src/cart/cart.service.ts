@@ -2,20 +2,23 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 
-import { Repository } from "typeorm";
+import { FindOneOptions, Repository } from "typeorm";
 
 import { CartEventTypes } from "@events/events";
 import { getSinglePositionEvent } from "@events/payloads";
+import { findConfigurableIngredientsEvent } from "@events/payloads/ingredients";
 
 import { User } from "@/auth/entities/user.entity";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 import { CartItem } from "@/cart/entities/cart-item.entity";
 import { Cart } from "@/cart/entities/cart.entity";
+import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 
 import { CartItemDto } from "./dto/cart-item.dto";
 import { CartDto } from "./dto/cart.dto";
 import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
+import { CartItemCustomConfig } from "./entities/cart-item-custom-config.entity";
 
 @Injectable()
 export class CartService {
@@ -30,8 +33,8 @@ export class CartService {
   ) {}
 
   @OnEvent(CartEventTypes.GET_USER_CART)
-  async getUserCart(userId: string): Promise<CartDto> {
-    const userCart = await this.retrieveUserCart(userId);
+  async getUserCart(userId: string, opts?: FindOneOptions<Cart>): Promise<CartDto> {
+    const userCart = await this.retrieveUserCart(userId, opts);
     if (userCart) return new CartDto(userCart);
 
     const currentUser = await this.userRepository.findOne({ where: { id: userId } });
@@ -40,8 +43,8 @@ export class CartService {
     return await this.initUserCart(currentUser);
   }
 
-  async addToCart(userId: string, addCartItemDto: AddCartItemDto): Promise<Cart> {
-    const userCart = await this.getUserCart(userId);
+  async addToCart(userId: string, addCartItemDto: AddCartItemDto): Promise<CartItemDto> {
+    const userCart = await this.getUserCart(userId, { relations: ["items.config"] });
 
     const [menuPosition]: MenuPosition[] = await this.eventEmitter.emitAsync(
       ...getSinglePositionEvent(addCartItemDto.menuPositionId),
@@ -52,8 +55,8 @@ export class CartService {
         `Menu position with id ${addCartItemDto.menuPositionId} not found`,
       );
 
-    const existingCartItem = userCart.items.find(
-      (item) => item.menuPosition.id === menuPosition.id,
+    const existingCartItem = userCart.items?.find(
+      (item) => item.menuPosition?.id === menuPosition?.id,
     );
 
     if (existingCartItem) {
@@ -64,12 +67,39 @@ export class CartService {
       newCartItem.quantity = addCartItemDto.quantity;
       if (menuPosition.price) newCartItem.amount = menuPosition.price * addCartItemDto.quantity;
       newCartItem.menuPosition = menuPosition;
+
+      if (addCartItemDto.configurableIngredients) {
+        const xd = (await this.eventEmitter.emitAsync(
+          ...findConfigurableIngredientsEvent({
+            configurableIngredientId: addCartItemDto.configurableIngredients.map(
+              (ingredient) => ingredient.id,
+            ),
+          }),
+        )) as ConfigurableIngredient[];
+
+        console.log("HEHEEH", addCartItemDto.configurableIngredients);
+        const newConfig = new CartItemCustomConfig();
+        newConfig.configurableIngredient = [
+          {
+            id: xd[0].id,
+            quantity: 1,
+            configurableIngredient: xd,
+            cartItemCustomConfig: newConfig,
+          },
+        ];
+        // newConfig.configurableIngredient = addCartItemDto.configurableIngredients;
+
+        newCartItem.config = newConfig;
+      }
+      // newCartItem.config = addCartItemDto.configurableIngredients;
       userCart.items.push(new CartItemDto(newCartItem));
     }
 
     userCart.total = userCart.items.reduce((total, item) => total + item.amount, 0);
 
-    return await this.cartRepository.save(userCart);
+    await this.cartRepository.save(userCart);
+
+    return existingCartItem;
   }
 
   async setQuantity(
@@ -115,15 +145,14 @@ export class CartService {
     return new CartDto(rest);
   }
 
-  private async retrieveUserCart(userId: string): Promise<Cart | null> {
+  private async retrieveUserCart(
+    userId: string,
+    opts?: FindOneOptions<Cart>,
+  ): Promise<Cart | null> {
     return this.cartRepository.findOne({
       where: { user: { id: userId } },
       relations: ["items", "items.menuPosition", "items.menuPosition.coreImage"],
-      // select: { user: { id: true } },
-      // cache: {
-      //   id: `${userId}-user-cart`,
-      //   milliseconds: 1000 * 60 * 5,
-      // },
+      ...opts,
     });
   }
 

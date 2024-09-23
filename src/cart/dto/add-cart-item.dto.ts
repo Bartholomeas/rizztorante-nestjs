@@ -1,6 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { IsNotEmpty, IsNumber, IsUUID, Min } from "class-validator";
+import { Type } from "class-transformer";
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsUUID,
+  Min,
+  ValidateNested,
+} from "class-validator";
+
+import { CartItemConfigurableIngredientDto } from "./cart-item-configurable-ingredient.dto";
 
 export class AddCartItemDto {
   @ApiProperty({ default: "00000000-0000-0000-0000-000000000000" })
@@ -14,10 +25,10 @@ export class AddCartItemDto {
   @Min(1)
   quantity: number;
 
-  // TODO: Add things from IngredientsConfiguration
-
-  //   TODO: There will be also a need
-  //    to handle category/size/variant
-  //    etc (or create separate categories from
-  //    different variant products)
+  @ApiProperty({ type: [CartItemConfigurableIngredientDto], isArray: true, default: [] })
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => CartItemConfigurableIngredientDto)
+  configurableIngredients?: CartItemConfigurableIngredientDto[];
 }
