@@ -2,7 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from "@nestjs/common
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 
 import { PageMetadataDto } from "@common/dto/pagination/page-metadata.dto";
 import { PageOptionsWithSearchDto } from "@common/dto/pagination/page-options-with-search.dto";
@@ -23,31 +23,6 @@ import { ConfigurationWithIdsDto } from "./dto/configuration-with-ids.dto";
 
 @Injectable()
 export class IngredientsConfigService {
-  async findAllConfigurableIngredients(
-    pageOptionsDto: PageOptionsWithSearchDto,
-  ): Promise<PageDto<ConfigurableIngredientDto>> {
-    const queryBuilder =
-      this.configurableIngredientRepository.createQueryBuilder("configurableIngredient");
-
-    queryBuilder
-      .orderBy("ingredient.name")
-      .leftJoinAndSelect("configurableIngredient.ingredient", "ingredient")
-      .take(pageOptionsDto.take)
-      .skip(pageOptionsDto.skip)
-      .relation("ingredient");
-
-    if (pageOptionsDto.search) {
-      queryBuilder.where("LOWER(ingredient.name) LIKE LOWER(:search)", {
-        search: `%${pageOptionsDto.search}%`,
-      });
-    }
-
-    const [entities, totalItems] = await queryBuilder.getManyAndCount();
-    const pageMetaDto = new PageMetadataDto({ pageOptionsDto, totalItems });
-
-    return new PageDto(entities, pageMetaDto);
-  }
-
   constructor(
     @InjectRepository(IngredientsConfig)
     private readonly ingredientsConfigRepository: Repository<IngredientsConfig>,
@@ -87,6 +62,10 @@ export class IngredientsConfigService {
     return new PageDto(entities, pageMetaDto);
   }
 
+  async findConfiguration(id: string) {
+    return await this.retrieveConfiguration(id);
+  }
+
   async findMenuPositionConfiguration(menuPositionId: string) {
     const [menuPosition] = (await this.eventEmitter.emitAsync(
       ...getSinglePositionEvent(menuPositionId),
@@ -108,8 +87,40 @@ export class IngredientsConfigService {
     return configuration;
   }
 
-  async findConfiguration(id: string) {
-    return await this.retrieveConfiguration(id);
+  async findAllConfigurableIngredients(
+    pageOptionsDto: PageOptionsWithSearchDto,
+  ): Promise<PageDto<ConfigurableIngredientDto>> {
+    const queryBuilder =
+      this.configurableIngredientRepository.createQueryBuilder("configurableIngredient");
+
+    queryBuilder
+      .orderBy("ingredient.name")
+      .leftJoinAndSelect("configurableIngredient.ingredient", "ingredient")
+      .take(pageOptionsDto.take)
+      .skip(pageOptionsDto.skip)
+      .relation("ingredient");
+
+    if (pageOptionsDto.search) {
+      queryBuilder.where("LOWER(ingredient.name) LIKE LOWER(:search)", {
+        search: `%${pageOptionsDto.search}%`,
+      });
+    }
+
+    const [entities, totalItems] = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetadataDto({ pageOptionsDto, totalItems });
+
+    return new PageDto(entities, pageMetaDto);
+  }
+
+  async findConfigurableIngredients(
+    configurableIngredientId: string[],
+  ): Promise<ConfigurableIngredient[]> {
+    return await this.configurableIngredientRepository.find({
+      where: {
+        id: In(configurableIngredientId),
+      },
+      relations: { ingredient: true },
+    });
   }
 
   async createConfigurableIngredient(
@@ -126,35 +137,6 @@ export class IngredientsConfigService {
     });
 
     return await this.configurableIngredientRepository.save(configurableIngredient);
-  }
-
-  async addConfigurableIngredientToConfig(configId: string, configurableIngredientId: string) {
-    const config = await this.retrieveConfiguration(configId);
-    const configurableIngredient = await this.configurableIngredientRepository.findOne({
-      where: { id: configurableIngredientId },
-    });
-
-    if (!configurableIngredient) throw new NotFoundException("Configurable ingredient not found");
-    if (!config.configurableIngredients) config.configurableIngredients = [];
-
-    const existingIngredient = config.configurableIngredients?.find(
-      (ing) => ing.id === configurableIngredient.id,
-    );
-
-    if (!existingIngredient)
-      config.configurableIngredients = [...config.configurableIngredients, configurableIngredient];
-
-    return await this.ingredientsConfigRepository.save(config).catch((err) => {
-      console.log("kurła", err);
-    });
-  }
-
-  async removeConfigurableIngredientFromConfig(configId: string, ingredientId: string) {
-    const config = await this.retrieveConfiguration(configId);
-    config.configurableIngredients = config.configurableIngredients.filter(
-      (ingredient) => ingredient.id !== ingredientId,
-    );
-    return await this.ingredientsConfigRepository.save(config);
   }
 
   async createConfiguration(createIngredientsConfigurationDto: CreateIngredientsConfigDto) {
@@ -182,6 +164,27 @@ export class IngredientsConfigService {
     return await this.ingredientsConfigRepository.save(configuration);
   }
 
+  async addConfigurableIngredientToConfig(configId: string, configurableIngredientId: string) {
+    const config = await this.retrieveConfiguration(configId);
+    const configurableIngredient = await this.configurableIngredientRepository.findOne({
+      where: { id: configurableIngredientId },
+    });
+
+    if (!configurableIngredient) throw new NotFoundException("Configurable ingredient not found");
+    if (!config.configurableIngredients) config.configurableIngredients = [];
+
+    const existingIngredient = config.configurableIngredients?.find(
+      (ing) => ing.id === configurableIngredient.id,
+    );
+
+    if (!existingIngredient)
+      config.configurableIngredients = [...config.configurableIngredients, configurableIngredient];
+
+    return await this.ingredientsConfigRepository.save(config).catch((err) => {
+      console.log("kurła", err);
+    });
+  }
+
   async updateConfiguration(
     id: string,
     updateIngredientsConfigurationDto: UpdateIngredientsConfigDto,
@@ -200,6 +203,14 @@ export class IngredientsConfigService {
       );
 
     return await this.ingredientsConfigRepository.save(configuration);
+  }
+
+  async removeConfigurableIngredientFromConfig(configId: string, ingredientId: string) {
+    const config = await this.retrieveConfiguration(configId);
+    config.configurableIngredients = config.configurableIngredients.filter(
+      (ingredient) => ingredient.id !== ingredientId,
+    );
+    return await this.ingredientsConfigRepository.save(config);
   }
 
   async deleteConfiguration(id: string): Promise<unknown> {

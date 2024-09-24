@@ -86,6 +86,20 @@ export class IngredientsConfigController {
     }
   }
 
+  @Get("/configurable-ingredients/:configurableIngredientId")
+  @ApiOperation({ summary: "Get single configurable ingredients" })
+  @ApiPaginatedResponse(ConfigurableIngredientDto)
+  async findConfigurableIngredient(
+    @Param("configurableIngredientId", new ParseUUIDPipe()) configurableIngredientId: string,
+  ) {
+    try {
+      return this.ingredientsConfigService.findConfigurableIngredients([configurableIngredientId]);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException();
+    }
+  }
+
   @Roles(UserRole.ADMIN)
   @UseGuards(RolesGuard)
   @Post("/configurable-ingredients/:ingredientId/create")

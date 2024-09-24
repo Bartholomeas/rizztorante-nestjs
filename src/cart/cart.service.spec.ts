@@ -14,14 +14,9 @@ import type { MenuPosition } from "@/menu/entities/menu-position.entity";
 
 import { CartService } from "./cart.service";
 import { CartDto } from "./dto/cart.dto";
+import { CartItemConfigurableIngredient } from "./entities/cart-item-configurable-ingredient.entity";
 
-jest.mock("@events/events", () => ({
-  UserEventTypes: {},
-  CartEventTypes: {},
-  OrderEventTypes: {},
-  MenuEventTypes: {},
-  PaymentsEventTypes: {},
-}));
+jest.mock("@events/events");
 
 describe("CartService", () => {
   let service: CartService;
@@ -50,6 +45,10 @@ describe("CartService", () => {
         },
         {
           provide: getRepositoryToken(User),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(CartItemConfigurableIngredient),
           useClass: Repository,
         },
         {
@@ -91,13 +90,14 @@ describe("CartService", () => {
     jest.spyOn(service["eventEmitter"], "emitAsync").mockResolvedValue([menuPosition]);
     jest.spyOn(service["cartRepository"], "save").mockResolvedValue(userCart);
 
-    const result = await service.addToCart(userId, addCartItemDto);
+    await service.addToCart(userId, addCartItemDto);
 
-    expect(result.items.length).toBe(1);
-    expect(result.items[0].menuPosition).toEqual(menuPosition);
-    expect(result.items[0].quantity).toBe(1);
-    expect(result.items[0].amount).toBe(10);
-    // expect(result.total).toBe(10);
+    const updatedCart = await service.getUserCart(userId);
+    expect(updatedCart.items.length).toBe(1);
+    expect(updatedCart.items[0].menuPosition.id).toBe(menuPosition.id);
+    expect(updatedCart.items[0].quantity).toBe(addCartItemDto.quantity);
+    expect(updatedCart.items[0].amount).toBe(menuPosition.price * addCartItemDto.quantity);
+    expect(updatedCart.total).toBe(menuPosition.price * addCartItemDto.quantity);
   });
 
   it("should update the quantity of an existing item in the cart", async () => {
@@ -110,12 +110,14 @@ describe("CartService", () => {
     jest.spyOn(service["eventEmitter"], "emitAsync").mockResolvedValue([menuPosition]);
     jest.spyOn(service["cartRepository"], "save").mockResolvedValue(userCart);
 
-    const result = await service.addToCart(userId, addCartItemDto);
+    await service.addToCart(userId, addCartItemDto);
 
-    expect(result.items.length).toBe(1);
-    expect(result.items[0].quantity).toBe(2);
-    expect(result.items[0].amount).toBe(20);
-    // expect(result.total).toBe(10);
+    const updatedCart = await service.getUserCart(userId);
+    expect(updatedCart.items.length).toBe(1);
+    expect(updatedCart.items[0].menuPosition.id).toBe(menuPosition.id);
+    expect(updatedCart.items[0].quantity).toBe(addCartItemDto.quantity + 1);
+    expect(updatedCart.items[0].amount).toBe(menuPosition.price * (addCartItemDto.quantity + 1));
+    expect(updatedCart.total).toBe(menuPosition.price * (addCartItemDto.quantity + 1));
   });
 
   it("should throw NotFoundException if menu position is not found", async () => {

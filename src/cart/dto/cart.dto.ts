@@ -40,8 +40,85 @@ export class CartDto {
       }),
     );
   }
+  public toFlatCartDto(): FlatCartDto {
+    return {
+      id: this.id,
+      total: this.total,
+      items: this.items.map((item) => new FlatCartItemDto(item)),
+    };
+  }
 
   constructor(partial: Partial<Cart>) {
     Object.assign(this, partial);
   }
+}
+
+export class FlatCartItemDto {
+  id: string;
+  quantity: number;
+  amount: number;
+  menuPosition: {
+    id: string;
+    name: string;
+    price: number;
+    description: string;
+    isVegetarian: boolean;
+    isVegan: boolean;
+    isGlutenFree: boolean;
+    coreImage: {
+      id: string;
+      url: string;
+      alt: string;
+      caption: string | null;
+    };
+  };
+  ingredients: {
+    id: string;
+    quantity: number;
+    configurableIngredientId: string;
+    priceAdjustment: number;
+    maxQuantity: number;
+    name: string;
+    description: string;
+    isAvailable: boolean;
+  }[];
+
+  constructor(cartItem: CartItemDto) {
+    this.id = cartItem.id;
+    this.quantity = cartItem.quantity;
+    this.amount = cartItem.amount;
+    this.menuPosition = {
+      id: cartItem.menuPosition.id,
+      name: cartItem.menuPosition.name,
+      price: cartItem.menuPosition.price,
+      description: cartItem.menuPosition.description,
+      isVegetarian: cartItem.menuPosition.isVegetarian,
+      isVegan: cartItem.menuPosition.isVegan,
+      isGlutenFree: cartItem.menuPosition.isGlutenFree,
+      coreImage: {
+        id: cartItem.menuPosition.coreImage.id,
+        url: cartItem.menuPosition.coreImage.url,
+        alt: cartItem.menuPosition.coreImage.alt,
+        caption: cartItem.menuPosition.coreImage.caption,
+      },
+    };
+
+    this.ingredients = cartItem.ingredients.map((ingredient) => ({
+      id: ingredient.id,
+      configurableIngredientId: ingredient.configurableIngredient.ingredient.id,
+      name: ingredient.configurableIngredient.ingredient.name,
+      description: ingredient.configurableIngredient.ingredient.description,
+      quantity: ingredient.quantity,
+      maxQuantity: ingredient.configurableIngredient.maxQuantity,
+      priceAdjustment: ingredient.configurableIngredient.priceAdjustment,
+      totalAmount: ingredient.quantity * ingredient.configurableIngredient.priceAdjustment,
+      isAvailable: ingredient.configurableIngredient.ingredient.isAvailable,
+    }));
+  }
+}
+
+export class FlatCartDto {
+  id: string;
+  total: number;
+  items: FlatCartItemDto[];
 }

@@ -1,8 +1,8 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 
-import { CartItemCustomConfig } from "./cart-item-custom-config.entity";
+import { CartItemConfigurableIngredient } from "./cart-item-configurable-ingredient.entity";
 import { Cart } from "./cart.entity";
 
 @Entity()
@@ -22,12 +22,7 @@ export class CartItem {
   @ManyToOne(() => MenuPosition, (menuPosition) => menuPosition.cartItems)
   menuPosition: MenuPosition;
 
-  @OneToMany(() => CartItemCustomConfig, (config) => config.cartItem, {
-    cascade: true,
-    onDelete: "CASCADE",
-  })
-  config: CartItemCustomConfig[];
-
-  // @ManyToMany(() => CustomIngredient, (ingredient) => ingredient.cartItems)
-  // customIngredients: CustomIngredient[];
+  @ManyToMany(() => CartItemConfigurableIngredient, (ingredient) => ingredient.cartItem)
+  @JoinTable()
+  ingredients?: CartItemConfigurableIngredient[];
 }

@@ -1,8 +1,8 @@
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
 
-import { CartItemCustomConfig } from "./cart-item-custom-config.entity";
+import { CartItem } from "./cart-item.entity";
 
 @Entity()
 export class CartItemConfigurableIngredient {
@@ -12,15 +12,13 @@ export class CartItemConfigurableIngredient {
   @Column("int", { default: 1 })
   quantity: number;
 
-  @ManyToMany(
+  @ManyToOne(
     () => ConfigurableIngredient,
     (configurableIngredient) => configurableIngredient.cartItemConfigurableIngredient,
   )
-  configurableIngredient: ConfigurableIngredient[];
+  @JoinColumn()
+  configurableIngredient: ConfigurableIngredient;
 
-  @ManyToOne(
-    () => CartItemCustomConfig,
-    (cartItemCustomConfig) => cartItemCustomConfig.customIngredient,
-  )
-  cartItemCustomConfig: CartItemCustomConfig;
+  @ManyToMany(() => CartItem, (cartItem) => cartItem.ingredients)
+  cartItem: CartItem;
 }

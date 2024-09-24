@@ -14,7 +14,7 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiSecurity, ApiTags } from "@nestjs/swagger";
 
 import { ApiPaginatedResponse } from "@common/decorators/api-paginated-response.decorator";
 import { PageOptionsWithSearchDto } from "@common/dto/pagination/page-options-with-search.dto";
@@ -54,6 +54,7 @@ export class IngredientsController {
   @ApiResponse({
     type: [CreateIngredientDto],
   })
+  @ApiSecurity("Roles")
   create(@Body() createIngredientDto: CreateIngredientDto) {
     try {
       return this.ingredientsService.createIngredient(createIngredientDto);
@@ -71,6 +72,7 @@ export class IngredientsController {
   @ApiResponse({
     type: [UpdateIngredientDto],
   })
+  @ApiSecurity("Roles")
   update(
     @Param("id", new ParseUUIDPipe()) id: string,
     @Body() updateIngredientDto: UpdateIngredientDto,
@@ -88,6 +90,7 @@ export class IngredientsController {
   @Delete("/:id")
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: "Delete ingredient (restricted)" })
+  @ApiSecurity("Roles")
   delete(@Param("id", new ParseUUIDPipe()) id: string) {
     try {
       return this.ingredientsService.deleteIngredient(id);
