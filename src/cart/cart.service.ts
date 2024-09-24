@@ -157,7 +157,7 @@ export class CartService {
     return (
       userCart.items.find((item) => {
         const isSameMenuPosition = item.menuPosition?.id === menuPosition?.id;
-        const hasIngredients = item.ingredients.length;
+        const hasIngredients = item.ingredients?.length;
         const hasConfigurableIngredients = addCartItemDto.configurableIngredients?.length > 0;
 
         if (hasConfigurableIngredients) {

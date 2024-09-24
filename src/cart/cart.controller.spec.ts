@@ -12,6 +12,7 @@ import { Cart } from "@/cart/entities/cart.entity";
 
 import { CartController } from "./cart.controller";
 import { CartService } from "./cart.service";
+import { CartItemConfigurableIngredient } from "./entities/cart-item-configurable-ingredient.entity";
 
 describe("CartController", () => {
   let controller: CartController;
@@ -37,6 +38,10 @@ describe("CartController", () => {
         },
         {
           provide: getRepositoryToken(User),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(CartItemConfigurableIngredient),
           useClass: Repository,
         },
         {
