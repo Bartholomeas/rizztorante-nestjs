@@ -67,9 +67,7 @@ export class CartService {
         `Menu position with id ${addCartItemDto.menuPositionId} not found`,
       );
 
-    const existingCartItem = userCart.items?.find(
-      (item) => item.menuPosition?.id === menuPosition?.id,
-    );
+    const existingCartItem = this.checkIfItemExists(userCart, menuPosition, addCartItemDto);
 
     if (existingCartItem) {
       existingCartItem.quantity += addCartItemDto.quantity;
@@ -83,6 +81,30 @@ export class CartService {
 
     await this.cartRepository.save(userCart);
     return;
+  }
+
+  private checkIfItemExists(
+    userCart: CartDto,
+    menuPosition: MenuPosition,
+    addCartItemDto: AddCartItemDto,
+  ): CartItemDto | null {
+    return (
+      userCart.items.find((item) => {
+        if (addCartItemDto.configurableIngredients?.length > 0) {
+          const lengthsMatches =
+            addCartItemDto.configurableIngredients?.length === item.ingredients.length;
+
+          const ingredientsMatch = item.ingredients.every((ing) =>
+            addCartItemDto.configurableIngredients.some(
+              (configIng) => configIng.id === ing.configurableIngredient.id,
+            ),
+          );
+
+          return item.menuPosition?.id === menuPosition?.id && ingredientsMatch && lengthsMatches;
+        }
+        return item.menuPosition?.id === menuPosition?.id && !item.ingredients.length;
+      }) || null
+    );
   }
 
   async setQuantity(
