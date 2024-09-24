@@ -22,15 +22,7 @@ export class CartItem {
   @ManyToOne(() => MenuPosition, (menuPosition) => menuPosition.cartItems)
   menuPosition: MenuPosition;
 
-  // @OneToOne(() => CartItemCustomConfig, (config) => config.cartItem, {
-  //   nullable: true,
-  //   cascade: true,
-  //   onDelete: "CASCADE",
-  // })
-  // @JoinColumn()
-  // config?: CartItemCustomConfig;
-
   @ManyToMany(() => CartItemConfigurableIngredient, (ingredient) => ingredient.cartItem)
   @JoinTable()
-  ingredients: CartItemConfigurableIngredient[];
+  ingredients?: CartItemConfigurableIngredient[];
 }

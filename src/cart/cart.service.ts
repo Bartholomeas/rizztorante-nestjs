@@ -15,6 +15,7 @@ import { Cart } from "@/cart/entities/cart.entity";
 import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 
+import { CartItemConfigurableIngredientDto } from "./dto/cart-item-configurable-ingredient.dto";
 import { CartItemDto } from "./dto/cart-item.dto";
 import { CartDto } from "./dto/cart.dto";
 import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
@@ -70,44 +71,20 @@ export class CartService {
     // const existingCartItem = userCart.items?.find(
     //   (item) => item.menuPosition?.id === menuPosition?.id,
     // );
-
     const existingCartItem = undefined;
+
     if (existingCartItem) {
       existingCartItem.quantity += addCartItemDto.quantity;
       existingCartItem.amount = menuPosition.price * existingCartItem.quantity;
     } else {
-      const newCartItem = new CartItem();
-      newCartItem.quantity = addCartItemDto.quantity;
-      if (menuPosition.price) newCartItem.amount = menuPosition.price * addCartItemDto.quantity;
-      newCartItem.menuPosition = menuPosition;
-
-      if (addCartItemDto.configurableIngredients?.length > 0) {
-        const configurableIngredients = await Promise.all(
-          addCartItemDto.configurableIngredients.map(async (ing) => {
-            const ingredient = new CartItemConfigurableIngredient();
-            const [configurableIngredient] = (await this.eventEmitter.emitAsync(
-              ...findConfigurableIngredientsEvent({ configurableIngredientId: [ing.id] }),
-            )) as ConfigurableIngredient[];
-            ingredient.quantity = ing.quantity ?? 1;
-            ingredient.cartItem = newCartItem;
-            ingredient.configurableIngredient = configurableIngredient[0];
-            return ingredient;
-          }),
-        );
-
-        newCartItem.ingredients = configurableIngredients;
-
-        await this.cartItemConfigurableIngredientRepository.save(configurableIngredients);
-      }
-
+      const newCartItem = await this.createNewCartItem(menuPosition, addCartItemDto);
       userCart.items.push(new CartItemDto(newCartItem));
     }
 
     userCart.total = userCart.items.reduce((total, item) => total + item.amount, 0);
 
     await this.cartRepository.save(userCart);
-
-    return existingCartItem;
+    return;
   }
 
   async setQuantity(
@@ -172,30 +149,48 @@ export class CartService {
     const newCartItem = new CartItem();
     newCartItem.quantity = addCartItemDto.quantity;
 
-    if (menuPosition.price)
+    if (menuPosition?.price)
       newCartItem.amount = this.calculateAmount(menuPosition.price, addCartItemDto.quantity);
+
     newCartItem.menuPosition = menuPosition;
 
     if (addCartItemDto.configurableIngredients?.length > 0) {
-      const configurableIngredients = await Promise.all(
-        addCartItemDto.configurableIngredients.map(async (ing) => {
-          const ingredient = new CartItemConfigurableIngredient();
-          const [configurableIngredient] = (await this.eventEmitter.emitAsync(
-            ...findConfigurableIngredientsEvent({ configurableIngredientId: [ing.id] }),
-          )) as ConfigurableIngredient[];
-          ingredient.quantity = ing.quantity ?? 1;
-          ingredient.cartItem = newCartItem;
-          ingredient.configurableIngredient = configurableIngredient[0];
-          return ingredient;
-        }),
+      const configurableIngredients = await this.createConfigurableIngredients(
+        newCartItem,
+        addCartItemDto.configurableIngredients,
       );
 
       newCartItem.ingredients = configurableIngredients;
-
       await this.cartItemConfigurableIngredientRepository.save(configurableIngredients);
     }
 
     return newCartItem;
+  }
+
+  private async createConfigurableIngredients(
+    newCartItem: CartItem,
+    ingredientsDto: CartItemConfigurableIngredientDto[],
+  ): Promise<CartItemConfigurableIngredient[]> {
+    const configurableIngredientIds = ingredientsDto.map((ing) => ing.id);
+    const [configurableIngredients] = (await this.eventEmitter.emitAsync(
+      ...findConfigurableIngredientsEvent({ configurableIngredientId: configurableIngredientIds }),
+    )) as ConfigurableIngredient[][];
+
+    const ingredients = ingredientsDto.map((ing) => {
+      const configurableIngredient = configurableIngredients.find((ci) => ci.id === ing.id);
+      if (!configurableIngredient)
+        throw new NotFoundException(`Configurable ingredient with id ${ing.id} not found`);
+
+      const ingredient = new CartItemConfigurableIngredient();
+      ingredient.quantity = ing.quantity ?? 1;
+      ingredient.cartItem = newCartItem;
+      ingredient.configurableIngredient = configurableIngredient;
+      return ingredient;
+    });
+
+    await this.cartItemConfigurableIngredientRepository.save(ingredients);
+
+    return ingredients;
   }
 
   private calculateAmount(price: number, quatity: number): number {
