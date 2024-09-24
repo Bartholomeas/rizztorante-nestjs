@@ -15,10 +15,10 @@ import { Cart } from "@/cart/entities/cart.entity";
 import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 
-import { CartItemConfigurableIngredientDto } from "./dto/cart-item-configurable-ingredient.dto";
 import { CartItemDto } from "./dto/cart-item.dto";
 import { CartDto } from "./dto/cart.dto";
 import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
+import { CreateCartItemConfigurableIngredientDto } from "./dto/create-cart-item-configurable-ingredient.dto";
 import { CartItemConfigurableIngredient } from "./entities/cart-item-configurable-ingredient.entity";
 
 @Injectable()
@@ -37,7 +37,6 @@ export class CartService {
 
   @OnEvent(CartEventTypes.GET_USER_CART)
   async getUserCart(userId: string): Promise<CartDto> {
-    // const userCart = await this.retrieveUserCart(userId, opts);
     const userCart = await this.retrieveUserCart(userId, {
       relations: [
         "items",
@@ -68,10 +67,9 @@ export class CartService {
         `Menu position with id ${addCartItemDto.menuPositionId} not found`,
       );
 
-    // const existingCartItem = userCart.items?.find(
-    //   (item) => item.menuPosition?.id === menuPosition?.id,
-    // );
-    const existingCartItem = undefined;
+    const existingCartItem = userCart.items?.find(
+      (item) => item.menuPosition?.id === menuPosition?.id,
+    );
 
     if (existingCartItem) {
       existingCartItem.quantity += addCartItemDto.quantity;
@@ -169,7 +167,7 @@ export class CartService {
 
   private async createConfigurableIngredients(
     newCartItem: CartItem,
-    ingredientsDto: CartItemConfigurableIngredientDto[],
+    ingredientsDto: CreateCartItemConfigurableIngredientDto[],
   ): Promise<CartItemConfigurableIngredient[]> {
     const configurableIngredientIds = ingredientsDto.map((ing) => ing.id);
     const [configurableIngredients] = (await this.eventEmitter.emitAsync(

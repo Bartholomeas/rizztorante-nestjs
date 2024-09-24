@@ -20,7 +20,7 @@ import { SessionContent } from "@/auth/sessions/types/session.types";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 
 import { CartService } from "./cart.service";
-import { CartDto } from "./dto/cart.dto";
+import { CartDto, FlatCartDto } from "./dto/cart.dto";
 import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
 
 @Controller("cart")
@@ -34,9 +34,9 @@ export class CartController {
   async getCart(
     @Session()
     session: SessionContent,
-  ): Promise<CartDto> {
+  ): Promise<FlatCartDto> {
     try {
-      return this.cartService.getUserCart(session?.passport?.user?.id);
+      return (await this.cartService.getUserCart(session?.passport?.user?.id)).toFlatCartDto();
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);

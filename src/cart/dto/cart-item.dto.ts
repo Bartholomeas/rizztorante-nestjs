@@ -5,6 +5,7 @@ import { IsString, IsNumber, ValidateNested, IsUUID, IsPositive, Min } from "cla
 import { MenuPositionImageDto } from "@/menu/dto/menu-position-image.dto";
 import { MenuPositionDto } from "@/menu/dto/menu-position.dto";
 
+import { CartItemConfigurableIngredientDto } from "./cart-item-configurable-ingredient.dto";
 import { CartItem } from "../entities/cart-item.entity";
 
 export class CartItemDto {
@@ -36,6 +37,10 @@ export class CartItemDto {
   @ApiProperty({ type: MenuPositionImageDto })
   @ValidateNested()
   menuPosition: MenuPositionDto;
+
+  @ApiProperty({ type: [CartItemConfigurableIngredientDto] })
+  @ValidateNested()
+  ingredients: CartItemConfigurableIngredientDto[];
 
   constructor(partial: Partial<CartItem>) {
     Object.assign(this, partial);

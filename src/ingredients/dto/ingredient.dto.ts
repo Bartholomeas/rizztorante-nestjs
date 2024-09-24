@@ -1,8 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { IsBoolean, IsOptional, IsString, MinLength } from "class-validator";
+import { IsBoolean, IsOptional, IsString, IsUUID, MinLength } from "class-validator";
 
 export class IngredientDto {
+  @ApiProperty({ description: "Id of the ingredient" })
+  @IsString()
+  @IsUUID()
+  id: string;
+
   @ApiProperty({ description: "The name of the ingredient" })
   @IsString()
   @MinLength(2)

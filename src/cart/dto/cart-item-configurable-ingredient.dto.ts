@@ -1,15 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-
-import { IsInt, IsPositive, IsUUID, Min } from "class-validator";
-
+import type { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
 export class CartItemConfigurableIngredientDto {
-  @ApiProperty({ default: "00000000-0000-0000-0000-000000000000" })
-  @IsUUID()
   id: string;
-
-  @ApiProperty({ default: 1 })
-  @IsInt()
-  @IsPositive()
-  @Min(1)
   quantity: number;
+  configurableIngredient: ConfigurableIngredient;
 }

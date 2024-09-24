@@ -11,7 +11,7 @@ import {
   ValidateNested,
 } from "class-validator";
 
-import { CartItemConfigurableIngredientDto } from "./cart-item-configurable-ingredient.dto";
+import { CreateCartItemConfigurableIngredientDto } from "./create-cart-item-configurable-ingredient.dto";
 
 export class AddCartItemDto {
   @ApiProperty({ default: "00000000-0000-0000-0000-000000000000" })
@@ -25,10 +25,10 @@ export class AddCartItemDto {
   @Min(1)
   quantity: number;
 
-  @ApiProperty({ type: [CartItemConfigurableIngredientDto], isArray: true, default: [] })
+  @ApiProperty({ type: [CreateCartItemConfigurableIngredientDto], isArray: true, default: [] })
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => CartItemConfigurableIngredientDto)
-  configurableIngredients?: CartItemConfigurableIngredientDto[];
+  @Type(() => CreateCartItemConfigurableIngredientDto)
+  configurableIngredients?: CreateCartItemConfigurableIngredientDto[];
 }
