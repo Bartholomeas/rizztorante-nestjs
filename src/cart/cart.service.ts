@@ -6,18 +6,19 @@ import { FindOneOptions, Repository } from "typeorm";
 
 import { CartEventTypes } from "@events/events";
 import { getSinglePositionEvent } from "@events/payloads";
+import { findConfigurableIngredientsEvent } from "@events/payloads/ingredients";
 
 import { User } from "@/auth/entities/user.entity";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 import { CartItem } from "@/cart/entities/cart-item.entity";
 import { Cart } from "@/cart/entities/cart.entity";
+import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 
 import { CartItemDto } from "./dto/cart-item.dto";
 import { CartDto } from "./dto/cart.dto";
 import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
 import { CartItemConfigurableIngredient } from "./entities/cart-item-configurable-ingredient.entity";
-import { CartItemCustomConfig } from "./entities/cart-item-custom-config.entity";
 
 @Injectable()
 export class CartService {
@@ -30,9 +31,6 @@ export class CartService {
     private readonly cartItemRepository: Repository<CartItem>,
     @InjectRepository(CartItemConfigurableIngredient)
     private readonly cartItemConfigurableIngredientRepository: Repository<CartItemConfigurableIngredient>,
-
-    @InjectRepository(CartItemCustomConfig)
-    private readonly cartItemCustomConfigRepository: Repository<CartItemCustomConfig>,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
@@ -44,8 +42,9 @@ export class CartService {
         "items",
         "items.menuPosition",
         "items.menuPosition.coreImage",
-        "items.config",
-        "items.config.configurableIngredient",
+        "items.ingredients",
+        "items.ingredients.configurableIngredient",
+        "items.ingredients.configurableIngredient.ingredient",
       ],
     });
     if (userCart) return new CartDto(userCart);
@@ -71,6 +70,7 @@ export class CartService {
     // const existingCartItem = userCart.items?.find(
     //   (item) => item.menuPosition?.id === menuPosition?.id,
     // );
+
     const existingCartItem = undefined;
     if (existingCartItem) {
       existingCartItem.quantity += addCartItemDto.quantity;
@@ -82,21 +82,22 @@ export class CartService {
       newCartItem.menuPosition = menuPosition;
 
       if (addCartItemDto.configurableIngredients?.length > 0) {
-        const cartItemConfig = new CartItemCustomConfig();
-        cartItemConfig.cartItem = newCartItem;
+        const configurableIngredients = await Promise.all(
+          addCartItemDto.configurableIngredients.map(async (ing) => {
+            const ingredient = new CartItemConfigurableIngredient();
+            const [configurableIngredient] = (await this.eventEmitter.emitAsync(
+              ...findConfigurableIngredientsEvent({ configurableIngredientId: [ing.id] }),
+            )) as ConfigurableIngredient[];
+            ingredient.quantity = ing.quantity ?? 1;
+            ingredient.cartItem = newCartItem;
+            ingredient.configurableIngredient = configurableIngredient[0];
+            return ingredient;
+          }),
+        );
 
-        const configurableIngredients = addCartItemDto.configurableIngredients.map((ingredient) => {
-          const cartItemConfigurableIngredient = new CartItemConfigurableIngredient();
-          cartItemConfigurableIngredient.id = ingredient.id;
-          cartItemConfigurableIngredient.quantity = ingredient.quantity ?? 1;
-          return cartItemConfigurableIngredient;
-        });
+        newCartItem.ingredients = configurableIngredients;
 
         await this.cartItemConfigurableIngredientRepository.save(configurableIngredients);
-
-        cartItemConfig.configurableIngredient = configurableIngredients;
-        await this.cartItemCustomConfigRepository.save(cartItemConfig);
-        newCartItem.config = cartItemConfig;
       }
 
       userCart.items.push(new CartItemDto(newCartItem));
@@ -165,5 +166,39 @@ export class CartService {
 
   private calculateItemAmount(item: CartItemDto): number {
     return Number(item.menuPosition.price * item.quantity);
+  }
+
+  private async createNewCartItem(menuPosition: MenuPosition, addCartItemDto: AddCartItemDto) {
+    const newCartItem = new CartItem();
+    newCartItem.quantity = addCartItemDto.quantity;
+
+    if (menuPosition.price)
+      newCartItem.amount = this.calculateAmount(menuPosition.price, addCartItemDto.quantity);
+    newCartItem.menuPosition = menuPosition;
+
+    if (addCartItemDto.configurableIngredients?.length > 0) {
+      const configurableIngredients = await Promise.all(
+        addCartItemDto.configurableIngredients.map(async (ing) => {
+          const ingredient = new CartItemConfigurableIngredient();
+          const [configurableIngredient] = (await this.eventEmitter.emitAsync(
+            ...findConfigurableIngredientsEvent({ configurableIngredientId: [ing.id] }),
+          )) as ConfigurableIngredient[];
+          ingredient.quantity = ing.quantity ?? 1;
+          ingredient.cartItem = newCartItem;
+          ingredient.configurableIngredient = configurableIngredient[0];
+          return ingredient;
+        }),
+      );
+
+      newCartItem.ingredients = configurableIngredients;
+
+      await this.cartItemConfigurableIngredientRepository.save(configurableIngredients);
+    }
+
+    return newCartItem;
+  }
+
+  private calculateAmount(price: number, quatity: number): number {
+    return price * quatity;
   }
 }

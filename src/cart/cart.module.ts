@@ -11,7 +11,6 @@ import { GuestUserMiddleware } from "@/middlewares/guest-user.middleware";
 import { CartController } from "./cart.controller";
 import { CartService } from "./cart.service";
 import { CartItemConfigurableIngredient } from "./entities/cart-item-configurable-ingredient.entity";
-import { CartItemCustomConfig } from "./entities/cart-item-custom-config.entity";
 
 @Module({
   imports: [
@@ -20,7 +19,6 @@ import { CartItemCustomConfig } from "./entities/cart-item-custom-config.entity"
       CartItem,
       SessionEntity,
       User,
-      CartItemCustomConfig,
       CartItemConfigurableIngredient,
       ConfigurableIngredient,
     ]),
