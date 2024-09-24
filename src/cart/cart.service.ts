@@ -70,41 +70,16 @@ export class CartService {
     const existingCartItem = this.checkIfItemExists(userCart, menuPosition, addCartItemDto);
 
     if (existingCartItem) {
-      existingCartItem.quantity += addCartItemDto.quantity;
-      existingCartItem.amount = menuPosition.price * existingCartItem.quantity;
+      this.updateExistingCartItem(existingCartItem, menuPosition, addCartItemDto);
     } else {
       const newCartItem = await this.createNewCartItem(menuPosition, addCartItemDto);
       userCart.items.push(new CartItemDto(newCartItem));
     }
 
-    userCart.total = userCart.items.reduce((total, item) => total + item.amount, 0);
+    userCart.total = this.calculateCartTotal(userCart);
 
     await this.cartRepository.save(userCart);
     return;
-  }
-
-  private checkIfItemExists(
-    userCart: CartDto,
-    menuPosition: MenuPosition,
-    addCartItemDto: AddCartItemDto,
-  ): CartItemDto | null {
-    return (
-      userCart.items.find((item) => {
-        if (addCartItemDto.configurableIngredients?.length > 0) {
-          const lengthsMatches =
-            addCartItemDto.configurableIngredients?.length === item.ingredients.length;
-
-          const ingredientsMatch = item.ingredients.every((ing) =>
-            addCartItemDto.configurableIngredients.some(
-              (configIng) => configIng.id === ing.configurableIngredient.id,
-            ),
-          );
-
-          return item.menuPosition?.id === menuPosition?.id && ingredientsMatch && lengthsMatches;
-        }
-        return item.menuPosition?.id === menuPosition?.id && !item.ingredients.length;
-      }) || null
-    );
   }
 
   async setQuantity(
@@ -159,6 +134,47 @@ export class CartService {
       relations: ["items", "items.menuPosition", "items.menuPosition.coreImage"],
       ...opts,
     });
+  }
+
+  private updateExistingCartItem(
+    existingCartItem: CartItemDto,
+    menuPosition: MenuPosition,
+    addCartItemDto: AddCartItemDto,
+  ) {
+    existingCartItem.quantity += addCartItemDto.quantity;
+    existingCartItem.amount = menuPosition.price * existingCartItem.quantity;
+  }
+
+  private calculateCartTotal(userCart: CartDto): number {
+    return userCart.items.reduce((total, item) => total + item.amount, 0);
+  }
+
+  private checkIfItemExists(
+    userCart: CartDto,
+    menuPosition: MenuPosition,
+    addCartItemDto: AddCartItemDto,
+  ): CartItemDto | null {
+    return (
+      userCart.items.find((item) => {
+        const isSameMenuPosition = item.menuPosition?.id === menuPosition?.id;
+        const hasIngredients = item.ingredients.length;
+        const hasConfigurableIngredients = addCartItemDto.configurableIngredients?.length > 0;
+
+        if (hasConfigurableIngredients) {
+          const lengthsMatch =
+            addCartItemDto.configurableIngredients.length === item.ingredients.length;
+          const ingredientsMatch = item.ingredients.every((ing) =>
+            addCartItemDto.configurableIngredients.some(
+              (configIng) => configIng.id === ing.configurableIngredient.id,
+            ),
+          );
+
+          return isSameMenuPosition && ingredientsMatch && lengthsMatch;
+        }
+
+        return isSameMenuPosition && !hasIngredients;
+      }) || null
+    );
   }
 
   private calculateItemAmount(item: CartItemDto): number {
