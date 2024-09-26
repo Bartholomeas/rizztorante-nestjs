@@ -12,6 +12,7 @@ import {
 
 import { UserRole } from "@/_common/types/user-roles.type";
 import { Cart } from "@/cart/entities/cart.entity";
+import { NotificationToken } from "@/notifications/entities/notification-token.entity";
 import { Order } from "@/orders/entities/order.entity";
 
 @Entity()
@@ -54,4 +55,7 @@ export class User {
   @OneToMany(() => Order, (order) => order.user)
   @JoinColumn()
   orders: Order[];
+
+  @OneToMany(() => NotificationToken, (notificationToken) => notificationToken.user)
+  notificationTokens: NotificationToken[];
 }
