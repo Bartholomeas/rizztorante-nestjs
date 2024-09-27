@@ -9,6 +9,7 @@ import * as session from "express-session";
 import * as passport from "passport";
 import { DataSource } from "typeorm";
 
+import { GlobalExceptionFilter } from "@common/filters/global-exception.filter";
 import { LoggingInterceptor } from "@common/interceptors/logging.interceptor";
 
 import { SessionEntity } from "@/auth/sessions/entity/session.entity";
@@ -28,6 +29,7 @@ async function bootstrap() {
   app.setGlobalPrefix("api/v1");
   app.use(compression());
   app.useGlobalInterceptors(new LoggingInterceptor());
+  app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
