@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
-import { User } from "@/auth/entities/user.entity";
+import { User } from "@/users/entities/user.entity";
 
 import { Notification } from "./notification.entity";
 import { NotificationDevice } from "../enums/notification-device.enum";
