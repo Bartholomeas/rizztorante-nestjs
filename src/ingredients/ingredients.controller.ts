@@ -92,11 +92,6 @@ export class IngredientsController {
   @ApiOperation({ summary: "Delete ingredient (restricted)" })
   @ApiSecurity("Roles")
   delete(@Param("id", new ParseUUIDPipe()) id: string) {
-    try {
-      return this.ingredientsService.deleteIngredient(id);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
+    return this.ingredientsService.deleteIngredient(id);
   }
 }
