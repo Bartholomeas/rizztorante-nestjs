@@ -1,7 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import { User } from "@/auth/entities/user.entity";
 
+import { Notification } from "./notification.entity";
 import { NotificationDevice } from "../enums/notification-device.enum";
 import { NotificationStatus } from "../enums/notification-status.enum";
 
@@ -22,4 +23,7 @@ export class NotificationToken {
   @ManyToOne(() => User)
   @JoinColumn({ name: "userId", referencedColumnName: "id" })
   user: User;
+
+  @ManyToMany(() => Notification, (notification) => notification)
+  notifications: Notification[];
 }

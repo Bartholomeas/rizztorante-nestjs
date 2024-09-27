@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
+import { NotificationToken } from "./notification-token.entity";
 import { NotificationStatus } from "../enums/notification-status.enum";
 
 @Entity()
@@ -18,4 +19,8 @@ export class Notification {
 
   @Column({ enum: NotificationStatus, default: NotificationStatus.ACTIVE })
   status: NotificationStatus;
+
+  @ManyToMany(() => NotificationToken, (notificationToken) => notificationToken.notifications)
+  @JoinColumn()
+  notificationTokens: NotificationToken[];
 }
