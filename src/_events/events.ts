@@ -25,3 +25,8 @@ export enum OrderEventTypes {
 export enum IngredientsConfigEventTypes {
   FIND_CONFIGURABLE_INGREDIENT = "ingredients-config.find-configurable-ingredient",
 }
+
+export enum NotificationEventTypes {
+  ENABLE_PUSH_NOTIFICATION = "notification.enable",
+  DISABLE_PUSH_NOTIFICATION = "notification.disable",
+}

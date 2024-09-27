@@ -21,6 +21,8 @@ import { RestaurantConfigModule } from "@/restaurant-config/restaurant-config.mo
 import { UploadsModule } from "@/uploads/uploads.module";
 import { UsersModule } from "@/users/users.module";
 
+import { NotificationsModule } from "./notifications/notifications.module";
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -83,6 +85,7 @@ import { UsersModule } from "@/users/users.module";
     OpinionsModule,
     PaymentsModule,
     UploadsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -3,6 +3,8 @@ import { NestFactory } from "@nestjs/core";
 
 import { Connection, DataSource } from "typeorm";
 
+import { UserRole } from "@common/types/user-roles.type";
+
 import { IngredientsConfigService } from "@/ingredients/ingredients-config/ingredients-config.service";
 
 import { AppModule } from "./app.module";
@@ -186,6 +188,12 @@ async function createUsers(authService: AuthService, app: INestApplicationContex
     confirmPassword: "!23Haslo",
   });
 
+  const userService = await authService.registerUser({
+    email: "test3@gmail.com",
+    password: "!23Haslo",
+    confirmPassword: "!23Haslo",
+  });
+
   await authService.registerUser({
     email: "test2@gmail.com",
     password: "!23Haslo",
@@ -193,7 +201,13 @@ async function createUsers(authService: AuthService, app: INestApplicationContex
   });
 
   await authService.createOrRetrieveGuestUser();
-  await app.get(Connection).query(`UPDATE "user" SET role = 'ADMIN' WHERE id = $1`, [user.id]);
+  await app
+    .get(Connection)
+    .query(`UPDATE "user" SET role = '${UserRole.ADMIN}' WHERE id = $1`, [user.id]);
+
+  await app
+    .get(Connection)
+    .query(`UPDATE "user" SET role = '${UserRole.SERVICE}' WHERE id = $1`, [userService.id]);
 }
 
 async function createIngredients(ingredientsService: IngredientsService) {
