@@ -3,8 +3,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
 import { UserRole } from "@common/types/user-roles.type";
-
-import { AuthUtils } from "@/auth/auth.utils";
+import { RemovePasswordUtils } from "@common/utils/remove-password.utils";
 
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
@@ -157,7 +156,7 @@ describe("AuthController", () => {
       jest.spyOn(authService, "createOrRetrieveGuestUser").mockResolvedValue(guestUser);
 
       expect(await authController.loginGuest(session)).toEqual(
-        AuthUtils.removePasswordFromResponse(guestUser),
+        RemovePasswordUtils.removePasswordFromResponse(guestUser),
       );
 
       // expect(await authController.loginGuest(sessions)).toEqual(result);

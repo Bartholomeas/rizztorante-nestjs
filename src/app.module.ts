@@ -19,6 +19,7 @@ import { OrdersModule } from "@/orders/orders.module";
 import { PaymentsModule } from "@/payments/payments.module";
 import { RestaurantConfigModule } from "@/restaurant-config/restaurant-config.module";
 import { UploadsModule } from "@/uploads/uploads.module";
+import { UsersModule } from "@/users/users.module";
 
 import { NotificationsModule } from "./notifications/notifications.module";
 
@@ -74,6 +75,7 @@ import { NotificationsModule } from "./notifications/notifications.module";
     ]),
     EventEmitterModule.forRoot({ delimiter: "." }),
     AuthModule,
+    UsersModule,
     RestaurantConfigModule,
     IngredientsModule,
     MenuModule,

@@ -15,12 +15,12 @@ import { UserEventTypes } from "@events/events";
 import { GuestCreatedPayload } from "@events/payloads";
 
 import { UserRole } from "@/_common/types/user-roles.type";
-import { User } from "@/auth/entities/user.entity";
 import { SessionEntity } from "@/auth/sessions/entity/session.entity";
+import { User } from "@/users/entities/user.entity";
 
-import { AuthUtils } from "./auth.utils";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
+import { RemovePasswordUtils } from "../_common/utils/remove-password.utils";
 
 @Injectable()
 export class AuthService {
@@ -30,14 +30,6 @@ export class AuthService {
     @InjectRepository(SessionEntity)
     private sessionRepository: Repository<SessionEntity>,
   ) {}
-
-  async getUserProfile(userId: string | undefined): Promise<Omit<User, "password">> {
-    if (!userId) throw new NotFoundException("User ID is required");
-
-    const user = await this.findUserById(userId);
-    if (!user) throw new NotFoundException("User not found");
-    return AuthUtils.removePasswordFromResponse(user);
-  }
 
   async registerUser(createUserDto: CreateUserDto): Promise<Omit<User, "password">> {
     if (createUserDto.password !== createUserDto.confirmPassword)
@@ -54,7 +46,7 @@ export class AuthService {
     });
 
     const savedUser = await this.userRepository.save(newUser);
-    return AuthUtils.removePasswordFromResponse(savedUser);
+    return RemovePasswordUtils.removePasswordFromResponse(savedUser);
   }
 
   async authenticateUser(loginUserDto: LoginUserDto): Promise<Omit<User, "password">> {
@@ -66,7 +58,7 @@ export class AuthService {
 
     await this.verifyPassword(loginUserDto.password, user.password);
 
-    return AuthUtils.removePasswordFromResponse(user);
+    return RemovePasswordUtils.removePasswordFromResponse(user);
   }
 
   @OnEvent(UserEventTypes.GUEST_CREATED)

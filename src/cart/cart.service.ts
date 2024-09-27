@@ -8,12 +8,12 @@ import { CartEventTypes } from "@events/events";
 import { getSinglePositionEvent } from "@events/payloads";
 import { findConfigurableIngredientsEvent } from "@events/payloads/ingredients";
 
-import { User } from "@/auth/entities/user.entity";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 import { CartItem } from "@/cart/entities/cart-item.entity";
 import { Cart } from "@/cart/entities/cart.entity";
 import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
+import { User } from "@/users/entities/user.entity";
 
 import { CartItemDto } from "./dto/cart-item.dto";
 import { CartDto } from "./dto/cart.dto";

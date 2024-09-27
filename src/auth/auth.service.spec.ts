@@ -4,8 +4,8 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { User } from "@/auth/entities/user.entity";
 import { SessionEntity } from "@/auth/sessions/entity/session.entity";
+import { User } from "@/users/entities/user.entity";
 
 import { AuthService } from "./auth.service";
 

@@ -5,8 +5,8 @@ import { getUserCartEvent, initPaymentEvent } from "@events/payloads";
 import { getUserEvent } from "@events/payloads/auth";
 import { createOrderEvent } from "@events/payloads/orders";
 
-import { User } from "@/auth/entities/user.entity";
 import { CartDto } from "@/cart/dto/cart.dto";
+import { User } from "@/users/entities/user.entity";
 
 import { CheckoutDto } from "./dto/checkout.dto";
 import { PaymentsEnum, PickupEnum } from "./enums/checkout.enums";

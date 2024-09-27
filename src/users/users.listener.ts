@@ -3,14 +3,14 @@ import { OnEvent } from "@nestjs/event-emitter";
 
 import { UserEventTypes } from "@events/events";
 
-import { AuthService } from "@/auth/auth.service";
+import { UsersService } from "./users.service";
 
 @Injectable()
-export class AuthListener {
-  constructor(private readonly authService: AuthService) {}
+export class UsersListener {
+  constructor(private readonly usersService: UsersService) {}
 
   @OnEvent(UserEventTypes.GET_USER_PROFILE)
   async getUserProfile(userId: string) {
-    return await this.authService.getUserProfile(userId);
+    return await this.usersService.getCurrentUser(userId);
   }
 }
