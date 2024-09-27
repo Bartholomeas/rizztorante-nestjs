@@ -11,11 +11,11 @@ export class NotificationToken {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ enum: NotificationDevice, nullable: true })
-  deviceType?: NotificationDevice;
-
   @Column()
   token: string;
+
+  @Column({ enum: NotificationDevice, nullable: true })
+  deviceType?: NotificationDevice;
 
   @Column({ enum: NotificationStatus, default: NotificationStatus.ACTIVE })
   status: NotificationStatus;

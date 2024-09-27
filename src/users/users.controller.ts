@@ -36,4 +36,10 @@ export class UsersController {
   async enablePushNotification(@Session() session: SessionContent): Promise<void> {
     return await this.usersService.enablePushNotification(session?.passport?.user?.id);
   }
+
+  @Put("/disable-push-notification")
+  @HttpCode(HttpStatus.OK)
+  async disablePushNotification(@Session() session: SessionContent): Promise<void> {
+    return await this.usersService.disablePushNotification(session?.passport?.user?.id);
+  }
 }

@@ -22,7 +22,5 @@ export class OpinionDto extends BaseOpinionDto {
   constructor(partial: Partial<OpinionDto>) {
     super();
     Object.assign(this, partial);
-    // this.rate = parseFloat(this.rate.toString());
-    console.log("FFRJFRJFRJFRJ", this);
   }
 }

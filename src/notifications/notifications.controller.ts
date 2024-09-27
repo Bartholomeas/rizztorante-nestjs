@@ -6,18 +6,21 @@ import {
   HttpStatus,
   InternalServerErrorException,
   Post,
+  Req,
   Session,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+
+import { Request } from "express";
 
 import { UserRole } from "@common/types/user-roles.type";
 
 import { SessionContent } from "@/auth/sessions/types/session.types";
 
-import { AcceptNotificationDto } from "./dto/accept-notification.dto";
 import { CreateNotificationDto } from "./dto/create-notification.dto";
 import { NotificationToken } from "./entities/notification-token.entity";
 import { NotificationsService } from "./notifications.service";
+import { getDeviceType } from "./notifications.utils";
 
 @Controller("notifications")
 @ApiTags("Notifications")
@@ -42,12 +45,13 @@ export class NotificationsController {
   @Post("/accept-notification")
   @HttpCode(HttpStatus.OK)
   async acceptNotification(
+    @Req() req: Request,
     @Session() session: SessionContent,
-    @Body() acceptNotificationDto: AcceptNotificationDto,
   ): Promise<NotificationToken> {
-    return await this.notificationsService.acceptPushNotification(
-      session?.passport.user.id,
-      acceptNotificationDto,
-    );
+    const deviceType = getDeviceType(req.header("user-agent"));
+
+    return await this.notificationsService.acceptPushNotification(session?.passport.user.id, {
+      deviceType,
+    });
   }
 }

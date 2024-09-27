@@ -1,3 +1,5 @@
+import * as crypto from "crypto";
+
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -9,7 +11,6 @@ import { UserRole } from "@common/types/user-roles.type";
 import { AcceptNotificationDto } from "./dto/accept-notification.dto";
 import { CreateGuestNotificationToken } from "./dto/create-guest-notification-token.dto";
 import { CreateNotificationDto } from "./dto/create-notification.dto";
-import { UpdateNotificationDto } from "./dto/update-notification.dto";
 import { NotificationToken } from "./entities/notification-token.entity";
 import { Notification } from "./entities/notification.entity";
 import { NotificationStatus } from "./enums/notification-status.enum";
@@ -27,26 +28,35 @@ export class NotificationsService {
     userId: string,
     acceptNotificationDto: AcceptNotificationDto,
   ): Promise<NotificationToken> {
-    console.log("hihihih", userId);
-
     await this.notificationTokenRepository.update(
       { user: { id: userId } },
       { status: NotificationStatus.INACTIVE },
     );
 
-    return await this.notificationTokenRepository.save({
-      user: { id: userId },
-      deviceType: acceptNotificationDto.deviceType,
-      token: acceptNotificationDto.notificationToken,
-      status: NotificationStatus.ACTIVE,
+    let token = await this.notificationTokenRepository.findOne({
+      where: {
+        user: { id: userId },
+        deviceType: acceptNotificationDto.deviceType,
+      },
     });
+
+    if (!token)
+      token = this.notificationTokenRepository.create({
+        user: { id: userId },
+        deviceType: acceptNotificationDto.deviceType,
+      });
+
+    token.token = acceptNotificationDto?.notificationToken ?? crypto.randomUUID();
+    token.status = NotificationStatus.ACTIVE;
+
+    return await this.notificationTokenRepository.save(token);
   }
 
-  async disablePushNotification(userId: string, updateDto: UpdateNotificationDto): Promise<void> {
+  async disablePushNotification(userId: string): Promise<void> {
     await this.notificationTokenRepository.update(
       {
         user: { id: userId },
-        deviceType: updateDto.deviceType,
+        // deviceType: updateDto.deviceType,
       },
       { status: NotificationStatus.INACTIVE },
     );
@@ -56,7 +66,7 @@ export class NotificationsService {
     return await this.notificationRepository.find();
   }
 
-  async sendPush(userId: string, title: string, body: string): Promise<void> {
+  async sendPush(userId: string, { title, body }: CreateNotificationDto): Promise<void> {
     const notificationToken = await this.notificationTokenRepository.findOne({
       where: { user: { id: userId }, status: NotificationStatus.ACTIVE },
     });
@@ -86,7 +96,7 @@ export class NotificationsService {
     if (!notificationTokens?.length)
       throw new NotFoundException(`No notification tokens found for role ${role}`);
 
-    await this.notificationRepository.save({
+    const newNotification = this.notificationRepository.create({
       notificationTokens,
       body,
       title,
@@ -94,9 +104,12 @@ export class NotificationsService {
       createdBy: "system",
     });
 
+    await this.notificationRepository.save(newNotification);
+
+    const tokens = notificationTokens.map((token) => token.token);
     await firebase.messaging().sendEachForMulticast({
       notification: { title, body },
-      tokens: notificationTokens.map((token) => token.token),
+      tokens,
       android: { priority: "high" },
     });
   }
