@@ -56,6 +56,8 @@ export class User {
   @JoinColumn()
   orders: Order[];
 
-  @OneToMany(() => NotificationToken, (notificationToken) => notificationToken.user)
-  notificationTokens: NotificationToken[];
+  @OneToMany(() => NotificationToken, (notificationToken) => notificationToken.user, {
+    nullable: true,
+  })
+  notificationTokens?: NotificationToken[];
 }
