@@ -1,8 +1,7 @@
-import type { User } from "@/auth/entities/user.entity";
+import type { CreateUserDto } from "@/auth/dto/create-user.dto";
+import type { User } from "@/users/entities/user.entity";
 
-import type { CreateUserDto } from "./dto/create-user.dto";
-
-export class AuthUtils {
+export class RemovePasswordUtils {
   static removePasswordFromResponse<T extends User | CreateUserDto>(
     user: T,
   ): Omit<T, "password" | "confirmPassword"> {

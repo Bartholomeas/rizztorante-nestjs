@@ -8,8 +8,8 @@ import { IsNull, LessThan, Not, Repository } from "typeorm";
 import { UserEventTypes } from "@events/events";
 import { GuestCreatedPayload } from "@events/payloads";
 
-import { User } from "@/auth/entities/user.entity";
 import { SessionContent } from "@/auth/sessions/types/session.types";
+import { User } from "@/users/entities/user.entity";
 
 import { SessionEntity } from "./entity/session.entity";
 

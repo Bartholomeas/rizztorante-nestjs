@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
   HttpCode,
   HttpException,
   HttpStatus,
@@ -17,9 +16,10 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import { Request } from "express";
 
+import { RemovePasswordUtils } from "@common/utils/remove-password.utils";
+
 import { GuestCreatedPayload } from "@events/payloads";
 
-import { AuthUtils } from "@/auth/auth.utils";
 import { LocalAuthGuard } from "@/auth/guards/local.auth.guard";
 import { SessionContent } from "@/auth/sessions/types/session.types";
 
@@ -31,18 +31,6 @@ import { LoginUserDto } from "./dto/login-user.dto";
 @Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  @Get("me")
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Get current user" })
-  async getMe(@Session() session: SessionContent) {
-    try {
-      return await this.authService.getUserProfile(session?.passport?.user?.id);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
-  }
 
   @Post("register")
   @HttpCode(HttpStatus.CREATED)
@@ -65,7 +53,7 @@ export class AuthController {
         new GuestCreatedPayload(session?.passport?.user?.id, session?.id),
       );
       session.passport = { user: guestUser };
-      return AuthUtils.removePasswordFromResponse(guestUser);
+      return RemovePasswordUtils.removePasswordFromResponse(guestUser);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
