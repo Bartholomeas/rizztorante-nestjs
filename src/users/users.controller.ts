@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   InternalServerErrorException,
+  Put,
   Session,
 } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
@@ -28,5 +29,11 @@ export class UsersController {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
     }
+  }
+
+  @Put("/enable-push-notification")
+  @HttpCode(HttpStatus.OK)
+  async enablePushNotification(@Session() session: SessionContent): Promise<void> {
+    return await this.usersService.enablePushNotification(session?.passport?.user?.id);
   }
 }
