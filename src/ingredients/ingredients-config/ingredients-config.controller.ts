@@ -42,12 +42,12 @@ export class IngredientsConfigController {
   @ApiPaginatedResponse(ConfigurationWithIdsDto)
   @ApiSecurity("Role")
   async findAllConfigurations(@Query() pageOptionsDto: PageOptionsWithSearchDto) {
-    try {
-      return await this.ingredientsConfigService.findAllConfigurations(pageOptionsDto);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException();
-    }
+    // try {
+    return await this.ingredientsConfigService.findAllConfigurations(pageOptionsDto);
+    // } catch (err) {
+    //   if (err instanceof HttpException) throw err;
+    //   throw new InternalServerErrorException();
+    // }
   }
 
   @Get("/:id/details")
