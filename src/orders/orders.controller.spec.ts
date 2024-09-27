@@ -4,9 +4,9 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 
-import { User } from "@/auth/entities/user.entity";
 import { Cart } from "@/cart/entities/cart.entity";
 import { Order } from "@/orders/entities/order.entity";
+import { User } from "@/users/entities/user.entity";
 
 import { OrdersController } from "./orders.controller";
 import { OrdersService } from "./orders.service";

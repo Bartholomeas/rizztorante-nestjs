@@ -3,7 +3,7 @@ import { PassportStrategy } from "@nestjs/passport";
 
 import { Strategy } from "passport-local";
 
-import { User } from "@/auth/entities/user.entity";
+import { User } from "@/users/entities/user.entity";
 
 import { AuthService } from "../auth.service";
 
