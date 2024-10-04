@@ -10,7 +10,7 @@ export class ImageOptimizer {
   private readonly workerPath: string;
 
   constructor() {
-    this.workerPath = join(__dirname, "image-optimizer.worker.js");
+    this.workerPath = join(__dirname, "..", "workers", "image-optimizer.worker.js");
   }
 
   async optimizeImage(buffer: Buffer, contentType: string): OptimizeImageResponse {
