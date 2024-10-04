@@ -70,7 +70,7 @@ import { NotificationsModule } from "./notifications/notifications.module";
     ThrottlerModule.forRoot([
       {
         ttl: 6000,
-        limit: 30,
+        limit: 50,
       },
     ]),
     EventEmitterModule.forRoot({ delimiter: "." }),

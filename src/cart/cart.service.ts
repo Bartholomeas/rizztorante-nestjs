@@ -55,7 +55,7 @@ export class CartService {
     return await this.initUserCart(currentUser);
   }
 
-  async addToCart(userId: string, addCartItemDto: AddCartItemDto): Promise<CartItemDto> {
+  async addToCart(userId: string, addCartItemDto: AddCartItemDto): Promise<CartItemDto[]> {
     const userCart = await this.getUserCart(userId);
 
     const [menuPosition]: MenuPosition[] = await this.eventEmitter.emitAsync(
@@ -79,7 +79,7 @@ export class CartService {
     userCart.total = this.calculateCartTotal(userCart);
 
     await this.cartRepository.save(userCart);
-    return;
+    return userCart.items;
   }
 
   async setQuantity(
