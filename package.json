@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky",
     "seed": "ts-node -r tsconfig-paths/register src/seed.ts",
-    "test:load": "k6 run tests/performance/menu-public-load-test.js"
+    "test:load": "k6 run test/performance/app-user-flow-performance-test.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.645.0",

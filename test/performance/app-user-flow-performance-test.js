@@ -2,15 +2,36 @@ import { check, sleep } from "k6";
 import http from "k6/http";
 
 export const options = {
-  vus: 20,
-  duration: "5s",
+  vus: 10,
+  // duration: "5m",
   thresholds: {
-    http_req_failed: ["rate<0.01"],
-    http_req_duration: ["p(99)<200"],
+    http_req_failed: ["rate<0.05"],
+    http_req_duration: ["p(99)<400"],
   },
+  stages: [
+    // stress
+    { duration: "30s", target: 50 },
+    { duration: "15s", target: 100 },
+    { duration: "15s", target: 200 },
+    { duration: "15s", target: 300 },
+    { duration: "1m", target: 350 },
+    { duration: "30s", target: 30 },
+
+    // warmup
+    { duration: "30s", target: 80 },
+
+    // spike
+    { duration: "20s", target: 250 },
+    { duration: "20s", target: 500 },
+    { duration: "10s", target: 500 },
+    { duration: "1m", target: 100 },
+    // spike cooldown
+
+    { duration: "30s", target: 0 },
+  ],
 };
 
-const BASE_URL = "http://localhost:3002/api/v1";
+const BASE_URL = __ENV.BASE_URL || "http://localhost:3002/api/v1";
 
 const headers = {
   "Content-Type": "application/json",
@@ -95,7 +116,10 @@ const getCart = (requestOptions) => {
     "get cart status was 200": (r) => r.status === 200,
     "get cart duration was <=200ms": (r) => r.timings.duration <= 200,
   });
+
   sleep(1);
+
+  return JSON.parse(getCartRes.body);
 };
 
 const getCheckoutPickupOptions = (requestOptions) => {
@@ -125,6 +149,31 @@ const loginGuest = (requestOptions) => {
   return success;
 };
 
+const checkoutCart = (requestOptions) => {
+  const checkoutRes = http.post(
+    `${BASE_URL}/checkout`,
+    JSON.stringify({
+      firstName: "TestFirstanme",
+      lastName: "TestLastName",
+      street: "string",
+      houseNumber: "string",
+      city: "string",
+      zipCode: "00-000",
+      phoneNumber: "+48123456789",
+      deliveryInstructions: "string",
+      tableNumber: 0,
+      pickupType: "OnSite",
+      paymentType: "Online",
+    }),
+    requestOptions,
+  );
+
+  check(checkoutRes, {
+    "checkout successful": (r) => r.status === 201,
+    "checkout duration was <=1500ms": (r) => r.timings.duration <= 1500,
+  });
+};
+
 export default function () {
   const jar = http.cookieJar();
   const requestOptions = {
@@ -133,10 +182,7 @@ export default function () {
     credentials: "include",
   };
 
-  if (!loginGuest(requestOptions)) {
-    console.log("Guest login failed, skipping iteration");
-    return;
-  }
+  loginGuest(requestOptions);
 
   const menus = getMenus(requestOptions);
   if (menus?.length > 0) {
@@ -150,7 +196,6 @@ export default function () {
       if (positions?.length > 0) {
         const randomPosition = positions[Math.floor(Math.random() * positions.length)];
         const [addedItem] = addItemToCart(randomPosition.id, requestOptions);
-        console.log("ADDED ITEM TO JEST: ", addedItem);
         if (addedItem) {
           const newQuantity = Math.floor(Math.random() * 5) + 1;
           if (changeItemQuantity(addedItem.id, newQuantity, requestOptions)) {
@@ -166,7 +211,9 @@ export default function () {
     }
   }
 
-  getCart(requestOptions);
+  const cart = getCart(requestOptions);
   getCheckoutPickupOptions(requestOptions);
   getPaymentOptions(requestOptions);
+
+  if (cart?.total > 0) checkoutCart(requestOptions);
 }

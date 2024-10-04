@@ -36,8 +36,11 @@ export class CartController {
     session: SessionContent,
   ): Promise<FlatCartDto> {
     try {
-      return (await this.cartService.getUserCart(session?.passport?.user?.id)).toFlatCartDto();
+      const cart = await this.cartService.getUserCart(session?.passport?.user?.id);
+
+      return cart.toFlatCartDto();
     } catch (err) {
+      console.log("Error in getCart: ", err);
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
     }
