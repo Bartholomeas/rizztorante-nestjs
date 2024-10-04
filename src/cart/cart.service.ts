@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -119,10 +119,18 @@ export class CartService {
   }
 
   private async initUserCart(user: User): Promise<CartDto> {
-    const createdCart = this.cartRepository.create({ user, items: [], total: 0 } as Partial<Cart>);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { user: _, ...rest } = await this.cartRepository.save(createdCart);
-    return new CartDto(rest);
+    if (!user || !user.id) {
+      throw new BadRequestException("Invalid user provided for cart initialization");
+    }
+
+    const createdCart = this.cartRepository.create({
+      user: { id: user.id },
+      items: [],
+      total: 0,
+    });
+
+    const savedCart = await this.cartRepository.save(createdCart);
+    return new CartDto(savedCart);
   }
 
   private async retrieveUserCart(

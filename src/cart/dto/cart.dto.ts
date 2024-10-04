@@ -44,7 +44,7 @@ export class CartDto {
     return {
       id: this.id,
       total: this.total,
-      items: this.items.map((item) => new FlatCartItemDto(item)),
+      items: this.items?.map((item) => new FlatCartItemDto(item)).filter(Boolean) ?? [],
     };
   }
 
@@ -84,6 +84,11 @@ export class FlatCartItemDto {
   }[];
 
   constructor(cartItem: CartItemDto) {
+    if (!cartItem || !cartItem.menuPosition) {
+      console.error("Invalid cart item:", cartItem);
+      return null;
+    }
+
     this.id = cartItem.id;
     this.quantity = cartItem.quantity;
     this.amount = cartItem.amount;
@@ -95,25 +100,31 @@ export class FlatCartItemDto {
       isVegetarian: cartItem.menuPosition.isVegetarian,
       isVegan: cartItem.menuPosition.isVegan,
       isGlutenFree: cartItem.menuPosition.isGlutenFree,
-      coreImage: {
-        id: cartItem.menuPosition.coreImage.id,
-        url: cartItem.menuPosition.coreImage.url,
-        alt: cartItem.menuPosition.coreImage.alt,
-        caption: cartItem.menuPosition.coreImage.caption,
-      },
+      coreImage: cartItem.menuPosition.coreImage
+        ? {
+            id: cartItem.menuPosition.coreImage.id,
+            url: cartItem.menuPosition.coreImage.url,
+            alt: cartItem.menuPosition.coreImage.alt,
+            caption: cartItem.menuPosition.coreImage.caption,
+          }
+        : null,
     };
 
-    this.ingredients = cartItem.ingredients.map((ingredient) => ({
-      id: ingredient.id,
-      configurableIngredientId: ingredient.configurableIngredient.ingredient.id,
-      name: ingredient.configurableIngredient.ingredient.name,
-      description: ingredient.configurableIngredient.ingredient.description,
-      quantity: ingredient.quantity,
-      maxQuantity: ingredient.configurableIngredient.maxQuantity,
-      priceAdjustment: ingredient.configurableIngredient.priceAdjustment,
-      totalAmount: ingredient.quantity * ingredient.configurableIngredient.priceAdjustment,
-      isAvailable: ingredient.configurableIngredient.ingredient.isAvailable,
-    }));
+    this.ingredients =
+      cartItem.ingredients
+        ?.map((ingredient) => ({
+          id: ingredient.id,
+          configurableIngredientId: ingredient.configurableIngredient?.ingredient?.id,
+          name: ingredient.configurableIngredient?.ingredient?.name,
+          description: ingredient.configurableIngredient?.ingredient?.description,
+          quantity: ingredient.quantity,
+          maxQuantity: ingredient.configurableIngredient?.maxQuantity,
+          priceAdjustment: ingredient.configurableIngredient?.priceAdjustment,
+          totalAmount:
+            ingredient.quantity * (ingredient.configurableIngredient?.priceAdjustment || 0),
+          isAvailable: ingredient.configurableIngredient?.ingredient?.isAvailable,
+        }))
+        .filter(Boolean) ?? [];
   }
 }
 
