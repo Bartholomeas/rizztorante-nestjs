@@ -22,7 +22,5 @@
       "@events/*": ["src/_events/*"],
       "@/*": ["src/*"]
     }
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+  }
 }
