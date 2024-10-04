@@ -4,6 +4,7 @@ import { Test } from "@nestjs/testing";
 
 import { UploadsController } from "./uploads.controller";
 import { UploadsService } from "./uploads.service";
+import { ImageOptimizer } from "./utils/image-optimizer";
 
 describe("UploadsController", () => {
   let controller: UploadsController;
@@ -13,6 +14,7 @@ describe("UploadsController", () => {
       controllers: [UploadsController],
       providers: [
         UploadsService,
+        ImageOptimizer,
         {
           provide: ConfigService,
           useValue: {
