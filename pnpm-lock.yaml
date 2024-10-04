@@ -68,9 +68,6 @@ importers:
       firebase-admin:
         specifier: 12.5.0
         version: 12.5.0
-      k6:
-        specifier: 0.0.0
-        version: 0.0.0
       nestjs-pino:
         specifier: 4.1.0
         version: 4.1.0(@nestjs/common@10.4.2(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(pino-http@10.3.0)
@@ -198,6 +195,9 @@ importers:
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.16.5)(ts-node@10.9.2(@types/node@20.16.5)(typescript@5.6.2))
+      k6:
+        specifier: 0.0.0
+        version: 0.0.0
       lint-staged:
         specifier: ^15.2.10
         version: 15.2.10
