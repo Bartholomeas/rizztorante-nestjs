@@ -3,6 +3,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
 import { UploadsService } from "./uploads.service";
+import { ImageOptimizer } from "./utils/image-optimizer";
 
 describe("UploadsService", () => {
   let service: UploadsService;
@@ -11,6 +12,7 @@ describe("UploadsService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UploadsService,
+        ImageOptimizer,
         {
           provide: ConfigService,
           useValue: {
