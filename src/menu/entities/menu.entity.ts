@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 import { MenuCategory } from "@/menu/entities/menu-category.entity";
+import { Restaurant } from "@/restaurants/entities/restaurant.entity";
 
 @Entity()
 @Unique(["slug"])
@@ -19,4 +20,7 @@ export class Menu {
 
   @OneToMany(() => MenuCategory, (category) => category.menu)
   categories: MenuCategory[];
+
+  @ManyToOne(() => Restaurant, (restaurant) => restaurant.menus)
+  restaurant: Restaurant;
 }
