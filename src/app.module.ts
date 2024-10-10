@@ -21,7 +21,9 @@ import { RestaurantConfigModule } from "@/restaurant-config/restaurant-config.mo
 import { UploadsModule } from "@/uploads/uploads.module";
 import { UsersModule } from "@/users/users.module";
 
+import { EmployeesModule } from "./employees/employees.module";
 import { NotificationsModule } from "./notifications/notifications.module";
+import { RestaurantsModule } from "./restaurants/restaurants.module";
 
 @Module({
   imports: [
@@ -77,6 +79,8 @@ import { NotificationsModule } from "./notifications/notifications.module";
     AuthModule,
     UsersModule,
     RestaurantConfigModule,
+    RestaurantsModule,
+    EmployeesModule,
     IngredientsModule,
     MenuModule,
     OrdersModule,

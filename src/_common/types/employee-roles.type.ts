@@ -1,0 +1,8 @@
+export enum EmployeeRole {
+  OWNER = "OWNER",
+  MANAGER = "MANAGER",
+  KITCHEN = "KITCHEN",
+  SERVICE = "SERVICE",
+  DELIVERY = "DELIVERY",
+  DEFAULT = "DEFAULT",
+}

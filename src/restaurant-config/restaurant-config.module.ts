@@ -10,5 +10,6 @@ import { RestaurantConfigService } from "./restaurant-config.service";
   imports: [TypeOrmModule.forFeature([OperatingHours, SpecialDate])],
   controllers: [RestaurantConfigController],
   providers: [RestaurantConfigService],
+  exports: [RestaurantConfigService],
 })
 export class RestaurantConfigModule {}
