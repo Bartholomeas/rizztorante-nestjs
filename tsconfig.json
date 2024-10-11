@@ -9,7 +9,6 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -17,10 +16,15 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "baseUrl": "./",
     "paths": {
-      "@common/*": ["src/_common/*"],
-      "@events/*": ["src/_events/*"],
-      "@/*": ["src/*"]
+      "@common/*": ["apps/rizztorante-nestjs/src/_common/*"],
+      "@events/*": ["apps/rizztorante-nestjs/src/_events/*"],
+      "@app/restaurant/*": ["apps/rizztorante-nestjs/src/*"],
+      "@app/admin/*": ["apps/admin-app/src/*"],
+      "@shared": ["libs/shared/src"]
     }
-  }
+  },
+  "include": ["apps/**/*", "libs/shared/src/utils/**/*", "libs/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

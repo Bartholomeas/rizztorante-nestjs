@@ -1,8 +1,39 @@
 {
-  "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "monorepo": true,
+  "root": "apps/rizztorante-nestjs",
+  "sourceRoot": "apps/rizztorante-nestjs/src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "webpack": true,
+    "tsConfigPath": "apps/rizztorante-nestjs/tsconfig.app.json"
+  },
+  "projects": {
+    "rizztorante-nestjs": {
+      "type": "application",
+      "root": "apps/rizztorante-nestjs",
+      "entryFile": "main",
+      "sourceRoot": "apps/rizztorante-nestjs/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/rizztorante-nestjs/tsconfig.app.json"
+      }
+    },
+    "admin-app": {
+      "type": "application",
+      "root": "apps/admin-app",
+      "entryFile": "main",
+      "sourceRoot": "apps/admin-app/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/admin-app/tsconfig.app.json"
+      }
+    },
+    "shared": {
+      "type": "library",
+      "root": "libs/shared",
+      "entryFile": "index",
+      "sourceRoot": "libs/shared",
+      "compilerOptions": {
+        "tsConfigPath": "libs/shared/tsconfig.lib.json"
+      }
+    }
   }
 }
