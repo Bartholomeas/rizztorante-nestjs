@@ -8,6 +8,7 @@ import { MenuPosition } from "@/menu/entities/menu-position.entity";
 import { Menu } from "@/menu/entities/menu.entity";
 import { MenuAdminController } from "@/menu/menu-admin/menu-admin.controller";
 import { MenuAdminService } from "@/menu/menu-admin/menu-admin.service";
+import { Restaurant } from "@/restaurants/entities/restaurant.entity";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MenuAdminService } from "@/menu/menu-admin/menu-admin.service";
       MenuPositionDetails,
       MenuPositionImage,
       MenuPositionDetailsImage,
+      Restaurant,
     ]),
   ],
   providers: [MenuAdminService],

@@ -8,12 +8,14 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  ManyToMany,
 } from "typeorm";
 
 import { UserRole } from "@/_common/types/user-roles.type";
 import { Cart } from "@/cart/entities/cart.entity";
 import { NotificationToken } from "@/notifications/entities/notification-token.entity";
 import { Order } from "@/orders/entities/order.entity";
+import { Restaurant } from "@/restaurants/entities/restaurant.entity";
 
 @Entity()
 export class User {
@@ -60,4 +62,7 @@ export class User {
     nullable: true,
   })
   notificationTokens?: NotificationToken[];
+
+  @ManyToMany(() => Restaurant, (restaurant) => restaurant.employees)
+  restaurants: Restaurant[];
 }

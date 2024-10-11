@@ -14,14 +14,14 @@ import { CartModule } from "@/cart/cart.module";
 import { CheckoutModule } from "@/checkout/checkout.module";
 import { IngredientsModule } from "@/ingredients/ingredients.module";
 import { MenuModule } from "@/menu/menu.module";
+import { NotificationsModule } from "@/notifications/notifications.module";
 import { OpinionsModule } from "@/opinions/opinions.module";
 import { OrdersModule } from "@/orders/orders.module";
 import { PaymentsModule } from "@/payments/payments.module";
 import { RestaurantConfigModule } from "@/restaurant-config/restaurant-config.module";
+import { RestaurantsModule } from "@/restaurants/restaurants.module";
 import { UploadsModule } from "@/uploads/uploads.module";
 import { UsersModule } from "@/users/users.module";
-
-import { NotificationsModule } from "./notifications/notifications.module";
 
 @Module({
   imports: [
@@ -86,6 +86,7 @@ import { NotificationsModule } from "./notifications/notifications.module";
     PaymentsModule,
     UploadsModule,
     NotificationsModule,
+    RestaurantsModule,
   ],
   controllers: [AppController],
   providers: [
