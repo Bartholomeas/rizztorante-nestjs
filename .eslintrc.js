@@ -1,7 +1,7 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: "tsconfig.json",
+    project: ["./tsconfig.json", "./apps/*/tsconfig.app.json", "./libs/*/tsconfig.lib.json"],
     tsconfigRootDir: __dirname,
     sourceType: "module",
   },
@@ -41,6 +41,8 @@ module.exports = {
           { pattern: "@nestjs/**", group: "external", position: "before" },
           { pattern: "@common/**", group: "internal", position: "after" },
           { pattern: "@events/**", group: "internal", position: "after" },
+          { pattern: "@app/admin/**", group: "internal", position: "after" },
+          { pattern: "@restauarnt/**", group: "internal", position: "after" },
           { pattern: "@/**", group: "internal", position: "after" },
         ],
         "newlines-between": "always",

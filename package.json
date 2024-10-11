@@ -7,10 +7,13 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
+    "start:dev:rizztorante": "nest start rizztorante-nestjs --watch",
+    "start:dev:admin": "nest start admin-app --watch",
+    "start:dev:all": "nest start --watch rizztorante-nestjs admin-app",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -18,7 +21,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "jest --config ./apps/rizztorante-nestjs/test/jest-e2e.json",
     "prepare": "husky",
     "seed": "ts-node -r tsconfig-paths/register src/seed.ts",
     "test:load": "k6 run test/performance/app-user-flow-performance-test.js"
@@ -106,7 +109,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -114,13 +117,18 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
       "^@common/(.*)$": "<rootDir>/_common/$1",
       "^@events/(.*)$": "<rootDir>/_events/$1",
-      "^@/(.*)$": "<rootDir>/$1"
-    }
+      "^@/(.*)$": "<rootDir>/$1",
+      "^@app/shared(|/.*)$": "<rootDir>/libs/shared/src/$1"
+    },
+    "roots": [
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
+    ]
   },
   "release": {
     "branches": [
