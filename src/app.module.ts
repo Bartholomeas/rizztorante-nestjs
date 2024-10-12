@@ -1,11 +1,14 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { Module, NestModule, MiddlewareConsumer, Inject } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { RedisStore } from "connect-redis";
+import * as session from "express-session";
 import { LoggerModule } from "nestjs-pino";
+import * as passport from "passport";
 
 import { AppController } from "@/app.controller";
 import { AppService } from "@/app.service";
@@ -22,6 +25,9 @@ import { RestaurantConfigModule } from "@/restaurant-config/restaurant-config.mo
 import { RestaurantsModule } from "@/restaurants/restaurants.module";
 import { UploadsModule } from "@/uploads/uploads.module";
 import { UsersModule } from "@/users/users.module";
+
+import { REDIS_STORE } from "./libs/redis/redis.constants";
+import { RedisModule } from "./libs/redis/redis.module";
 
 @Module({
   imports: [
@@ -73,7 +79,9 @@ import { UsersModule } from "@/users/users.module";
         limit: 500,
       },
     ]),
+
     EventEmitterModule.forRoot({ delimiter: "." }),
+    RedisModule,
     AuthModule,
     UsersModule,
     RestaurantConfigModule,
@@ -97,6 +105,29 @@ import { UsersModule } from "@/users/users.module";
     },
   ],
 })
-export class AppModule {
-  constructor() {}
+export class AppModule implements NestModule {
+  constructor(
+    @Inject(REDIS_STORE) private readonly redisStore: RedisStore,
+    private readonly configService: ConfigService,
+  ) {}
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        session({
+          store: this.redisStore,
+          secret: this.configService.get<string>("SESSION_SECRET"),
+          name: this.configService.get<string>("SESSION_NAME"),
+          resave: false,
+          saveUninitialized: false,
+          cookie: {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+          },
+        }),
+        passport.initialize(),
+        passport.session(),
+      )
+      .forRoutes("*");
+  }
 }
