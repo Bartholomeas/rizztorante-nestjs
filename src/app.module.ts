@@ -23,6 +23,8 @@ import { RestaurantsModule } from "@/restaurants/restaurants.module";
 import { UploadsModule } from "@/uploads/uploads.module";
 import { UsersModule } from "@/users/users.module";
 
+import { RedisModule } from "./libs/redis/redis.module";
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -73,6 +75,7 @@ import { UsersModule } from "@/users/users.module";
         limit: 500,
       },
     ]),
+
     EventEmitterModule.forRoot({ delimiter: "." }),
     AuthModule,
     UsersModule,
@@ -87,6 +90,7 @@ import { UsersModule } from "@/users/users.module";
     UploadsModule,
     NotificationsModule,
     RestaurantsModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [
@@ -98,5 +102,33 @@ import { UsersModule } from "@/users/users.module";
   ],
 })
 export class AppModule {
-  constructor() {}
+  // export class AppModule implements NestModule {
+  // constructor(
+  //   @Inject(REDIS) private readonly redisClient: Redis,
+  //   private readonly configService: ConfigService,
+  // ) {}
+  // configure(consumer: MiddlewareConsumer) {
+  //   const redisStore = new (RedisStore(session))({
+  //     client: this.redisClient,
+  //     port: 6379,
+  //     logErrors: true,
+  //   });
+  //   consumer
+  //     .apply(
+  //       session({
+  //         store: redisStore,
+  //         secret: this.configService.get<string>("SESSION_SECRET"),
+  //         name: this.configService.get<string>("SESSION_NAME"),
+  //         resave: false,
+  //         saveUninitialized: false,
+  //         cookie: {
+  //           httpOnly: true,
+  //           maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+  //         },
+  //       }),
+  //       passportInitialize(),
+  //       passportSession(),
+  //     )
+  //     .forRoutes("*");
+  // }
 }

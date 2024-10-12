@@ -4,15 +4,12 @@ import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 import * as compression from "compression";
-import { TypeormStore } from "connect-typeorm";
+import * as connectRedis from "connect-redis";
 import * as session from "express-session";
-import * as passport from "passport";
-import { DataSource } from "typeorm";
+import { default as Redis } from "ioredis";
 
 import { GlobalExceptionFilter } from "@common/filters/global-exception.filter";
 import { LoggingInterceptor } from "@common/interceptors/logging.interceptor";
-
-import { SessionEntity } from "@/auth/sessions/entity/session.entity";
 
 import { APP_NAME } from "./_common/constants";
 import { AppModule } from "./app.module";
@@ -22,9 +19,6 @@ async function bootstrap() {
     cors: true,
     bufferLogs: true,
   });
-
-  const dataSource = app.get(DataSource);
-  const sessionRepository = dataSource.getRepository(SessionEntity);
 
   app.setGlobalPrefix("api/v1");
   app.use(compression());
@@ -36,32 +30,6 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  // app.use(app.get(Logger));
-  app.use(
-    session({
-      name: process.env.SESSION_NAME,
-      secret: process.env.SESSION_SECRET,
-      resave: false,
-      saveUninitialized: false, //TODO: For testing purposes, turn false after that
-
-      cookie: {
-        httpOnly: true,
-        // secure: "auto",
-        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-        // sameSite: "strict",
-      },
-      store: new TypeormStore({
-        cleanupLimit: 2,
-        limitSubquery: false,
-        resave: false,
-        ttl: 1000 * 60 * 60 * 24 * 30,
-        rolling: true,
-      }).connect(sessionRepository),
-    }),
-  );
-
-  app.use(passport.initialize());
-  app.use(passport.session());
 
   const config = new DocumentBuilder()
     .setTitle(APP_NAME)
@@ -73,6 +41,29 @@ async function bootstrap() {
   SwaggerModule.setup("api", app, document);
 
   const configService = app.get(ConfigService);
+
+  const RedisStore = connectRedis(session);
+  const redisClient = new Redis({
+    username: "default",
+    port: +configService.get<number>("REDIS_PORT"),
+    host: configService.get<string>("REDIS_HOST"),
+    password: configService.get<string>("REDIS_PASSWORD"),
+  });
+
+  app.use(
+    session({
+      store: new RedisStore({ client: redisClient }),
+      secret: configService.get<string>("SESSION_SECRET"),
+      name: configService.get<string>("SESSION_NAME"),
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+      },
+    }),
+  );
+
   await app.listen(configService.get<number>("APP_API_PORT"));
 }
 
