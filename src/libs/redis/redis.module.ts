@@ -1,9 +1,11 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
-import Redis from "ioredis";
+import * as connectRedis from "connect-redis";
+import * as session from "express-session";
+import { default as Redis } from "ioredis";
 
-import { REDIS } from "./redis.constants";
+import { REDIS, REDIS_STORE } from "./redis.constants";
 
 @Module({
   imports: [ConfigModule],
@@ -11,7 +13,7 @@ import { REDIS } from "./redis.constants";
     {
       provide: REDIS,
       useFactory: (configService: ConfigService) => {
-        const redisPort = configService.get<number>("REDIS_PORT", 6379);
+        const redisPort = +configService.get<number>("REDIS_PORT", 6379);
         const redisHost = configService.get<string>("REDIS_HOST", "localhost");
         const redisPassword = configService.get<string>("REDIS_PASSWORD");
 
@@ -24,7 +26,15 @@ import { REDIS } from "./redis.constants";
       },
       inject: [ConfigService],
     },
+    {
+      provide: REDIS_STORE,
+      useFactory: (redisClient: Redis) => {
+        const RedisStore = connectRedis(session);
+        return new RedisStore({ client: redisClient });
+      },
+      inject: [REDIS],
+    },
   ],
-  exports: [REDIS],
+  exports: [REDIS, REDIS_STORE],
 })
 export class RedisModule {}
