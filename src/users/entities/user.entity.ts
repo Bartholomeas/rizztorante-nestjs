@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   ManyToMany,
+  Index,
 } from "typeorm";
 
 import { UserRole } from "@/_common/types/user-roles.type";
@@ -29,6 +30,7 @@ export class User {
   updatedAt: Date;
 
   @Column({ unique: true, nullable: true })
+  @Index({ unique: true })
   @ValidateIf((o) => o.role !== UserRole.GUEST)
   @IsEmail({}, { message: "Email is not valid" })
   email?: string;

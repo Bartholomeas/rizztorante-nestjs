@@ -10,6 +10,8 @@ import {
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags, getSchemaPath } from "@nestjs/swagger";
 
+import { IsPublic } from "@common/decorators/is-public.decorator";
+
 import { MenuPublicService } from "@/menu/menu-public/menu-public.service";
 
 import { CategoryDto } from "../dto/category.dto";
@@ -19,6 +21,7 @@ import { PositionDetailsDto } from "../dto/position-details.dto";
 
 @ApiTags("Menu Public")
 @Controller("menus")
+@IsPublic()
 export class MenuPublicController {
   constructor(private readonly menuService: MenuPublicService) {}
 
