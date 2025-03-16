@@ -13,13 +13,15 @@ import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
 
-import { UserEventTypes } from "@events/events";
-import { GuestCreatedPayload } from "@events/payloads";
+import { JwtUserDto } from "@common/types/jwt.types";
+import { UserRole } from "@common/types/user-roles.type";
 
-import { UserRole } from "@/_common/types/user-roles.type";
+import { UserEventTypes } from "@events/events";
+
 import { SessionEntity } from "@/auth/sessions/entity/session.entity";
 import { User } from "@/users/entities/user.entity";
 
+import { AuthJwtUserDto } from "./dto/auth-jwt-user.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { ValidateUserDto } from "./dto/validate-user.dto";
@@ -38,9 +40,7 @@ export class AuthService {
   ) {}
 
   async validateUser(dto: ValidateUserDto): Promise<User> {
-    const user: User = await this.userRepository.findOneBy({
-      email: dto.email,
-    });
+    const user = await this.findUserByEmail(dto.email);
 
     if (!user) throw new BadRequestException("User not found");
 
@@ -49,26 +49,6 @@ export class AuthService {
 
     return user;
   }
-
-  //  - - - -
-
-  // async registerUser(createUserDto: CreateUserDto): Promise<Omit<User, "password">> {
-  //   if (createUserDto.password !== createUserDto.confirmPassword)
-  //     throw new BadRequestException("Passwords do not match");
-
-  //   const existingUser = await this.findUserByEmail(createUserDto.email);
-
-  //   if (existingUser) throw new ConflictException("User with this email already exists");
-
-  //   const hashedPassword = await this.hashPassword(createUserDto.password);
-  //   const newUser = this.userRepository.create({
-  //     email: createUserDto.email,
-  //     password: hashedPassword,
-  //   });
-
-  //   const savedUser = await this.userRepository.save(newUser);
-  //   return RemovePasswordUtils.removePasswordFromResponse(savedUser);
-  // }
 
   async registerUser(dto: CreateUserDto) {
     const user: User = await this.userRepository.findOneBy({
@@ -87,32 +67,25 @@ export class AuthService {
     return RemovePasswordUtils.removePasswordFromResponse(savedUser);
   }
 
-  async login2(dto: LoginUserDto): Promise<{ accessToken: string }> {
-    this.logger.log("Authnticating user: ", dto.email);
-    const payload = { email: dto.email, id: "123" }; // TODO: fill this id property
+  async login(dto: LoginUserDto): Promise<AuthJwtUserDto> {
+    const user = await this.findUserByEmail(dto.email);
 
-    return { accessToken: this.jwtService.sign(payload) };
+    const payload: JwtUserDto = {
+      id: user.id,
+      email: dto.email,
+      role: user.role,
+    };
 
-    // const accessToken = this.jwtService.sign({ ...dto });
-
-    // const user = await this.findUserByEmail(dto.email);
-
-    // this.logger.debug("found user: ", { user, accessToken });
-    // if (!user) throw new NotFoundException("User not found");
-
-    // await this.verifyPassword(dto.password, user.password);
-
-    // return RemovePasswordUtils.removePasswordFromResponse(user);
+    return {
+      accessToken: this.jwtService.sign(payload),
+      user: RemovePasswordUtils.removePasswordFromResponse(user),
+    };
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<Omit<User, "password">> {
+  async loginOld(loginUserDto: LoginUserDto): Promise<Omit<User, "password">> {
     this.logger.log("Authnticating user: ", loginUserDto.email);
 
     const user = await this.findUserByEmail(loginUserDto.email);
-    this.logger.debug("found user: ", { user });
-    if (!user) {
-      throw new NotFoundException("User not found");
-    }
 
     await this.verifyPassword(loginUserDto.password, user.password);
 
@@ -120,23 +93,25 @@ export class AuthService {
   }
 
   @OnEvent(UserEventTypes.GUEST_CREATED)
-  async createOrRetrieveGuestUser({ userId, sessionId }: GuestCreatedPayload = {}): Promise<User> {
-    if (userId) {
-      const session = await this.getActiveSession(sessionId);
-      if (session) {
-        const existingUser = await this.findUserById(userId);
-        if (existingUser) return existingUser;
-      }
-    }
-    return this.createNewGuestUser();
-  }
+  async createOrRetrieveGuestUser(): Promise<AuthJwtUserDto> {
+    const guestUser = await this.createNewGuestUser();
 
-  private async findUserById(id: string): Promise<User | undefined> {
-    return this.userRepository.findOne({ where: { id } });
+    const payload: JwtUserDto = {
+      id: guestUser.id,
+      email: null,
+      role: UserRole.GUEST,
+    };
+
+    return {
+      accessToken: this.jwtService.sign(payload),
+      user: RemovePasswordUtils.removePasswordFromResponse(guestUser),
+    };
   }
 
   private async findUserByEmail(email: string): Promise<User | undefined> {
-    return this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) throw new NotFoundException("User not found");
+    return user;
   }
 
   private async hashPassword(password: string): Promise<string> {

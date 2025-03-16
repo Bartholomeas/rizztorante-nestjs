@@ -8,7 +8,6 @@ import {
   InternalServerErrorException,
   Post,
   Req,
-  Session,
   UseGuards,
   ValidationPipe,
 } from "@nestjs/common";
@@ -18,11 +17,6 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { IsPublic } from "@common/decorators/is-public.decorator";
-import { RemovePasswordUtils } from "@common/utils/remove-password.utils";
-
-import { GuestCreatedPayload } from "@events/payloads";
-
-import { SessionContent } from "@/auth/sessions/types/session.types";
 
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -41,23 +35,14 @@ export class AuthController {
   }
 
   @IsPublic()
+  @UseGuards(AuthGuard("local"))
   @Post("login-guest")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Login as a guest" })
-  async loginGuest(@Session() session: SessionContent) {
-    try {
-      const guestUser = await this.authService.createOrRetrieveGuestUser(
-        new GuestCreatedPayload(session?.passport?.user?.id, session?.id),
-      );
-      session.passport = { user: guestUser };
-      return RemovePasswordUtils.removePasswordFromResponse(guestUser);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
+  async loginGuest() {
+    return await this.authService.createOrRetrieveGuestUser();
   }
 
-  // @UseGuards(LocalAuthGuard)
   @IsPublic()
   @UseGuards(AuthGuard("local"))
   @Post("login")

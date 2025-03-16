@@ -5,7 +5,6 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
-import secureSession from "@fastify/secure-session";
 import * as compression from "compression";
 
 import { GlobalExceptionFilter } from "@common/filters/global-exception.filter";
@@ -25,11 +24,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.setGlobalPrefix("api/v1");
-
-  await app.register(secureSession, {
-    secret: configService.get<string>("SESSION_SECRET"),
-    salt: configService.get<string>("SESSION_SALT"),
-  });
 
   app.use(compression());
   app.useGlobalInterceptors(new LoggingInterceptor());
