@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -7,22 +7,26 @@ import { Repository } from "typeorm";
 
 import { MenuEventTypes } from "@events/events";
 
-import { MenuCategory } from "@/menu/entities/menu-category.entity";
 import { MenuPositionDetails } from "@/menu/entities/menu-position-details.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
-import { Menu } from "@/menu/entities/menu.entity";
 
 import { CategoryDto } from "../dto/category.dto";
 import { MenuPositionDto } from "../dto/menu-position.dto";
 import { MenuDto } from "../dto/menu.dto";
 import { PositionDetailsDto } from "../dto/position-details.dto";
+import { MENU_REPOSITORY_DI, MenuRepository } from "../repositories/menu.repository";
+import {
+  MENU_CATEGORY_REPOSITORY_DI,
+  MenuCategoryRepository,
+} from "../repositories/menu-category.repository";
 
 @Injectable()
 export class MenuPublicService {
   constructor(
-    @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
-    @InjectRepository(MenuCategory)
-    private readonly menuCategoryRepository: Repository<MenuCategory>,
+    @Inject(MENU_REPOSITORY_DI)
+    private readonly menuRepository: MenuRepository,
+    @Inject(MENU_CATEGORY_REPOSITORY_DI)
+    private readonly menuCategoryRepository: MenuCategoryRepository,
     @InjectRepository(MenuPosition)
     private readonly menuPositionRepository: Repository<MenuPosition>,
     @InjectRepository(MenuPositionDetails)
@@ -30,19 +34,14 @@ export class MenuPublicService {
   ) {}
 
   async getMenuBySlug(slug: string) {
-    const menu = await this.menuRepository.findOne({
-      where: {
-        slug,
-      },
+    const menu = await this.menuRepository.findMenuBySlug(slug, {
       relations: {
         categories: { positions: { coreImage: true } },
       },
-      cache: {
-        id: `menu-${slug}`,
-        milliseconds: 1000 * 60 * 3,
-      },
     });
+
     if (!menu) throw new NotFoundException("Menu not found");
+
     return menu;
   }
 
@@ -50,22 +49,17 @@ export class MenuPublicService {
     const menus = await this.menuRepository.find({
       cache: {
         id: "menus",
-        milliseconds: 1000 * 60,
+        milliseconds: 1000 * 60 * 3,
       },
     });
 
     return plainToInstance(MenuDto, menus);
   }
-  async getMenuCategories(menuId: string): Promise<CategoryDto[]> {
-    const categories = await this.menuCategoryRepository.find({
+  async getMenuCategories(menuSlug: string): Promise<CategoryDto[]> {
+    const categories = await this.menuCategoryRepository.findCategoryByMenuSlug(menuSlug, {
       cache: {
-        id: `menu-categories-${menuId}`,
+        id: `menu-categories-${menuSlug}`,
         milliseconds: 1000 * 60,
-      },
-      where: {
-        menu: {
-          id: menuId,
-        },
       },
       relations: {
         positions: {

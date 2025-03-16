@@ -40,14 +40,14 @@ export class MenuPublicController {
     }
   }
 
-  @Get(":menuSlug")
+  @Get("/:menuSlug")
   @HttpCode(HttpStatus.OK)
   async getMenu(@Param("menuSlug") menuSlug: string) {
     const data = await this.menuService.getMenuBySlug(menuSlug);
     return data;
   }
 
-  @Get(":menuId/categories")
+  @Get(":menuSlug/categories")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Get all categories for a specific menu" })
   @ApiResponse({
@@ -57,15 +57,8 @@ export class MenuPublicController {
       $ref: getSchemaPath(CategoryDto),
     },
   })
-  async getMenuCategories(
-    @Param("menuId", new ParseUUIDPipe()) menuId: string,
-  ): Promise<CategoryDto[]> {
-    try {
-      return await this.menuService.getMenuCategories(menuId);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
+  async getMenuCategories(@Param("menuSlug") menuSlug: string): Promise<CategoryDto[]> {
+    return await this.menuService.getMenuCategories(menuSlug);
   }
 
   @Get("categories/:categoryId/positions")
@@ -94,11 +87,6 @@ export class MenuPublicController {
   async getPositionDetails(
     @Param("positionId", new ParseUUIDPipe()) positionId: string,
   ): Promise<PositionDetailsDto> {
-    try {
-      return await this.menuService.getPositionDetails(positionId);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
+    return await this.menuService.getPositionDetails(positionId);
   }
 }
