@@ -15,10 +15,11 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   database: process.env.APP_DB_NAME,
   // synchronize: true,
   // synchronize: process.env.NODE_ENV !== "production",
+
   entities: [path.join(__dirname, "../src/**/*.entity.{ts,js}")],
   seeds: [path.join(__dirname, "./seeds/**/*.seeder.{ts,js}")],
   migrations: [path.join(__dirname, "./migrations/**/*.{ts,js}")],
-  logging: process.env.NODE_ENV !== "production",
+  // logging: process.env.NODE_ENV !== "production",
   // namingStrategy: new SnakeNamingStrategy(),
 };
 

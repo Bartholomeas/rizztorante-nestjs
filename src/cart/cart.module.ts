@@ -11,6 +11,10 @@ import { User } from "@/users/entities/user.entity";
 import { CartController } from "./cart.controller";
 import { CartService } from "./cart.service";
 import { CartItemConfigurableIngredient } from "./entities/cart-item-configurable-ingredient.entity";
+import { CART_REPOSITORY_DI } from "./repositories/cart.repository";
+import { TypeormCartRepository } from "./infra/typeorm-cart.repository";
+import { USER_REPOSITORY_DI } from "@/users/repositories/user.repository";
+import { TypeormUserRepository } from "@/users/infra/typeom-user.repository";
 
 @Module({
   imports: [
@@ -24,7 +28,14 @@ import { CartItemConfigurableIngredient } from "./entities/cart-item-configurabl
     ]),
   ],
   controllers: [CartController],
-  providers: [CartService],
+  providers: [
+    CartService,
+    { provide: USER_REPOSITORY_DI, useClass: TypeormUserRepository },
+    {
+      provide: CART_REPOSITORY_DI,
+      useClass: TypeormCartRepository,
+    },
+  ],
 })
 export class CartModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

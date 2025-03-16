@@ -1,6 +1,6 @@
-import type { User } from "@/users/entities/user.entity";
+import type { JwtPayloadDto } from "@common/dto/jwt-payload.dto";
 
 export interface AuthJwtUserDto {
   accessToken: string;
-  user: Omit<User, "password">;
+  user: JwtPayloadDto;
 }

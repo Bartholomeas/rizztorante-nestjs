@@ -78,7 +78,13 @@ export class AuthService {
 
     return {
       accessToken: this.jwtService.sign(payload),
-      user: RemovePasswordUtils.removePasswordFromResponse(user),
+      user: {
+        id: user.id,
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
+        email: user.email,
+        role: user.role,
+      },
     };
   }
 
@@ -104,7 +110,13 @@ export class AuthService {
 
     return {
       accessToken: this.jwtService.sign(payload),
-      user: RemovePasswordUtils.removePasswordFromResponse(guestUser),
+      user: {
+        id: guestUser.id,
+        createdAt: guestUser.createdAt.toISOString(),
+        updatedAt: guestUser.updatedAt.toISOString(),
+        email: guestUser.email,
+        role: guestUser.role,
+      },
     };
   }
 

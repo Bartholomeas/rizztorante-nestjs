@@ -1,4 +1,12 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 
@@ -19,6 +27,7 @@ export class CartItem {
   @ManyToOne(() => Cart, (cart) => cart.items, { onDelete: "CASCADE" })
   cart: Cart;
 
+  @Index()
   @ManyToOne(() => MenuPosition, (menuPosition) => menuPosition.cartItems)
   menuPosition: MenuPosition;
 

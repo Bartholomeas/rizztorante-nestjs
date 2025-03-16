@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 
-import { FindOneOptions, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import { CartEventTypes } from "@events/events";
 import { getSinglePositionEvent } from "@events/payloads";
@@ -10,7 +10,6 @@ import { findConfigurableIngredientsEvent } from "@events/payloads/ingredients";
 
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 import { CartItem } from "@/cart/entities/cart-item.entity";
-import { Cart } from "@/cart/entities/cart.entity";
 import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 import { User } from "@/users/entities/user.entity";
@@ -20,14 +19,18 @@ import { CartDto } from "./dto/cart.dto";
 import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
 import { CreateCartItemConfigurableIngredientDto } from "./dto/create-cart-item-configurable-ingredient.dto";
 import { CartItemConfigurableIngredient } from "./entities/cart-item-configurable-ingredient.entity";
+import { CART_REPOSITORY_DI, CartRepository } from "./repositories/cart.repository";
+import { USER_REPOSITORY_DI, UserRepository } from "@/users/repositories/user.repository";
 
 @Injectable()
 export class CartService {
+  private readonly logger = new Logger(CartService.name);
+
   constructor(
-    @InjectRepository(Cart)
-    private readonly cartRepository: Repository<Cart>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @Inject(CART_REPOSITORY_DI)
+    private readonly cartRepository: CartRepository,
+    @Inject(USER_REPOSITORY_DI)
+    private readonly userRepository: UserRepository,
     @InjectRepository(CartItem)
     private readonly cartItemRepository: Repository<CartItem>,
     @InjectRepository(CartItemConfigurableIngredient)
@@ -37,19 +40,10 @@ export class CartService {
 
   @OnEvent(CartEventTypes.GET_USER_CART)
   async getUserCart(userId: string): Promise<CartDto> {
-    const userCart = await this.retrieveUserCart(userId, {
-      relations: [
-        "items",
-        "items.menuPosition",
-        "items.menuPosition.coreImage",
-        "items.ingredients",
-        "items.ingredients.configurableIngredient",
-        "items.ingredients.configurableIngredient.ingredient",
-      ],
-    });
+    const userCart = await this.cartRepository.findCartByUserId(userId);
     if (userCart) return new CartDto(userCart);
 
-    const currentUser = await this.userRepository.findOne({ where: { id: userId } });
+    const currentUser = await this.userRepository.findUserById(userId);
     if (!currentUser) throw new NotFoundException(`User with id ${userId} not found`);
 
     return await this.initUserCart(currentUser);
@@ -90,9 +84,9 @@ export class CartService {
     const cart = await this.getUserCart(userId);
     const item = cart?.items?.find((item) => item.id === cartItemId);
 
-    if (!item) throw new NotFoundException(`Item with id ${cartItemId} not found in the cart`);
+    if (!item) throw new NotFoundException(`This item not found in the cart. Try again.`);
 
-    const oldAmount = item.amount;
+    const oldAmount = item?.amount;
 
     item.quantity = quantity;
     item.amount = this.calculateItemAmount(item);
@@ -108,12 +102,12 @@ export class CartService {
     const itemIndex = cart?.items?.findIndex((item) => item.id === itemId);
 
     if (itemIndex === -1)
-      throw new NotFoundException(`Item with id ${itemId} not found in the cart`);
+      throw new NotFoundException(`This item not found in the cart. Try again.`);
 
     const [removedItem] = cart.items.splice(itemIndex, 1);
     cart.total -= removedItem.amount;
 
-    await this.cartItemRepository.remove(removedItem as CartItem);
+    await this.cartItemRepository.remove(removedItem as unknown as CartItem);
     await this.cartRepository.save(cart);
     return cart;
   }
@@ -131,17 +125,6 @@ export class CartService {
 
     const savedCart = await this.cartRepository.save(createdCart);
     return new CartDto(savedCart);
-  }
-
-  private async retrieveUserCart(
-    userId: string,
-    opts?: FindOneOptions<Cart>,
-  ): Promise<Cart | null> {
-    return this.cartRepository.findOne({
-      where: { user: { id: userId } },
-      relations: ["items", "items.menuPosition", "items.menuPosition.coreImage"],
-      ...opts,
-    });
   }
 
   private updateExistingCartItem(
