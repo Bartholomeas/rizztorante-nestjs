@@ -2,7 +2,7 @@ import { Module, NestModule, MiddlewareConsumer, Inject } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { EventEmitterModule } from "@nestjs/event-emitter";
-import { ThrottlerModule } from "@nestjs/throttler";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { RedisStore } from "connect-redis";
@@ -26,8 +26,6 @@ import { RestaurantsModule } from "@/restaurants/restaurants.module";
 import { UploadsModule } from "@/uploads/uploads.module";
 import { UsersModule } from "@/users/users.module";
 
-import { JwtGuard } from "./auth/guards/jwt.guard";
-import { JwtStrategy } from "./auth/strategies/jwt.strategy";
 import { REDIS_STORE } from "./libs/redis/redis.constants";
 import { RedisModule } from "./libs/redis/redis.module";
 
@@ -103,9 +101,8 @@ import { RedisModule } from "./libs/redis/redis.module";
     AppService,
     {
       provide: APP_GUARD,
-      useClass: JwtGuard,
+      useClass: ThrottlerGuard,
     },
-    JwtStrategy,
   ],
 })
 export class AppModule implements NestModule {

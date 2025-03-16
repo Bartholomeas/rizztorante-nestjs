@@ -12,16 +12,15 @@ import {
   UseGuards,
   ValidationPipe,
 } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import { Request } from "express";
 
-import { IsPublic } from "@common/decorators/is-public.decorator";
 import { RemovePasswordUtils } from "@common/utils/remove-password.utils";
 
 import { GuestCreatedPayload } from "@events/payloads";
 
+import { LocalAuthGuard } from "@/auth/guards/local.auth.guard";
 import { SessionContent } from "@/auth/sessions/types/session.types";
 
 import { AuthService } from "./auth.service";
@@ -37,10 +36,14 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Register new user" })
   async register(@Body(ValidationPipe) createUserDto: CreateUserDto) {
-    return await this.authService.registerUser(createUserDto);
+    try {
+      return await this.authService.registerUser(createUserDto);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
   }
 
-  @IsPublic()
   @Post("login-guest")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Login as a guest" })
@@ -57,17 +60,19 @@ export class AuthController {
     }
   }
 
-  // @UseGuards(LocalAuthGuard)
-  @IsPublic()
-  @UseGuards(AuthGuard("local"))
+  @UseGuards(LocalAuthGuard)
   @Post("login")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Login user" })
   async login(@Body(ValidationPipe) loginUserDto: LoginUserDto) {
-    return await this.authService.login(loginUserDto);
+    try {
+      return await this.authService.authenticateUser(loginUserDto);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err?.message);
+    }
   }
 
-  @IsPublic()
   @Delete("logout")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Logout user" })
