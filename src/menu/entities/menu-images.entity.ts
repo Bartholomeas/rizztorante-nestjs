@@ -5,7 +5,7 @@ import { ImageMetadata } from "@/uploads/entity/image-metadata.entity";
 import { MenuPositionDetails } from "./menu-position-details.entity";
 import { MenuPosition } from "./menu-position.entity";
 
-@Entity()
+@Entity({ schema: "menu" })
 export class MenuPositionImage extends ImageMetadata {
   @OneToOne(() => MenuPosition, (menuPosition) => menuPosition.coreImage)
   @JoinColumn()

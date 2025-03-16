@@ -5,7 +5,7 @@ import { User } from "@/users/entities/user.entity";
 
 import { CartItem } from "./cart-item.entity";
 
-@Entity()
+@Entity({ schema: "cart" })
 export class Cart {
   @PrimaryGeneratedColumn("uuid")
   id: string;

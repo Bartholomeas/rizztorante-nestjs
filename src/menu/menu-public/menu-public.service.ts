@@ -28,6 +28,24 @@ export class MenuPublicService {
     @InjectRepository(MenuPositionDetails)
     private readonly menuPositionDetailsRepository: Repository<MenuPositionDetails>,
   ) {}
+
+  async getMenuBySlug(slug: string) {
+    const menu = await this.menuRepository.findOne({
+      where: {
+        slug,
+      },
+      relations: {
+        categories: { positions: { coreImage: true } },
+      },
+      cache: {
+        id: `menu-${slug}`,
+        milliseconds: 1000 * 60 * 3,
+      },
+    });
+    if (!menu) throw new NotFoundException("Menu not found");
+    return menu;
+  }
+
   async getMenus(): Promise<MenuDto[]> {
     const menus = await this.menuRepository.find({
       cache: {

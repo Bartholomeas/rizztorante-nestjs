@@ -11,7 +11,7 @@ import {
 import { MenuPositionDetailsImage } from "./menu-images.entity";
 import { MenuPosition } from "./menu-position.entity";
 
-@Entity()
+@Entity({ schema: "menu" })
 export class MenuPositionDetails {
   @PrimaryGeneratedColumn("uuid")
   id: string;

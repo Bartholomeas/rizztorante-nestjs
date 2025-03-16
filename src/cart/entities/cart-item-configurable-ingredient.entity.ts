@@ -4,7 +4,7 @@ import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entitie
 
 import { CartItem } from "./cart-item.entity";
 
-@Entity()
+@Entity({ schema: "cart" })
 export class CartItemConfigurableIngredient {
   @PrimaryGeneratedColumn("uuid")
   id: string;

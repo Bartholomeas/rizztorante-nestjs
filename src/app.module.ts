@@ -5,6 +5,7 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { dataSourceOptions } from "database/data-source";
 import { LoggerModule } from "nestjs-pino";
 
 import { AppController } from "@/app.controller";
@@ -56,21 +57,7 @@ import { RedisModule } from "./libs/redis/redis.module";
         }),
       },
     }),
-    TypeOrmModule.forRoot({
-      type: "postgres",
-      host: process.env.DB_HOST ?? "localhost",
-      port: parseInt(process.env.APP_DB_PORT ?? "5432"),
-      username: process.env.APP_DB_USERNAME,
-      password: process.env.APP_DB_PASSWORD,
-      database: process.env.APP_DB_NAME,
-      synchronize: process.env.NODE_ENV !== "production",
-      // logging: process.env.NODE_ENV !== "production",
-      autoLoadEntities: true,
-      // cache: {
-      //   duration: 1000 * 60 * 5,
-      // },
-      // dropSchema: true, //To clearing DB in each app restart
-    }),
+    TypeOrmModule.forRoot(dataSourceOptions),
     ThrottlerModule.forRoot([
       {
         ttl: 6000,

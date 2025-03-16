@@ -134,6 +134,9 @@ importers:
       typeorm:
         specifier: ^0.3.21
         version: 0.3.21(ioredis@5.4.1)(pg@8.14.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@20.17.24)(typescript@5.8.2))
+      typeorm-naming-strategies:
+        specifier: 4.1.0
+        version: 4.1.0(typeorm@0.3.21(ioredis@5.4.1)(pg@8.14.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@20.17.24)(typescript@5.8.2)))
     devDependencies:
       '@commitlint/cli':
         specifier: 19.4.1
@@ -264,6 +267,9 @@ importers:
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
+      typeorm-extension:
+        specifier: 3.7.0
+        version: 3.7.0(typeorm@0.3.21(ioredis@5.4.1)(pg@8.14.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@20.17.24)(typescript@5.8.2)))
       typescript:
         specifier: ^5.8.2
         version: 5.8.2
@@ -726,6 +732,10 @@ packages:
   '@eslint/js@8.57.1':
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  '@faker-js/faker@8.4.1':
+    resolution: {integrity: sha512-XQ3cU+Q8Uqmrbf2e0cIC/QN43sTBSC8KF12u29Mb47tWrt2hAgBXSgpZMj4Ao8Uk0iJcU99QsOCaIL8934obCg==}
+    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0, npm: '>=6.14.13'}
 
   '@fastify/accept-negotiator@2.0.1':
     resolution: {integrity: sha512-/c/TW2bO/v9JeEgoD/g1G5GxGeCF1Hafdf79WPmUlgYiBXummY0oX3VVq4yFkKKVBKDNlaDUYoab7g38RpPqCQ==}
@@ -2846,6 +2856,9 @@ packages:
     resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
     engines: {node: '>=6'}
 
+  destr@2.0.3:
+    resolution: {integrity: sha512-2N3BOUU4gYMpTP24s5rF5iP7BDr7uNTCs4ozw3kf/eKfvWSIu93GEBi5m427YoyJoeOzQ5smuu4nNAPGb8idSQ==}
+
   destroy@1.0.4:
     resolution: {integrity: sha512-3NdhDuEXnfun/z7x9GOElY49LoqVHoGScmOKwmxhsS8N5Y+Z8KyPPDnaSzqWgYt/ji4mqwfTS34Htrk0zPIXVg==}
 
@@ -2913,6 +2926,12 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
+  ebec@1.1.1:
+    resolution: {integrity: sha512-JZ1vcvPQtR+8LGbZmbjG21IxLQq/v47iheJqn2F6yB2CgnGfn8ZVg3myHrf3buIZS8UCwQK0jOSIb3oHX7aH8g==}
+
+  ebec@2.3.0:
+    resolution: {integrity: sha512-bt+0tSL7223VU3PSVi0vtNLZ8pO1AfWolcPPMk2a/a5H+o/ZU9ky0n3A0zhrR4qzJTN61uPsGIO4ShhOukdzxA==}
+
   ecdsa-sig-formatter@1.0.11:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
 
@@ -2973,6 +2992,10 @@ packages:
   environment@1.1.0:
     resolution: {integrity: sha512-xUtoPkMggbz0MPyPiIWr1Kp4aeWJjDZ6SMvURhimjdZgsRuDplF5/s9hcgGhyXMhs+6vpnuoiZ2kFiu3FMnS8Q==}
     engines: {node: '>=18'}
+
+  envix@1.5.0:
+    resolution: {integrity: sha512-IOxTKT+tffjxgvX2O5nq6enbkv6kBQ/QdMy18bZWo0P0rKPvsRp2/EypIPwTvJfnmk3VdOlq/KcRSZCswefM/w==}
+    engines: {node: '>=18.0.0'}
 
   error-ex@1.3.2:
     resolution: {integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==}
@@ -3330,6 +3353,10 @@ packages:
   flat-cache@3.2.0:
     resolution: {integrity: sha512-CYcENa+FtcUKLmhhqyctpclsq7QF38pKjZHsGNiSQF5r4FtoKDWabFDl3hzaEQMvT1LHEysw5twgLvpYYb4vbw==}
     engines: {node: ^10.12.0 || >=12.0.0}
+
+  flat@5.0.2:
+    resolution: {integrity: sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==}
+    hasBin: true
 
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
@@ -4295,6 +4322,9 @@ packages:
     resolution: {integrity: sha512-gvVijfZvn7R+2qyPX8mAuKcFGDf6Nc61GdvGafQsHL0sBIxfKzA+usWn4GFC/bk+QdwPUD4kWFJLhElipq+0VA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
+  locter@2.1.6:
+    resolution: {integrity: sha512-fPTEQC08IFSIJe1xrsFT8MqbuwEHaM+RJ/y48PiWDs2VI7MtzsAsXEeWcwPd8lrfINB+iSGHRsUf1RXdv/RA1Q==}
+
   lodash-es@4.17.21:
     resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
 
@@ -4377,6 +4407,9 @@ packages:
 
   long@5.3.1:
     resolution: {integrity: sha512-ka87Jz3gcx/I7Hal94xaN2tZEOPoUOEVftkQqZx2EeQRN7LGdfLlI3FvZ+7WDplm+vK2Urx9ULrvSowtdCieng==}
+
+  lower-case@2.0.2:
+    resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
 
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
@@ -4611,6 +4644,9 @@ packages:
     peerDependencies:
       '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
       pino-http: ^6.4.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
+
+  no-case@3.0.4:
+    resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
 
   node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
@@ -4936,6 +4972,9 @@ packages:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
     engines: {node: '>= 0.8'}
 
+  pascal-case@3.1.2:
+    resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
+
   passport-jwt@4.0.1:
     resolution: {integrity: sha512-UCKMDYhNuGOBE9/9Ycuoyh7vP6jpeTp/+sfMJl7nLff/t6dps+iaeE0hhNkKN8/HZHcJ7lCdOyDxHdDoxoSvdQ==}
 
@@ -5206,6 +5245,9 @@ packages:
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
+
+  rapiq@0.9.0:
+    resolution: {integrity: sha512-k4oT4RarFBrlLMJ49xUTeQpa/us0uU4I70D/UEnK3FWQ4GENzei01rEQAmvPKAIzACo4NMW+YcYJ7EVfSa7EFg==}
 
   raw-body@3.0.0:
     resolution: {integrity: sha512-RmkhL8CAyCRPXCE28MMH0z2PNWQBNk2Q09ZdxM9IOOXwxwZbN+qbWaatPkdkWIKL2ZVDImrN/pK5HTRz2PcS4g==}
@@ -5534,6 +5576,9 @@ packages:
     resolution: {integrity: sha512-h+z7HKHYXj6wJU+AnS/+IH8Uh9fdcX1Lrhg1/VMdf9PwoBQXFcXiAdsy2tSK0P6gKwJLXp02r90ahUCqHk9rrw==}
     engines: {node: '>=8.0.0'}
 
+  smob@1.5.0:
+    resolution: {integrity: sha512-g6T+p7QO8npa+/hNx9ohv1E5pVCmWrVCUzUXJyLdMmftX6ER0oiWY/w9knEonLpnOp6b6FenKnMfR8gqwWdwig==}
+
   sodium-native@4.3.3:
     resolution: {integrity: sha512-OnxSlN3uyY8D0EsLHpmm2HOFmKddQVvEMmsakCrXUzSd8kjjbzL413t4ZNF3n0UxSwNgwTyUvkmZHTfuCeiYSw==}
 
@@ -5597,6 +5642,9 @@ packages:
   statuses@2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
+
+  std-env@3.8.1:
+    resolution: {integrity: sha512-vj5lIj3Mwf9D79hBkltk5qmkFI+biIKWS2IBxEyEU3AX1tUf7AoL8nSazCOiiqQsGKIq01SClsKEzweu34uwvA==}
 
   stream-combiner2@1.1.1:
     resolution: {integrity: sha512-3PnJbYgS56AeWgtKF5jtJRT6uFJe56Z0Hc5Ngg/6sI6rIt8iiMBTa9cvdyFfpMQjaVHr8dusbNeFGIIonxOvKw==}
@@ -5962,6 +6010,18 @@ packages:
 
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
+
+  typeorm-extension@3.7.0:
+    resolution: {integrity: sha512-ogiIA7DecOQcaBjzFbowLuZD1qFTbh8mlgHh81fHpJnpJDitzuP0CxsP1iJFdjqM4FJfqjZhOHQvAhSFsxcHDQ==}
+    engines: {node: '>=14.0.0'}
+    hasBin: true
+    peerDependencies:
+      typeorm: ~0.3.0
+
+  typeorm-naming-strategies@4.1.0:
+    resolution: {integrity: sha512-vPekJXzZOTZrdDvTl1YoM+w+sUIfQHG4kZTpbFYoTsufyv9NIBRe4Q+PdzhEAFA2std3D9LZHEb1EjE9zhRpiQ==}
+    peerDependencies:
+      typeorm: ^0.2.0 || ^0.3.0
 
   typeorm@0.3.21:
     resolution: {integrity: sha512-lh4rUWl1liZGjyPTWpwcK8RNI5x4ekln+/JJOox1wCd7xbucYDOXWD+1cSzTN3L0wbTGxxOtloM5JlxbOxEufA==}
@@ -7198,6 +7258,8 @@ snapshots:
       - supports-color
 
   '@eslint/js@8.57.1': {}
+
+  '@faker-js/faker@8.4.1': {}
 
   '@fastify/accept-negotiator@2.0.1': {}
 
@@ -9822,6 +9884,8 @@ snapshots:
 
   dequal@2.0.3: {}
 
+  destr@2.0.3: {}
+
   destroy@1.0.4: {}
 
   destroy@1.2.0: {}
@@ -9881,6 +9945,12 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
+  ebec@1.1.1:
+    dependencies:
+      smob: 1.5.0
+
+  ebec@2.3.0: {}
+
   ecdsa-sig-formatter@1.0.11:
     dependencies:
       safe-buffer: 5.2.1
@@ -9926,6 +9996,10 @@ snapshots:
   env-paths@2.2.1: {}
 
   environment@1.1.0: {}
+
+  envix@1.5.0:
+    dependencies:
+      std-env: 3.8.1
 
   error-ex@1.3.2:
     dependencies:
@@ -10478,6 +10552,8 @@ snapshots:
       flatted: 3.3.3
       keyv: 4.5.4
       rimraf: 3.0.2
+
+  flat@5.0.2: {}
 
   flatted@3.3.3: {}
 
@@ -11762,6 +11838,15 @@ snapshots:
     dependencies:
       p-locate: 6.0.0
 
+  locter@2.1.6:
+    dependencies:
+      destr: 2.0.3
+      ebec: 2.3.0
+      fast-glob: 3.3.3
+      flat: 5.0.2
+      jiti: 2.4.2
+      yaml: 2.7.0
+
   lodash-es@4.17.21: {}
 
   lodash.camelcase@4.3.0: {}
@@ -11825,6 +11910,10 @@ snapshots:
 
   long@5.3.1:
     optional: true
+
+  lower-case@2.0.2:
+    dependencies:
+      tslib: 2.8.1
 
   lru-cache@10.4.3: {}
 
@@ -12010,6 +12099,11 @@ snapshots:
     dependencies:
       '@nestjs/common': 11.0.11(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       pino-http: 10.4.0
+
+  no-case@3.0.4:
+    dependencies:
+      lower-case: 2.0.2
+      tslib: 2.8.1
 
   node-abort-controller@3.1.1: {}
 
@@ -12256,6 +12350,11 @@ snapshots:
   parse5@6.0.1: {}
 
   parseurl@1.3.3: {}
+
+  pascal-case@3.1.2:
+    dependencies:
+      no-case: 3.0.4
+      tslib: 2.8.1
 
   passport-jwt@4.0.1:
     dependencies:
@@ -12514,6 +12613,11 @@ snapshots:
       safe-buffer: 5.2.1
 
   range-parser@1.2.1: {}
+
+  rapiq@0.9.0:
+    dependencies:
+      ebec: 1.1.1
+      smob: 1.5.0
 
   raw-body@3.0.0:
     dependencies:
@@ -12961,6 +13065,8 @@ snapshots:
 
   slugify@1.6.6: {}
 
+  smob@1.5.0: {}
+
   sodium-native@4.3.3:
     dependencies:
       require-addon: 1.1.0
@@ -13018,6 +13124,8 @@ snapshots:
   statuses@1.5.0: {}
 
   statuses@2.0.1: {}
+
+  std-env@3.8.1: {}
 
   stream-combiner2@1.1.1:
     dependencies:
@@ -13413,6 +13521,23 @@ snapshots:
       reflect.getprototypeof: 1.0.10
 
   typedarray@0.0.6: {}
+
+  typeorm-extension@3.7.0(typeorm@0.3.21(ioredis@5.4.1)(pg@8.14.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@20.17.24)(typescript@5.8.2))):
+    dependencies:
+      '@faker-js/faker': 8.4.1
+      consola: 3.4.0
+      envix: 1.5.0
+      locter: 2.1.6
+      pascal-case: 3.1.2
+      rapiq: 0.9.0
+      reflect-metadata: 0.2.2
+      smob: 1.5.0
+      typeorm: 0.3.21(ioredis@5.4.1)(pg@8.14.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@20.17.24)(typescript@5.8.2))
+      yargs: 17.7.2
+
+  typeorm-naming-strategies@4.1.0(typeorm@0.3.21(ioredis@5.4.1)(pg@8.14.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@20.17.24)(typescript@5.8.2))):
+    dependencies:
+      typeorm: 0.3.21(ioredis@5.4.1)(pg@8.14.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@20.17.24)(typescript@5.8.2))
 
   typeorm@0.3.21(ioredis@5.4.1)(pg@8.14.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@20.17.24)(typescript@5.8.2)):
     dependencies:

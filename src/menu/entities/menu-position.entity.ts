@@ -18,7 +18,7 @@ import { MenuPositionImage } from "./menu-images.entity";
 import { MenuPositionDetails } from "./menu-position-details.entity";
 import { Ingredient } from "../../ingredients/entities/ingredient.entity";
 
-@Entity()
+@Entity({ schema: "menu" })
 @Check(`"price" >= 0`)
 export class MenuPosition {
   @PrimaryGeneratedColumn("uuid")

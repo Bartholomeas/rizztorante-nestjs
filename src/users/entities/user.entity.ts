@@ -18,7 +18,7 @@ import { NotificationToken } from "@/notifications/entities/notification-token.e
 import { Order } from "@/orders/entities/order.entity";
 import { Restaurant } from "@/restaurants/entities/restaurant.entity";
 
-@Entity()
+@Entity({ schema: "user" })
 export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;

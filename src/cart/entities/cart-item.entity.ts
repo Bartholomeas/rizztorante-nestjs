@@ -5,7 +5,7 @@ import { MenuPosition } from "@/menu/entities/menu-position.entity";
 import { CartItemConfigurableIngredient } from "./cart-item-configurable-ingredient.entity";
 import { Cart } from "./cart.entity";
 
-@Entity()
+@Entity({ schema: "cart" })
 export class CartItem {
   @PrimaryGeneratedColumn("uuid")
   id: string;

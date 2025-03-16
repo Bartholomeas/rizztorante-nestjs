@@ -25,29 +25,29 @@ module.exports = {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "import/order": [
-      "warn",
-      {
-        groups: [
-          "builtin",
-          "external",
-          "internal",
-          ["parent", "sibling"],
-          "index",
-          "object",
-          "type",
-        ],
-        pathGroups: [
-          { pattern: "@nestjs/**", group: "external", position: "before" },
-          { pattern: "@common/**", group: "internal", position: "after" },
-          { pattern: "@events/**", group: "internal", position: "after" },
-          { pattern: "@/**", group: "internal", position: "after" },
-        ],
-        "newlines-between": "always",
-        alphabetize: { order: "asc", caseInsensitive: true },
-        pathGroupsExcludedImportTypes: ["builtin"],
-      },
-    ],
+    // "import/order": [
+    //   "warn",
+    //   {
+    //     groups: [
+    //       "builtin",
+    //       "external",
+    //       "internal",
+    //       ["parent", "sibling"],
+    //       "index",
+    //       "object",
+    //       "type",
+    //     ],
+    //     pathGroups: [
+    //       { pattern: "@nestjs/**", group: "external", position: "before" },
+    //       { pattern: "@common/**", group: "internal", position: "after" },
+    //       { pattern: "@events/**", group: "internal", position: "after" },
+    //       { pattern: "@/**", group: "internal", position: "after" },
+    //     ],
+    //     "newlines-between": "always",
+    //     alphabetize: { order: "asc", caseInsensitive: true },
+    //     pathGroupsExcludedImportTypes: ["builtin"],
+    //   },
+    // ],
     "import/no-unresolved": "off",
   },
 };

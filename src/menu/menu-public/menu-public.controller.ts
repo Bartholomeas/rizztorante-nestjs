@@ -20,7 +20,7 @@ import { MenuDto } from "../dto/menu.dto";
 import { PositionDetailsDto } from "../dto/position-details.dto";
 
 @ApiTags("Menu Public")
-@Controller("menus")
+@Controller("menu")
 @IsPublic()
 export class MenuPublicController {
   constructor(private readonly menuService: MenuPublicService) {}
@@ -38,6 +38,13 @@ export class MenuPublicController {
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err?.message);
     }
+  }
+
+  @Get(":menuSlug")
+  @HttpCode(HttpStatus.OK)
+  async getMenu(@Param("menuSlug") menuSlug: string) {
+    const data = await this.menuService.getMenuBySlug(menuSlug);
+    return data;
   }
 
   @Get(":menuId/categories")

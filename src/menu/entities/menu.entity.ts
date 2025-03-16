@@ -3,7 +3,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique, ManyToOne } 
 import { MenuCategory } from "@/menu/entities/menu-category.entity";
 import { Restaurant } from "@/restaurants/entities/restaurant.entity";
 
-@Entity()
+@Entity({ schema: "menu" })
 @Unique(["slug"])
 export class Menu {
   @PrimaryGeneratedColumn("uuid")
