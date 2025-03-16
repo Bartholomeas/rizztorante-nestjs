@@ -1,20 +1,13 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  InternalServerErrorException,
-  Post,
-  Session,
-  ValidationPipe,
-} from "@nestjs/common";
+import { Body, Controller, Get, Post, ValidationPipe } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
-
-import { SessionContent } from "@/auth/sessions/types/session.types";
 
 import { CheckoutService } from "./checkout.service";
 import { CheckoutDto } from "./dto/checkout.dto";
+import { IsPublic } from "@common/decorators/is-public.decorator";
+import { JwtUser } from "@common/decorators/jwt-user.decorator";
+import { JwtPayloadDto } from "@common/dto/jwt-payload.dto";
 
+@IsPublic()
 @Controller("checkout")
 @ApiTags("Checkout")
 export class CheckoutController {
@@ -22,15 +15,11 @@ export class CheckoutController {
 
   @Post()
   async proceedCheckout(
-    @Session() session: SessionContent,
+    @JwtUser()
+    user: JwtPayloadDto,
     @Body(ValidationPipe) checkoutDto: CheckoutDto,
   ) {
-    try {
-      return await this.service.proceedCheckout(session?.passport?.user?.id, checkoutDto);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
+    return await this.service.proceedCheckout(user?.id, checkoutDto);
   }
 
   @Get("pickup")

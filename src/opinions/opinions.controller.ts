@@ -29,7 +29,9 @@ import { ApproveOpinionDto } from "./dto/approve-opinion.dto";
 import { CreateOpinionDto } from "./dto/create-opinion.dto";
 import { OpinionDto } from "./dto/opinion.dto";
 import { OpinionsService } from "./opinions.service";
+import { IsPublic } from "@common/decorators/is-public.decorator";
 
+@IsPublic()
 @Controller("opinions")
 @ApiTags("Opinions")
 export class OpinionsController {

@@ -22,12 +22,14 @@ import { RolesGuard } from "@/auth/guards/roles.guard";
 import { CreateOperatingHourDto, UpdateOperatingHourDto } from "./dto/operating-hour.dto";
 import { CreateSpecialDateDto, UpdateSpecialDateDto } from "./dto/special-dates.dto";
 import { RestaurantConfigService } from "./restaurant-config.service";
+import { IsPublic } from "@common/decorators/is-public.decorator";
 
 @Controller("restaurant-config")
 @ApiTags("Restaurant Config")
 export class RestaurantConfigController {
   constructor(private readonly service: RestaurantConfigService) {}
 
+  @IsPublic()
   @Get()
   async getRestaurantConfig() {
     try {

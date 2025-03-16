@@ -8,7 +8,9 @@ import { RolesGuard } from "@/auth/guards/roles.guard";
 import { CreateRestaurantDto } from "./dto/create-restaurant.dto";
 import { UpdateRestaurantDto } from "./dto/update-restaurant.dto";
 import { RestaurantsService } from "./restaurants.service";
+import { IsPublic } from "@common/decorators/is-public.decorator";
 
+@IsPublic()
 @Controller("restaurants")
 @ApiTags("Restaurants")
 @UseGuards(RolesGuard)

@@ -4,9 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
-  HttpException,
   HttpStatus,
-  InternalServerErrorException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -27,6 +25,7 @@ import { IngredientDto } from "./dto/ingredient.dto";
 import { UpdateIngredientDto } from "./dto/update-ingredient.dto";
 import { INGREDIENTS_ALLOWED_ROLES } from "./ingredients.constants";
 import { IngredientsService } from "./ingredients.service";
+import { IsPublic } from "@common/decorators/is-public.decorator";
 
 @Controller("ingredients")
 @ApiTags("Ingredients")
@@ -34,16 +33,12 @@ export class IngredientsController {
   constructor(private readonly ingredientsService: IngredientsService) {}
 
   @Get()
+  @IsPublic()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Get all ingredients" })
   @ApiPaginatedResponse(IngredientDto)
   findAll(@Query() pageOptionsDto: PageOptionsWithSearchDto) {
-    try {
-      return this.ingredientsService.findAllIngredients(pageOptionsDto);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException();
-    }
+    return this.ingredientsService.findAllIngredients(pageOptionsDto);
   }
 
   @Roles(...INGREDIENTS_ALLOWED_ROLES)
@@ -56,12 +51,7 @@ export class IngredientsController {
   })
   @ApiSecurity("Roles")
   create(@Body() createIngredientDto: CreateIngredientDto) {
-    try {
-      return this.ingredientsService.createIngredient(createIngredientDto);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
+    return this.ingredientsService.createIngredient(createIngredientDto);
   }
 
   @Roles(...INGREDIENTS_ALLOWED_ROLES)
@@ -77,12 +67,7 @@ export class IngredientsController {
     @Param("id", new ParseUUIDPipe()) id: string,
     @Body() updateIngredientDto: UpdateIngredientDto,
   ) {
-    try {
-      return this.ingredientsService.updateIngredient(id, updateIngredientDto);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
+    return this.ingredientsService.updateIngredient(id, updateIngredientDto);
   }
 
   @Roles(...INGREDIENTS_ALLOWED_ROLES)

@@ -35,14 +35,16 @@ async function bootstrap() {
     }),
   );
 
-  const config = new DocumentBuilder()
-    .setTitle(APP_NAME)
-    .setDescription("API for handling orders in restaurant")
-    .setVersion("1.0")
-    .build();
+  if (configService.get<string>("NODE_ENV") === "development") {
+    const config = new DocumentBuilder()
+      .setTitle(APP_NAME)
+      .setDescription("API for handling orders in restaurant")
+      .setVersion("1.0")
+      .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("api", app, document);
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup("api", app, document);
+  }
 
   await app.listen(configService.get<number>("APP_API_PORT"), "0.0.0.0");
 }
