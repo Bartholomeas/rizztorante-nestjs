@@ -1,18 +1,12 @@
-import {
-  Controller,
-  Get,
-  HttpCode,
-  HttpException,
-  HttpStatus,
-  InternalServerErrorException,
-  Put,
-  Session,
-} from "@nestjs/common";
+import { Controller, Get, HttpCode, HttpStatus, Put, Session } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
+
+import { JwtUser } from "@common/decorators/jwt-user.decorator";
+import { JwtUserDto } from "@common/types/jwt.types";
 
 import { SessionContent } from "@/auth/sessions/types/session.types";
 
-import { UsersService } from "./users.service";
+import { UsersService } from "./services/users.service";
 
 @ApiTags("Users")
 @Controller("users")
@@ -22,13 +16,10 @@ export class UsersController {
   @Get("me")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Get current user" })
-  async getCurrentUser(@Session() session: SessionContent) {
-    try {
-      return await this.usersService.getCurrentUser(session?.passport?.user?.id);
-    } catch (err) {
-      if (err instanceof HttpException) throw err;
-      throw new InternalServerErrorException(err?.message);
-    }
+  // async getCurrentUser(@Session() session: SessionContent, @JwtUser() user: any) {
+  async getCurrentUser(@JwtUser() user: JwtUserDto) {
+    console.log("Curr user:: ", user);
+    return await this.usersService.getCurrentUser(user.id);
   }
 
   @Put("/enable-push-notification")

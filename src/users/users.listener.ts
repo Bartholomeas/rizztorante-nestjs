@@ -3,7 +3,7 @@ import { OnEvent } from "@nestjs/event-emitter";
 
 import { UserEventTypes } from "@events/events";
 
-import { UsersService } from "./users.service";
+import { UsersService } from "./services/users.service";
 
 @Injectable()
 export class UsersListener {

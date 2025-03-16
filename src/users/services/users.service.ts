@@ -24,7 +24,10 @@ export class UsersService {
 
   async getCurrentUser(userId: string | undefined): Promise<Omit<User, "password">> {
     if (!userId) throw new NotFoundException("User ID is required");
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      cache: { id: `user-${userId}`, milliseconds: 1000 * 60 },
+    });
     if (!user) throw new NotFoundException("User not found");
 
     return RemovePasswordUtils.removePasswordFromResponse(user);
