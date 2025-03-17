@@ -7,7 +7,6 @@ import { IsPublic } from "@common/decorators/is-public.decorator";
 import { JwtUser } from "@common/decorators/jwt-user.decorator";
 import { JwtPayloadDto } from "@common/dto/jwt-payload.dto";
 
-@IsPublic()
 @Controller("checkout")
 @ApiTags("Checkout")
 export class CheckoutController {
@@ -22,12 +21,14 @@ export class CheckoutController {
     return await this.service.proceedCheckout(user?.id, checkoutDto);
   }
 
+  @IsPublic()
   @Get("pickup")
   @ApiOperation({ summary: "Get pickup options" })
   async getPickupOptions() {
     return await this.service.getPickupOptions();
   }
 
+  @IsPublic()
   @Get("payment")
   @ApiOperation({ summary: "Get payment options" })
   async getPaymentOptions() {

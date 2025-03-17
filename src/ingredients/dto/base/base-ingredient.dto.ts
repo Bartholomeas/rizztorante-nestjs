@@ -1,10 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { IsBoolean, IsOptional, IsString, MinLength } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator";
 
 export abstract class BaseIngredientDto {
   @ApiProperty({ description: "The name of the ingredient" })
   @IsString()
+  @IsNotEmpty()
   @MinLength(2)
   name: string;
 

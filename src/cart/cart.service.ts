@@ -43,6 +43,7 @@ export class CartService {
     const userCart = await this.cartRepository.findCartByUserId(userId);
     if (userCart) return new CartDto(userCart);
 
+    this.logger.log("USER CART::: ", { userCart });
     const currentUser = await this.userRepository.findUserById(userId);
     if (!currentUser) throw new NotFoundException(`User with id ${userId} not found`);
 

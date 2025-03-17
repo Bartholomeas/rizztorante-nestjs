@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -20,7 +20,7 @@ export class SessionService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  @OnEvent(UserEventTypes.SESSION_CREATED)
+  // @OnEvent(UserEventTypes.SESSION_CREATED)
   async addGuestToSession(session: SessionContent) {
     const [user]: User[] = await this.eventEmitter.emitAsync(
       UserEventTypes.GUEST_CREATED,

@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 
-import { getUserCartEvent, initPaymentEvent } from "@events/payloads";
+import { initPaymentEvent } from "@events/payloads";
 import { createOrderEvent } from "@events/payloads/orders";
 
 import { CartDto } from "@/cart/dto/cart.dto";
@@ -10,6 +10,7 @@ import { User } from "@/users/entities/user.entity";
 import { CheckoutDto } from "./dto/checkout.dto";
 import { PaymentsEnum, PickupEnum } from "./enums/checkout.enums";
 import { USER_REPOSITORY_DI, UserRepository } from "@/users/repositories/user.repository";
+import { CART_REPOSITORY_DI, CartRepository } from "@/cart/repositories/cart.repository";
 
 interface CreateOrderProps {
   cart: CartDto;
@@ -22,11 +23,13 @@ export class CheckoutService {
   constructor(
     private readonly eventEmitter: EventEmitter2,
     @Inject(USER_REPOSITORY_DI) private readonly userRepository: UserRepository,
+    @Inject(CART_REPOSITORY_DI) private readonly cartRepository: CartRepository,
   ) {}
 
   async proceedCheckout(userId: string | undefined, checkoutDto: CheckoutDto) {
     if (!userId) throw new NotFoundException("User is not found");
-    const [cart] = (await this.eventEmitter.emitAsync(...getUserCartEvent(userId))) as [CartDto];
+    // const [cart] = (await this.eventEmitter.emitAsync(...getUserCartEvent(userId))) as [CartDto];
+    const cart = await this.cartRepository.findCartByUserId(userId);
 
     // 1. Get user cart
     // 2. Get user
@@ -36,19 +39,18 @@ export class CheckoutService {
 
     if (!cart?.items?.length) throw new BadRequestException("Cart is empty");
 
-    // const [user] = await this.eventEmitter.emitAsync(...getUserEvent(userId));
-
+    const cartDto = new CartDto(cart);
     const user = await this.userRepository.findUserById(userId);
 
     if (checkoutDto.paymentType === PaymentsEnum.ONLINE) {
       return await this.createOnlineOrder({
-        cart,
+        cart: cartDto,
         user,
         checkoutData: checkoutDto,
       });
     } else {
       return await this.createInPersonOrder({
-        cart,
+        cart: cartDto,
         user,
         checkoutData: checkoutDto,
       });
