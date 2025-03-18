@@ -4,7 +4,7 @@ import { OnEvent } from "@nestjs/event-emitter";
 import { OrderEventTypes } from "@events/events";
 import { OrdersCreateOrderPayload } from "@events/payloads/orders";
 
-import { OrdersService } from "./orders.service";
+import { OrdersService } from "./services/orders.service";
 
 @Injectable()
 export class OrdersListener {

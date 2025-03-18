@@ -10,8 +10,8 @@ import { OrdersCreateOrderPayload } from "@events/payloads/orders";
 import { Cart } from "@/cart/entities/cart.entity";
 import { Order } from "@/orders/entities/order.entity";
 
-import { OrdersUtils } from "./orders.utils";
-import { OrderStatus } from "./types/order-status.enum";
+import { OrdersUtils } from "../orders.utils";
+import { OrderStatus } from "../types/order-status.enum";
 
 @Injectable()
 export class OrdersService {

@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { ThrottlerModule } from "@nestjs/throttler";
@@ -27,6 +27,7 @@ import { UsersModule } from "@/users/users.module";
 import { JwtGuard } from "./auth/guards/jwt.guard";
 import { JwtStrategy } from "./auth/strategies/jwt.strategy";
 import { RedisModule } from "./libs/redis/redis.module";
+import { BullModule } from "@nestjs/bullmq";
 
 @Module({
   imports: [
@@ -64,7 +65,17 @@ import { RedisModule } from "./libs/redis/redis.module";
         limit: 500,
       },
     ]),
-
+    BullModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get("REDIS_HOST"),
+          port: configService.get("REDIS_PORT"),
+          username: configService.get("REDIS_USERNAME"),
+          password: configService.get("REDIS_PASSWORD"),
+        },
+      }),
+      inject: [ConfigService],
+    }),
     EventEmitterModule.forRoot({ delimiter: "." }),
     RedisModule,
     AuthModule,

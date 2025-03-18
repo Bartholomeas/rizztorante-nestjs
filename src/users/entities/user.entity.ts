@@ -17,6 +17,7 @@ import { Cart } from "@/cart/entities/cart.entity";
 import { NotificationToken } from "@/notifications/entities/notification-token.entity";
 import { Order } from "@/orders/entities/order.entity";
 import { Restaurant } from "@/restaurants/entities/restaurant.entity";
+import { Exclude } from "class-transformer";
 
 @Entity({ schema: "user" })
 export class User {
@@ -35,6 +36,7 @@ export class User {
   @IsEmail({}, { message: "Email is not valid" })
   email?: string;
 
+  @Exclude()
   @Column({ nullable: true })
   @ValidateIf((o) => o.role !== UserRole.GUEST)
   @IsStrongPassword({
