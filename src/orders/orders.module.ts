@@ -29,6 +29,7 @@ import { OrdersService } from "./services/orders.service";
           type: "exponential",
           delay: 1000,
         },
+        removeOnComplete: true,
       },
     }),
   ],

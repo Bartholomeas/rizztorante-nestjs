@@ -72,7 +72,7 @@ export class CheckoutService {
         paymentDetails,
       });
 
-      return { url, session };
+      return { url };
     } else {
       return { message: "Thanks for ordering!" };
     }

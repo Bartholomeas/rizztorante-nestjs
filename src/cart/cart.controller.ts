@@ -20,8 +20,8 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 
 import { CartService } from "./cart.service";
-import { CartDto, FlatCartDto } from "./dto/cart.dto";
 import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
+import { GetCartResponse } from "./http/responses/get-cart.response";
 
 @Controller("cart")
 @ApiTags("Cart")
@@ -30,14 +30,14 @@ export class CartController {
 
   @Get()
   @ApiOperation({ summary: "Get cart" })
-  @ApiResponse({ type: CartDto })
+  @ApiResponse({ type: GetCartResponse })
   async getCart(
     @JwtUser()
     user: JwtPayloadDto,
-  ): Promise<FlatCartDto> {
+  ): Promise<GetCartResponse> {
     const cart = await this.cartService.getUserCart(user?.id);
 
-    return cart.toFlatCartDto();
+    return GetCartResponse.fromCart(cart);
   }
 
   @Post("item")

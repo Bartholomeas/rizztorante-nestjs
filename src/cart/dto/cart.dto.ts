@@ -40,13 +40,6 @@ export class CartDto {
       }),
     );
   }
-  public toFlatCartDto(): FlatCartDto {
-    return {
-      id: this.id,
-      total: this.total,
-      items: this.items?.map((item) => new FlatCartItemDto(item)).filter(Boolean) ?? [],
-    };
-  }
 
   constructor(partial: Partial<Cart>) {
     Object.assign(this, partial);
