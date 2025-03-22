@@ -1,5 +1,5 @@
+import { HOUR_FORMAT_REGEX } from "@common/constants";
 import { ApiProperty } from "@nestjs/swagger";
-
 import {
   IsBoolean,
   IsInt,
@@ -10,8 +10,6 @@ import {
   Min,
   ValidateIf,
 } from "class-validator";
-
-import { HOUR_FORMAT_REGEX } from "@common/constants";
 
 abstract class BaseOperatingHourDto {
   @ApiProperty()

@@ -1,7 +1,6 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-
 import { Repository } from "typeorm";
 
 import { OperatingHours } from "./entities/operating-hours.entity";

@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-
 import { IsArray, IsBoolean, IsInt, IsOptional, IsString, Min, MinLength } from "class-validator";
 
 export abstract class BasePositionDto {

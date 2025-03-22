@@ -1,4 +1,5 @@
 import type { FindOneOptions, Repository } from "typeorm";
+
 import type { MenuCategory } from "../entities/menu-category.entity";
 
 export const MENU_CATEGORY_REPOSITORY_DI = Symbol.for("MENU_CATEGORY_REPOSITORY_DI");

@@ -1,12 +1,10 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-
-import { Repository } from "typeorm";
-
 import { PageMetadataDto } from "@common/dto/pagination/page-metadata.dto";
 import { PageOptionsDto } from "@common/dto/pagination/page-options.dto";
 import { PageDto } from "@common/dto/pagination/page.dto";
 import { UserRole } from "@common/types/user-roles.type";
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 import { ApproveOpinionDto } from "./dto/approve-opinion.dto";
 import { CreateOpinionDto } from "./dto/create-opinion.dto";

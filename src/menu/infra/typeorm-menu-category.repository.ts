@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { DataSource, FindOneOptions, Repository } from "typeorm";
-import { MenuCategoryRepository } from "../repositories/menu-category.repository";
+
 import { MenuCategory } from "../entities/menu-category.entity";
+import { MenuCategoryRepository } from "../repositories/menu-category.repository";
 
 @Injectable()
 export class TypeormMenuCategoryRepository

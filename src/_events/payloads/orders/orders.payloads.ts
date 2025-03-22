@@ -9,7 +9,8 @@ export type OrdersPayloads = {
 };
 
 export class OrdersCreateOrderPayload {
-  public readonly cartDto: CartDto;
+  public readonly orderId: string;
+  public readonly cart: CartDto;
   public readonly user: User;
   public readonly checkoutData: CheckoutDto;
 }

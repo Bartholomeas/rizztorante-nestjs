@@ -1,10 +1,8 @@
-import { Injectable, NestMiddleware } from "@nestjs/common";
-import { EventEmitter2 } from "@nestjs/event-emitter";
-
-import { NextFunction, Request, Response } from "express";
-
 import { UserEventTypes } from "@events/events";
 import { GuestSessionCreatedEvent } from "@events/payloads";
+import { Injectable, NestMiddleware } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { NextFunction, Request, Response } from "express";
 
 import { SessionContent } from "@/auth/sessions/types/session.types";
 

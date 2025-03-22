@@ -1,15 +1,16 @@
+import { Exclude } from "class-transformer";
 import { IsEmail, IsStrongPassword, ValidateIf } from "class-validator";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  ManyToMany,
-  Index,
 } from "typeorm";
 
 import { UserRole } from "@/_common/types/user-roles.type";
@@ -17,7 +18,6 @@ import { Cart } from "@/cart/entities/cart.entity";
 import { NotificationToken } from "@/notifications/entities/notification-token.entity";
 import { Order } from "@/orders/entities/order.entity";
 import { Restaurant } from "@/restaurants/entities/restaurant.entity";
-import { Exclude } from "class-transformer";
 
 @Entity({ schema: "user" })
 export class User {

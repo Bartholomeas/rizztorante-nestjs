@@ -1,10 +1,10 @@
+import { BullModule } from "@nestjs/bullmq";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
-
 import { dataSourceOptions } from "database/data-source";
 import { LoggerModule } from "nestjs-pino";
 
@@ -27,12 +27,11 @@ import { UsersModule } from "@/users/users.module";
 import { JwtGuard } from "./auth/guards/jwt.guard";
 import { JwtStrategy } from "./auth/strategies/jwt.strategy";
 import { RedisModule } from "./libs/redis/redis.module";
-import { BullModule } from "@nestjs/bullmq";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ["./.env"],
+      envFilePath: [".env"],
       isGlobal: true,
     }),
     LoggerModule.forRoot({
@@ -48,7 +47,7 @@ import { BullModule } from "@nestjs/bullmq";
             messageFormat: "{context}",
           },
         },
-        autoLogging: false,
+        autoLogging: true,
         serializers: {
           req: () => undefined,
           res: () => undefined,

@@ -1,16 +1,14 @@
-import * as crypto from "node:crypto";
-
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
-import { EventEmitter2 } from "@nestjs/event-emitter";
-
 import { RemovePasswordUtils } from "@common/utils/remove-password.utils";
-
 import {
   disableNotificationEvent,
   enableNotificationEvent,
 } from "@events/payloads/notifications/notifications.events";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import * as crypto from "node:crypto";
 
 import { User } from "@/users/entities/user.entity";
+
 import { USER_REPOSITORY_DI, UserRepository } from "../repositories/user.repository";
 
 @Injectable()

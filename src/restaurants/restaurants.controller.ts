@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards } from "@nestjs/common";
+import { IsPublic } from "@common/decorators/is-public.decorator";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
 import { UserRole } from "@/_common/types/user-roles.type";
@@ -8,7 +9,6 @@ import { RolesGuard } from "@/auth/guards/roles.guard";
 import { CreateRestaurantDto } from "./dto/create-restaurant.dto";
 import { UpdateRestaurantDto } from "./dto/update-restaurant.dto";
 import { RestaurantsService } from "./restaurants.service";
-import { IsPublic } from "@common/decorators/is-public.decorator";
 
 @IsPublic()
 @Controller("restaurants")

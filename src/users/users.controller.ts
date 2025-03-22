@@ -1,8 +1,7 @@
-import { Controller, Get, HttpCode, HttpStatus, Put, Session } from "@nestjs/common";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
-
 import { JwtUser } from "@common/decorators/jwt-user.decorator";
 import { JwtUserDto } from "@common/types/jwt.types";
+import { Controller, Get, HttpCode, HttpStatus, Put, Session } from "@nestjs/common";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import { SessionContent } from "@/auth/sessions/types/session.types";
 

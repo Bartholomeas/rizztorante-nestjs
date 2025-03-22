@@ -1,18 +1,17 @@
-import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
-import { InjectRepository } from "@nestjs/typeorm";
-
-import { Repository } from "typeorm";
-
 import { CartEventTypes } from "@events/events";
 import { getSinglePositionEvent } from "@events/payloads";
 import { findConfigurableIngredientsEvent } from "@events/payloads/ingredients";
+import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 import { AddCartItemDto } from "@/cart/dto/add-cart-item.dto";
 import { CartItem } from "@/cart/entities/cart-item.entity";
 import { ConfigurableIngredient } from "@/ingredients/ingredients-config/entities/configurable-ingredient.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 import { User } from "@/users/entities/user.entity";
+import { USER_REPOSITORY_DI, UserRepository } from "@/users/repositories/user.repository";
 
 import { CartItemDto } from "./dto/cart-item.dto";
 import { CartDto } from "./dto/cart.dto";
@@ -20,7 +19,6 @@ import { ChangeCartItemQuantityDto } from "./dto/change-cart-item-quantity.dto";
 import { CreateCartItemConfigurableIngredientDto } from "./dto/create-cart-item-configurable-ingredient.dto";
 import { CartItemConfigurableIngredient } from "./entities/cart-item-configurable-ingredient.entity";
 import { CART_REPOSITORY_DI, CartRepository } from "./repositories/cart.repository";
-import { USER_REPOSITORY_DI, UserRepository } from "@/users/repositories/user.repository";
 
 @Injectable()
 export class CartService {

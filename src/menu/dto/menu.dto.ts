@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-
 import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 import { BaseMenuDto } from "@/menu/dto/base/base-menu.dto";

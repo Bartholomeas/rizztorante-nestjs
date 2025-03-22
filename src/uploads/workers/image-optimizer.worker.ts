@@ -1,6 +1,5 @@
-import { parentPort, workerData } from "worker_threads";
-
 import * as sharp from "sharp";
+import { parentPort, workerData } from "worker_threads";
 
 interface OptimizeImageResult {
   buffer: Buffer;

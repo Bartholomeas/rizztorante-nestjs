@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 import { MenuCategory } from "@/menu/entities/menu-category.entity";
 import { Restaurant } from "@/restaurants/entities/restaurant.entity";

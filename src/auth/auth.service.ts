@@ -1,3 +1,6 @@
+import { JwtUserDto } from "@common/types/jwt.types";
+import { UserRole } from "@common/types/user-roles.type";
+import { UserEventTypes } from "@events/events";
 import {
   BadRequestException,
   ConflictException,
@@ -9,23 +12,18 @@ import {
 import { OnEvent } from "@nestjs/event-emitter";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-
 import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
 
-import { JwtUserDto } from "@common/types/jwt.types";
-import { UserRole } from "@common/types/user-roles.type";
-
-import { UserEventTypes } from "@events/events";
-
 import { SessionEntity } from "@/auth/sessions/entity/session.entity";
 import { User } from "@/users/entities/user.entity";
+
+import { RemovePasswordUtils } from "../_common/utils/remove-password.utils";
 
 import { AuthJwtUserDto } from "./dto/auth-jwt-user.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { ValidateUserDto } from "./dto/validate-user.dto";
-import { RemovePasswordUtils } from "../_common/utils/remove-password.utils";
 
 @Injectable()
 export class AuthService {

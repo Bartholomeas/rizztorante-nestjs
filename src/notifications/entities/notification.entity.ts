@@ -1,7 +1,8 @@
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
-import { NotificationToken } from "./notification-token.entity";
 import { NotificationStatus } from "../enums/notification-status.enum";
+
+import { NotificationToken } from "./notification-token.entity";
 
 @Entity()
 export class Notification {

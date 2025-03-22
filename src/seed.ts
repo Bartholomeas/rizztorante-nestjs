@@ -1,14 +1,13 @@
+import { UserRole } from "@common/types/user-roles.type";
 import type { INestApplicationContext } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-
 import { Connection, DataSource } from "typeorm";
-
-import { UserRole } from "@common/types/user-roles.type";
 
 import { IngredientsConfigService } from "@/ingredients/ingredients-config/ingredients-config.service";
 
 import { AppModule } from "./app.module";
 import { AuthService } from "./auth/auth.service";
+import type { CreateIngredientDto } from "./ingredients/dto/create-ingredient.dto";
 import { CreateIngredientsConfigDto } from "./ingredients/ingredients-config/dto/create-ingredients-config.dto";
 import { IngredientsService } from "./ingredients/ingredients.service";
 import { UpdatePositionImageDto } from "./menu/dto/update/update-position-image.dto";
@@ -17,8 +16,6 @@ import { MenuPublicService } from "./menu/menu-public/menu-public.service";
 import { CreateOperatingHourDto } from "./restaurant-config/dto/operating-hour.dto";
 import { CreateSpecialDateDto } from "./restaurant-config/dto/special-dates.dto";
 import { RestaurantConfigService } from "./restaurant-config/restaurant-config.service";
-
-import type { CreateIngredientDto } from "./ingredients/dto/create-ingredient.dto";
 
 (async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);

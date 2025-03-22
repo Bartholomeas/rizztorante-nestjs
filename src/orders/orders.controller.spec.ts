@@ -1,7 +1,6 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-
 import { Repository } from "typeorm";
 
 import { Cart } from "@/cart/entities/cart.entity";
@@ -9,7 +8,7 @@ import { Order } from "@/orders/entities/order.entity";
 import { User } from "@/users/entities/user.entity";
 
 import { OrdersController } from "./orders.controller";
-import { OrdersService } from "./orders.service";
+import { OrdersService } from "./services/orders.service";
 
 describe("OrdersController", () => {
   let controller: OrdersController;

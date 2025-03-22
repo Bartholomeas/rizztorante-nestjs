@@ -10,4 +10,5 @@ export type PaymentsPayloads = {
 export class InitPaymentPayload {
   public readonly lineItems: StripeLineItem[];
   public readonly checkoutData: CheckoutDto;
+  public readonly orderId: string;
 }

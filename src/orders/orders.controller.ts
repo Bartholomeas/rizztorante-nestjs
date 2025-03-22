@@ -1,3 +1,6 @@
+import { JwtUser } from "@common/decorators/jwt-user.decorator";
+import { JwtPayloadDto } from "@common/dto/jwt-payload.dto";
+import { UserRole } from "@common/types/user-roles.type";
 import {
   Body,
   Controller,
@@ -12,16 +15,11 @@ import {
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { UserRole } from "@common/types/user-roles.type";
-
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 import { UpdateOrderStatusDto } from "@/orders/dto/update-order-status.dto";
 
 import { OrdersService } from "./services/orders.service";
-
-import { JwtUser } from "@common/decorators/jwt-user.decorator";
-import { JwtPayloadDto } from "@common/dto/jwt-payload.dto";
 
 @Controller("orders")
 @ApiTags("Orders")

@@ -1,17 +1,15 @@
-import type { TestingModule } from "@nestjs/testing";
-import { Test } from "@nestjs/testing";
-import { getRepositoryToken } from "@nestjs/typeorm";
-
 import { PageOptionsDto } from "@common/dto/pagination/page-options.dto";
 import { SortOrder } from "@common/types/sort-order.type";
 import { UserRole } from "@common/types/user-roles.type";
-
-import { Opinion } from "./entities/opinion.entity";
-import { OpinionsService } from "./opinions.service";
+import type { TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import type { Repository } from "typeorm";
 
 import type { ApproveOpinionDto } from "./dto/approve-opinion.dto";
 import type { CreateOpinionDto } from "./dto/create-opinion.dto";
-import type { Repository } from "typeorm";
+import { Opinion } from "./entities/opinion.entity";
+import { OpinionsService } from "./opinions.service";
 
 describe("OpinionsService", () => {
   let service: OpinionsService;

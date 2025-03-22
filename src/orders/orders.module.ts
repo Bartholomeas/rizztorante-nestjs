@@ -1,19 +1,22 @@
+import { BullModule } from "@nestjs/bullmq";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { BullModule } from "@nestjs/bullmq";
 
 import { Cart } from "@/cart/entities/cart.entity";
 import { Order } from "@/orders/entities/order.entity";
 import { Restaurant } from "@/restaurants/entities/restaurant.entity";
 import { User } from "@/users/entities/user.entity";
 
-import { OrdersController } from "./orders.controller";
-import { OrdersListener } from "./orders.listener";
+import { TypeormOrdersRepository } from "./infra/typeorm-orders.repository";
 import { ORDER_QUEUE } from "./orders.constants";
-
-import { OrdersService } from "./services/orders.service";
-import { CreateOrdersService } from "./services/create-orders.service";
+import { OrdersController } from "./orders.controller";
+import { OrdersGateway } from "./orders.gateway";
+import { OrdersListener } from "./orders.listener";
 import { OrdersProcessor } from "./orders.processor";
+import { ORDERS_REPOSITORY_DI } from "./repositories/orders.repository";
+import { OrdersCreationService } from "./services/orders-creation.service";
+import { OrdersProcessingService } from "./services/orders-processing.service";
+import { OrdersService } from "./services/orders.service";
 
 @Module({
   imports: [
@@ -30,6 +33,18 @@ import { OrdersProcessor } from "./orders.processor";
     }),
   ],
   controllers: [OrdersController],
-  providers: [OrdersService, CreateOrdersService, OrdersListener, OrdersProcessor],
+  providers: [
+    OrdersService,
+    OrdersProcessingService,
+    OrdersCreationService,
+    OrdersGateway,
+    OrdersListener,
+    OrdersProcessor,
+    {
+      provide: ORDERS_REPOSITORY_DI,
+      useClass: TypeormOrdersRepository,
+    },
+  ],
+  exports: [OrdersService, BullModule],
 })
 export class OrdersModule {}

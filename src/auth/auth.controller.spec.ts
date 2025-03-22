@@ -1,13 +1,11 @@
+import { UserRole } from "@common/types/user-roles.type";
+import { RemovePasswordUtils } from "@common/utils/remove-password.utils";
 import { InternalServerErrorException } from "@nestjs/common";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import { UserRole } from "@common/types/user-roles.type";
-import { RemovePasswordUtils } from "@common/utils/remove-password.utils";
-
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
-
 import type { CreateUserDto } from "./dto/create-user.dto";
 import type { LoginUserDto } from "./dto/login-user.dto";
 

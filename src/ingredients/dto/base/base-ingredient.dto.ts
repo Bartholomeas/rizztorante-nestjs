@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-
 import { IsBoolean, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator";
 
 export abstract class BaseIngredientDto {

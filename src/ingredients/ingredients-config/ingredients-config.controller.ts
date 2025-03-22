@@ -1,3 +1,6 @@
+import { ApiPaginatedResponse } from "@common/decorators/api-paginated-response.decorator";
+import { PageOptionsWithSearchDto } from "@common/dto/pagination/page-options-with-search.dto";
+import { UserRole } from "@common/types/user-roles.type";
 import {
   Body,
   Controller,
@@ -15,10 +18,6 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { ApiOperation, ApiSecurity, ApiTags } from "@nestjs/swagger";
-
-import { ApiPaginatedResponse } from "@common/decorators/api-paginated-response.decorator";
-import { PageOptionsWithSearchDto } from "@common/dto/pagination/page-options-with-search.dto";
-import { UserRole } from "@common/types/user-roles.type";
 
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";

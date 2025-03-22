@@ -1,11 +1,14 @@
-import { ApiProperty } from "@nestjs/swagger";
-
-import { IsEnum } from "class-validator";
-
 import { OrderStatus } from "../types/order-status.enum";
 
+// export class UpdateOrderStatusDto {
+//   @ApiProperty({ enum: OrderStatus })
+//   @IsEnum(OrderStatus)
+//   public readonly status: OrderStatus;
+// }
+
 export class UpdateOrderStatusDto {
-  @ApiProperty({ enum: OrderStatus })
-  @IsEnum(OrderStatus)
-  public readonly status: OrderStatus;
+  constructor(
+    public readonly orderId: string,
+    public readonly status: OrderStatus,
+  ) {}
 }
