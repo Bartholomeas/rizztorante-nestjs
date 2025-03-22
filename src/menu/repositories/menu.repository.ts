@@ -1,4 +1,5 @@
 import type { FindOneOptions, Repository } from "typeorm";
+
 import type { Menu } from "../entities/menu.entity";
 
 export const MENU_REPOSITORY_DI = Symbol.for("MENU_REPOSITORY_DI");

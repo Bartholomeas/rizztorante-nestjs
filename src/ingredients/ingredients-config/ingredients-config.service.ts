@@ -1,25 +1,23 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
-import { EventEmitter2 } from "@nestjs/event-emitter";
-import { InjectRepository } from "@nestjs/typeorm";
-
-import { In, Repository } from "typeorm";
-
 import { PageMetadataDto } from "@common/dto/pagination/page-metadata.dto";
 import { PageOptionsWithSearchDto } from "@common/dto/pagination/page-options-with-search.dto";
 import { PageDto } from "@common/dto/pagination/page.dto";
-
 import { getSinglePositionEvent } from "@events/payloads";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { InjectRepository } from "@nestjs/typeorm";
+import { In, Repository } from "typeorm";
 
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
 
+import { Ingredient } from "../entities/ingredient.entity";
+
+import { ConfigurableIngredientDto } from "./dto/configurable-ingredient.dto";
+import { ConfigurationWithIdsDto } from "./dto/configuration-with-ids.dto";
 import { CreateConfigurableIngredientDto } from "./dto/create-configurable-ingredient.dto";
 import { CreateIngredientsConfigDto } from "./dto/create-ingredients-config.dto";
 import { UpdateIngredientsConfigDto } from "./dto/update-ingredients-config.dto";
 import { ConfigurableIngredient } from "./entities/configurable-ingredient.entity";
 import { IngredientsConfig } from "./entities/ingredients-config.entity";
-import { Ingredient } from "../entities/ingredient.entity";
-import { ConfigurableIngredientDto } from "./dto/configurable-ingredient.dto";
-import { ConfigurationWithIdsDto } from "./dto/configuration-with-ids.dto";
 
 @Injectable()
 export class IngredientsConfigService {

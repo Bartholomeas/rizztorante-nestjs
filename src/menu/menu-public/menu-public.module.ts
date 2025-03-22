@@ -8,10 +8,11 @@ import { Menu } from "@/menu/entities/menu.entity";
 import { MenuPublicController } from "@/menu/menu-public/menu-public.controller";
 import { MenuPublicService } from "@/menu/menu-public/menu-public.service";
 import { Restaurant } from "@/restaurants/entities/restaurant.entity";
-import { MENU_REPOSITORY_DI } from "../repositories/menu.repository";
+
+import { TypeormMenuCategoryRepository } from "../infra/typeorm-menu-category.repository";
 import { TypeormMenuRepository } from "../infra/typeorm-menu.repository";
 import { MENU_CATEGORY_REPOSITORY_DI } from "../repositories/menu-category.repository";
-import { TypeormMenuCategoryRepository } from "../infra/typeorm-menu-category.repository";
+import { MENU_REPOSITORY_DI } from "../repositories/menu.repository";
 
 @Module({
   imports: [

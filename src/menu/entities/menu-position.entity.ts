@@ -14,9 +14,10 @@ import { CartItem } from "@/cart/entities/cart-item.entity";
 import { IngredientsConfig } from "@/ingredients/ingredients-config/entities/ingredients-config.entity";
 import { MenuCategory } from "@/menu/entities/menu-category.entity";
 
+import { Ingredient } from "../../ingredients/entities/ingredient.entity";
+
 import { MenuPositionImage } from "./menu-images.entity";
 import { MenuPositionDetails } from "./menu-position-details.entity";
-import { Ingredient } from "../../ingredients/entities/ingredient.entity";
 
 @Entity({ schema: "menu" })
 @Check(`"price" >= 0`)

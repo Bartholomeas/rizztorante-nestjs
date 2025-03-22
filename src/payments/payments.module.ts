@@ -7,5 +7,6 @@ import { PaymentsService } from "./payments.service";
 @Module({
   imports: [StripeModule.forRootAsync()],
   providers: [PaymentsService],
+  exports: [PaymentsService],
 })
 export class PaymentsModule {}

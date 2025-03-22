@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-
 import { IsNumber, IsUUID, Min } from "class-validator";
 
 import { StripeLineItem } from "@/payments/stripe/interfaces/stripe.interfaces";
 
-import { CartItemDto } from "./cart-item.dto";
 import { Cart } from "../entities/cart.entity";
+
+import { CartItemDto } from "./cart-item.dto";
 
 export class CartDto {
   @ApiProperty({

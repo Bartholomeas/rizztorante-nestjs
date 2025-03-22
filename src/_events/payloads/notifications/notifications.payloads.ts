@@ -1,7 +1,6 @@
+import type { NotificationEventTypes } from "@events/events";
 import { Type } from "class-transformer";
 import { IsObject, IsOptional, IsString, IsUUID } from "class-validator";
-
-import type { NotificationEventTypes } from "@events/events";
 
 import { AcceptNotificationDto } from "@/notifications/dto/accept-notification.dto";
 

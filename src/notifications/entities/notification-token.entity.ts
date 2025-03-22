@@ -2,9 +2,10 @@ import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColu
 
 import { User } from "@/users/entities/user.entity";
 
-import { Notification } from "./notification.entity";
 import { NotificationDevice } from "../enums/notification-device.enum";
 import { NotificationStatus } from "../enums/notification-status.enum";
+
+import { Notification } from "./notification.entity";
 
 @Entity()
 export class NotificationToken {

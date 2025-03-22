@@ -1,14 +1,12 @@
+import { GlobalExceptionFilter } from "@common/filters/global-exception.filter";
+import { LoggingInterceptor } from "@common/interceptors/logging.interceptor";
 import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-
 import * as compression from "compression";
-
-import { GlobalExceptionFilter } from "@common/filters/global-exception.filter";
-import { LoggingInterceptor } from "@common/interceptors/logging.interceptor";
 
 import { APP_NAME } from "./_common/constants";
 import { AppModule } from "./app.module";

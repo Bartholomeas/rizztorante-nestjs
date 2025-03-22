@@ -1,3 +1,6 @@
+import { JwtUser } from "@common/decorators/jwt-user.decorator";
+import { JwtPayloadDto } from "@common/dto/jwt-payload.dto";
+import { UserRole } from "@common/types/user-roles.type";
 import {
   Body,
   Controller,
@@ -7,20 +10,16 @@ import {
   Param,
   ParseUUIDPipe,
   Put,
-  Session,
   UseGuards,
   ValidationPipe,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { UserRole } from "@common/types/user-roles.type";
-
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
-import { SessionContent } from "@/auth/sessions/types/session.types";
 import { UpdateOrderStatusDto } from "@/orders/dto/update-order-status.dto";
 
-import { OrdersService } from "./orders.service";
+import { OrdersService } from "./services/orders.service";
 
 @Controller("orders")
 @ApiTags("Orders")
@@ -30,19 +29,21 @@ export class OrdersController {
   @Get(":id")
   async getSingleOrder(
     @Param("id", new ParseUUIDPipe()) orderId: string,
-    @Session() session: SessionContent,
+    @JwtUser() user: JwtPayloadDto,
   ) {
-    return this.service.getSingleOrder(
-      orderId,
-      session?.passport?.user?.id,
-      session?.passport?.user?.role,
-    );
+    return this.service.getSingleOrder(orderId, user?.id, user?.role);
   }
 
   @Get()
-  async getUserOrders(@Session() session: SessionContent) {
-    return this.service.getAllOrders(session?.passport?.user?.id, session?.passport?.user?.role);
+  async getUserOrders(@JwtUser() user: JwtPayloadDto) {
+    return this.service.getAllOrders(user.id, user.role);
   }
+
+  // @IsPublic()
+  // @Post()
+  // async createOrder(@Body() payload: OrdersCreateOrderPayload) {
+  //   return await this.createOrdersService.createOrder(payload);
+  // }
 
   @Roles(UserRole.ADMIN)
   @UseGuards(RolesGuard)

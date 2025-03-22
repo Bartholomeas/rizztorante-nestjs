@@ -1,3 +1,4 @@
+import { IsPublic } from "@common/decorators/is-public.decorator";
 import {
   Body,
   Controller,
@@ -13,10 +14,7 @@ import {
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
-
 import { Request } from "express";
-
-import { IsPublic } from "@common/decorators/is-public.decorator";
 
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "./dto/create-user.dto";

@@ -1,3 +1,4 @@
+import { UserRole } from "@common/types/user-roles.type";
 import {
   Body,
   Controller,
@@ -10,10 +11,7 @@ import {
   Session,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-
 import { Request } from "express";
-
-import { UserRole } from "@common/types/user-roles.type";
 
 import { SessionContent } from "@/auth/sessions/types/session.types";
 

@@ -2,10 +2,10 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
-  ManyToMany,
-  JoinTable,
 } from "typeorm";
 
 import { Menu } from "@/menu/entities/menu.entity";

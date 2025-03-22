@@ -1,7 +1,6 @@
+import { UserEventTypes } from "@events/events";
 import { Injectable } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
-
-import { UserEventTypes } from "@events/events";
 
 import { UsersService } from "./services/users.service";
 

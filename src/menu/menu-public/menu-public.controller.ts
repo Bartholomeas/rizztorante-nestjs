@@ -1,3 +1,4 @@
+import { IsPublic } from "@common/decorators/is-public.decorator";
 import {
   Controller,
   Get,
@@ -9,8 +10,6 @@ import {
   ParseUUIDPipe,
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags, getSchemaPath } from "@nestjs/swagger";
-
-import { IsPublic } from "@common/decorators/is-public.decorator";
 
 import { MenuPublicService } from "@/menu/menu-public/menu-public.service";
 

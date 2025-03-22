@@ -1,9 +1,7 @@
+import { SortOrder } from "@common/types/sort-order.type";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-
 import { Transform } from "class-transformer";
 import { IsEnum, IsInt, IsOptional, Max, Min } from "class-validator";
-
-import { SortOrder } from "@common/types/sort-order.type";
 
 export class PageOptionsDto {
   @ApiPropertyOptional({ enum: SortOrder, default: SortOrder.ASC })

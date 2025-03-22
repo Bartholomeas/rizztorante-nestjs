@@ -1,3 +1,6 @@
+import { ApiPaginatedResponse } from "@common/decorators/api-paginated-response.decorator";
+import { IsPublic } from "@common/decorators/is-public.decorator";
+import { PageOptionsWithSearchDto } from "@common/dto/pagination/page-options-with-search.dto";
 import {
   Body,
   Controller,
@@ -14,9 +17,6 @@ import {
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiSecurity, ApiTags } from "@nestjs/swagger";
 
-import { ApiPaginatedResponse } from "@common/decorators/api-paginated-response.decorator";
-import { PageOptionsWithSearchDto } from "@common/dto/pagination/page-options-with-search.dto";
-
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 
@@ -25,7 +25,6 @@ import { IngredientDto } from "./dto/ingredient.dto";
 import { UpdateIngredientDto } from "./dto/update-ingredient.dto";
 import { INGREDIENTS_ALLOWED_ROLES } from "./ingredients.constants";
 import { IngredientsService } from "./ingredients.service";
-import { IsPublic } from "@common/decorators/is-public.decorator";
 
 @Controller("ingredients")
 @ApiTags("Ingredients")

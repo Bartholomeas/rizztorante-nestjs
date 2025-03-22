@@ -1,7 +1,6 @@
-import { IsOptional, IsString, IsUUID } from "class-validator";
-
 import { UserEventTypes } from "@events/events";
 import { EventBody } from "@events/events.types";
+import { IsOptional, IsString, IsUUID } from "class-validator";
 
 import type { SessionContent } from "@/auth/sessions/types/session.types";
 

@@ -1,11 +1,9 @@
+import { MenuEventTypes } from "@events/events";
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
-
 import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
-
-import { MenuEventTypes } from "@events/events";
 
 import { MenuPositionDetails } from "@/menu/entities/menu-position-details.entity";
 import { MenuPosition } from "@/menu/entities/menu-position.entity";
@@ -14,11 +12,11 @@ import { CategoryDto } from "../dto/category.dto";
 import { MenuPositionDto } from "../dto/menu-position.dto";
 import { MenuDto } from "../dto/menu.dto";
 import { PositionDetailsDto } from "../dto/position-details.dto";
-import { MENU_REPOSITORY_DI, MenuRepository } from "../repositories/menu.repository";
 import {
   MENU_CATEGORY_REPOSITORY_DI,
   MenuCategoryRepository,
 } from "../repositories/menu-category.repository";
+import { MENU_REPOSITORY_DI, MenuRepository } from "../repositories/menu.repository";
 
 @Injectable()
 export class MenuPublicService {

@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-
 import { IsString, IsUUID } from "class-validator";
 
 import { BasePositionDto } from "./base/base-position.dto";

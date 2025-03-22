@@ -1,6 +1,5 @@
 import "dotenv/config";
 import * as path from "node:path";
-
 import { DataSource, type DataSourceOptions } from "typeorm";
 // import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 
@@ -13,7 +12,7 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   username: process.env.APP_DB_USERNAME,
   password: process.env.APP_DB_PASSWORD,
   database: process.env.APP_DB_NAME,
-  // synchronize: true,
+  synchronize: true, // TODO: Remove in production
   // synchronize: process.env.NODE_ENV !== "production",
 
   entities: [path.join(__dirname, "../src/**/*.entity.{ts,js}")],

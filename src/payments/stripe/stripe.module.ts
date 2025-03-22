@@ -1,20 +1,20 @@
 import { DynamicModule, Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigService } from "@nestjs/config";
+
+import { OrdersModule } from "@/orders/orders.module";
 
 import { STRIPE_KEY } from "./stripe.constants";
+import { StripeController } from "./stripe.controller";
 import { StripeService } from "./stripe.service";
 
-@Module({})
+@Module({
+  imports: [OrdersModule],
+  controllers: [StripeController],
+})
 export class StripeModule {
   static forRootAsync(): DynamicModule {
     return {
       module: StripeModule,
-      imports: [
-        ConfigModule.forRoot({
-          envFilePath: [".env"],
-          isGlobal: true,
-        }),
-      ],
       providers: [
         StripeService,
         {

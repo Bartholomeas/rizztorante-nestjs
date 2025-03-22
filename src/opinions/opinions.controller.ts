@@ -1,3 +1,8 @@
+import { ApiPaginatedResponse } from "@common/decorators/api-paginated-response.decorator";
+import { IsPublic } from "@common/decorators/is-public.decorator";
+import { PageOptionsDto } from "@common/dto/pagination/page-options.dto";
+import { PageDto } from "@common/dto/pagination/page.dto";
+import { UserRole } from "@common/types/user-roles.type";
 import {
   Body,
   Controller,
@@ -16,11 +21,6 @@ import {
 } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
-import { ApiPaginatedResponse } from "@common/decorators/api-paginated-response.decorator";
-import { PageOptionsDto } from "@common/dto/pagination/page-options.dto";
-import { PageDto } from "@common/dto/pagination/page.dto";
-import { UserRole } from "@common/types/user-roles.type";
-
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 import { SessionContent } from "@/auth/sessions/types/session.types";
@@ -29,7 +29,6 @@ import { ApproveOpinionDto } from "./dto/approve-opinion.dto";
 import { CreateOpinionDto } from "./dto/create-opinion.dto";
 import { OpinionDto } from "./dto/opinion.dto";
 import { OpinionsService } from "./opinions.service";
-import { IsPublic } from "@common/decorators/is-public.decorator";
 
 @IsPublic()
 @Controller("opinions")

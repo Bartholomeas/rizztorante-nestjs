@@ -1,7 +1,6 @@
+import { NotificationEventTypes } from "@events/events";
 import { Injectable } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
-
-import { NotificationEventTypes } from "@events/events";
 
 import { AcceptNotificationDto } from "./dto/accept-notification.dto";
 import { UpdateNotificationDto } from "./dto/update-notification.dto";

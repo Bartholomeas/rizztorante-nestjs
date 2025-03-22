@@ -10,8 +10,9 @@ import {
 
 import { CartItemConfigurableIngredient } from "@/cart/entities/cart-item-configurable-ingredient.entity";
 
-import { IngredientsConfig } from "./ingredients-config.entity";
 import { Ingredient } from "../../entities/ingredient.entity";
+
+import { IngredientsConfig } from "./ingredients-config.entity";
 
 @Entity()
 export class ConfigurableIngredient {

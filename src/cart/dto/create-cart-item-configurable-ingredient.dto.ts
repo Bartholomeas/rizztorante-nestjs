@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-
 import { IsInt, IsPositive, IsUUID, Min } from "class-validator";
 
 export class CreateCartItemConfigurableIngredientDto {

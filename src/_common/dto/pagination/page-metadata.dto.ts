@@ -1,8 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-
-import { IsBoolean, IsNumber, IsPositive } from "class-validator";
-
 import { PageMetadataParams } from "@common/types/page-metadata-params.type";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsBoolean, IsNumber, IsPositive } from "class-validator";
 
 export class PageMetadataDto {
   @ApiProperty()

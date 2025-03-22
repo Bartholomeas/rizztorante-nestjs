@@ -1,12 +1,10 @@
+import { UserEventTypes } from "@events/events";
+import { GuestCreatedPayload } from "@events/payloads";
 import { Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { InjectRepository } from "@nestjs/typeorm";
-
 import { IsNull, LessThan, Not, Repository } from "typeorm";
-
-import { UserEventTypes } from "@events/events";
-import { GuestCreatedPayload } from "@events/payloads";
 
 import { SessionContent } from "@/auth/sessions/types/session.types";
 import { User } from "@/users/entities/user.entity";

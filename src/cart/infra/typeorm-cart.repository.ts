@@ -1,8 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
+
+import { User } from "@/users/entities/user.entity";
+
 import { Cart } from "../entities/cart.entity";
 import { CartRepository } from "../repositories/cart.repository";
-import { User } from "@/users/entities/user.entity";
 
 @Injectable()
 export class TypeormCartRepository extends Repository<Cart> implements CartRepository {

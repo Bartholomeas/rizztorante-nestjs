@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-
 import { IsOptional, IsString } from "class-validator";
 
 import { BaseIngredientsConfigDto } from "./base/base-ingredients-config.dto";

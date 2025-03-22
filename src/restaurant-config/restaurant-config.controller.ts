@@ -1,3 +1,5 @@
+import { IsPublic } from "@common/decorators/is-public.decorator";
+import { UserRole } from "@common/types/user-roles.type";
 import {
   Body,
   Controller,
@@ -14,15 +16,12 @@ import {
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { UserRole } from "@common/types/user-roles.type";
-
 import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 
 import { CreateOperatingHourDto, UpdateOperatingHourDto } from "./dto/operating-hour.dto";
 import { CreateSpecialDateDto, UpdateSpecialDateDto } from "./dto/special-dates.dto";
 import { RestaurantConfigService } from "./restaurant-config.service";
-import { IsPublic } from "@common/decorators/is-public.decorator";
 
 @Controller("restaurant-config")
 @ApiTags("Restaurant Config")

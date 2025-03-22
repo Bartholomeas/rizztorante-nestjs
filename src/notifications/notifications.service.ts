@@ -1,12 +1,9 @@
-import * as crypto from "crypto";
-
+import { UserRole } from "@common/types/user-roles.type";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-
+import * as crypto from "crypto";
 import * as firebase from "firebase-admin";
 import { Repository } from "typeorm";
-
-import { UserRole } from "@common/types/user-roles.type";
 
 import { AcceptNotificationDto } from "./dto/accept-notification.dto";
 import { CreateGuestNotificationToken } from "./dto/create-guest-notification-token.dto";

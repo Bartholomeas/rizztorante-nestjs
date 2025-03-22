@@ -1,23 +1,20 @@
+import { PageOptionsDto } from "@common/dto/pagination/page-options.dto";
+import type { PageDto } from "@common/dto/pagination/page.dto";
+import { UserRole } from "@common/types/user-roles.type";
 import { InternalServerErrorException } from "@nestjs/common";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-
 import { Repository } from "typeorm";
 
-import { PageOptionsDto } from "@common/dto/pagination/page-options.dto";
-import type { PageDto } from "@common/dto/pagination/page.dto";
-import { UserRole } from "@common/types/user-roles.type";
-
 import type { SessionContent } from "@/auth/sessions/types/session.types";
-
-import { Opinion } from "./entities/opinion.entity";
-import { OpinionsController } from "./opinions.controller";
-import { OpinionsService } from "./opinions.service";
 
 import type { ApproveOpinionDto } from "./dto/approve-opinion.dto";
 import type { CreateOpinionDto } from "./dto/create-opinion.dto";
 import type { OpinionDto } from "./dto/opinion.dto";
+import { Opinion } from "./entities/opinion.entity";
+import { OpinionsController } from "./opinions.controller";
+import { OpinionsService } from "./opinions.service";
 
 describe("OpinionsController", () => {
   let controller: OpinionsController;

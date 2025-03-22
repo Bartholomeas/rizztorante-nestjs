@@ -1,8 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { OnEvent } from "@nestjs/event-emitter";
-
 import { IngredientsConfigEventTypes } from "@events/events";
 import { FindConfigurableIngredientsPayload } from "@events/payloads/ingredients";
+import { Injectable } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
 
 import { IngredientsConfigService } from "./ingredients-config.service";
 

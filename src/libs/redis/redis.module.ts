@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-
 import * as connectRedis from "connect-redis";
 import * as session from "express-session";
 import { default as Redis } from "ioredis";
@@ -15,12 +14,13 @@ import { REDIS, REDIS_STORE } from "./redis.constants";
       useFactory: (configService: ConfigService) => {
         const redisPort = +configService.get<number>("REDIS_PORT", 6379);
         const redisHost = configService.get<string>("REDIS_HOST", "localhost");
+        const redisUsername = configService.get<string>("REDIS_USERNAME", "default");
         const redisPassword = configService.get<string>("REDIS_PASSWORD");
 
         return new Redis({
           host: redisHost,
           port: redisPort,
-          username: "default",
+          username: redisUsername,
           password: redisPassword,
         });
       },

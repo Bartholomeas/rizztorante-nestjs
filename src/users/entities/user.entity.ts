@@ -1,15 +1,16 @@
+import { Exclude } from "class-transformer";
 import { IsEmail, IsStrongPassword, ValidateIf } from "class-validator";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  ManyToMany,
-  Index,
 } from "typeorm";
 
 import { UserRole } from "@/_common/types/user-roles.type";
@@ -35,6 +36,7 @@ export class User {
   @IsEmail({}, { message: "Email is not valid" })
   email?: string;
 
+  @Exclude()
   @Column({ nullable: true })
   @ValidateIf((o) => o.role !== UserRole.GUEST)
   @IsStrongPassword({

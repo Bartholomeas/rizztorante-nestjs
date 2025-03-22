@@ -1,6 +1,5 @@
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-
 import slugify from "slugify";
 import { Repository } from "typeorm";
 

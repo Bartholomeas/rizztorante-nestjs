@@ -1,7 +1,6 @@
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { join } from "node:path";
 import { Worker } from "node:worker_threads";
-
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
 
 type OptimizeImageResponse = Promise<{ buffer: Buffer; contentType: string }>;
 
