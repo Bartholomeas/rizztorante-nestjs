@@ -8,7 +8,7 @@ import * as dayjs from "dayjs";
 import { CartDto } from "@/cart/dto/cart.dto";
 import { CART_REPOSITORY_DI, CartRepository } from "@/cart/repositories/cart.repository";
 import { PaymentDetailsDto } from "@/orders/dto/payment-details.dto";
-import { ORDER_QUEUE, ORDER_QUEUE_EVENTS } from "@/orders/orders.constants";
+import { ORDER_QUEUE, ORDER_QUEUE_EVENTS } from "@/orders/queue/orders-queue.constants";
 import { OrderStatus } from "@/orders/types/order-status.enum";
 import { PaymentsService } from "@/payments/payments.service";
 import { USER_REPOSITORY_DI, UserRepository } from "@/users/repositories/user.repository";

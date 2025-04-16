@@ -1,4 +1,6 @@
+import { jwtModule } from "@common/modules.config";
 import { BullModule } from "@nestjs/bullmq";
+import { CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
@@ -76,6 +78,12 @@ import { RedisModule } from "./libs/redis/redis.module";
       inject: [ConfigService],
     }),
     EventEmitterModule.forRoot({ delimiter: "." }),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 1000,
+      max: 100,
+    }),
+    jwtModule,
     RedisModule,
     AuthModule,
     UsersModule,

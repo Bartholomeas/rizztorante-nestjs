@@ -1,3 +1,4 @@
+import { SocketIOAdapter } from "@common/adapters/socket-io.adapter";
 import { GlobalExceptionFilter } from "@common/filters/global-exception.filter";
 import { LoggingInterceptor } from "@common/interceptors/logging.interceptor";
 import { ValidationPipe } from "@nestjs/common";
@@ -43,6 +44,7 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup("api", app, document);
   }
+  app.useWebSocketAdapter(new SocketIOAdapter(app, configService));
 
   await app.listen(configService.get<number>("APP_API_PORT"), "0.0.0.0");
 }

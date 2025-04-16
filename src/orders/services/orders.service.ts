@@ -1,26 +1,62 @@
+import { JwtPayloadDto } from "@common/dto/jwt-payload.dto";
 import { UserRole } from "@common/types/user-roles.type";
 import { OrdersCreateOrderPayload } from "@events/payloads/orders";
-import { Injectable, NotImplementedException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { CACHE_MANAGER, Cache } from "@nestjs/cache-manager";
+import { Inject, Injectable, NotImplementedException } from "@nestjs/common";
+import { FindManyOptions } from "typeorm";
 
 import { Cart } from "@/cart/entities/cart.entity";
 import { Order } from "@/orders/entities/order.entity";
 
 import { OrdersUtils } from "../orders.utils";
+import { ORDERS_REPOSITORY_DI, OrdersRepository } from "../repositories/orders.repository";
 import { OrderStatus } from "../types/order-status.enum";
 
 @Injectable()
 export class OrdersService {
-  constructor(@InjectRepository(Order) private readonly repository: Repository<Order>) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    @Inject(ORDERS_REPOSITORY_DI) private readonly orderRepository: OrdersRepository,
+  ) {}
+
+  async findAll({
+    user,
+    options,
+  }: { user?: JwtPayloadDto; options?: FindManyOptions<Order> } = {}) {
+    const baseQuery = this.orderRepository
+      .createQueryBuilder("order")
+      .addOrderBy("order.createdAt", "DESC");
+
+    if (options?.order) {
+      Object.entries(options.order).forEach(([key, value]) => {
+        if (value === "ASC" || value === "DESC") {
+          baseQuery.orderBy(`order.${key}`, value);
+        }
+      });
+    }
+    if (user?.role === UserRole.ADMIN)
+      return await this.orderRepository.find({
+        order: {
+          createdAt: "DESC",
+        },
+        take: 50,
+      });
+    else
+      return await this.orderRepository.find({
+        order: {
+          createdAt: "DESC",
+        },
+        take: 50,
+      });
+  }
 
   async getSingleOrder(orderId: string, userId: string, role: UserRole = UserRole.GUEST) {
     if (role === UserRole.ADMIN)
-      return await this.repository.findOne({
+      return await this.orderRepository.findOne({
         where: { id: orderId },
       });
     else
-      return await this.repository.findOne({
+      return await this.orderRepository.findOne({
         where: [
           {
             id: orderId,
@@ -35,9 +71,9 @@ export class OrdersService {
   }
 
   async getAllOrders(userId: string, role: UserRole = UserRole.GUEST) {
-    if (role === UserRole.ADMIN) return await this.repository.find({});
+    if (role === UserRole.ADMIN) return await this.orderRepository.find({});
     else
-      return await this.repository.find({
+      return await this.orderRepository.find({
         where: {
           user: {
             id: userId,
@@ -51,13 +87,13 @@ export class OrdersService {
   }
 
   async updateOrder(orderId: string, status: OrderStatus) {
-    const order = await this.repository.findOne({
+    const order = await this.orderRepository.findOne({
       where: {
         id: orderId,
       },
     });
     order.orderStatus = status;
-    return await this.repository.save(order);
+    return await this.orderRepository.save(order);
   }
 
   async deleteOrder() {
@@ -75,6 +111,6 @@ export class OrdersService {
     order.user = payload.user;
     order.checkoutDetails = payload.checkoutData;
 
-    return await this.repository.save(order);
+    return await this.orderRepository.save(order);
   }
 }

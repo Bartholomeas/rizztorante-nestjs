@@ -6,7 +6,7 @@ import { Queue } from "bullmq";
 import Stripe from "stripe";
 
 import { Cart } from "@/cart/entities/cart.entity";
-import { ORDER_QUEUE } from "@/orders/orders.constants";
+import { ORDER_QUEUE } from "@/orders/queue/orders-queue.constants";
 
 import { StripeLineItem } from "./interfaces/stripe.interfaces";
 import { STRIPE_KEY } from "./stripe.constants";

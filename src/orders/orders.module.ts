@@ -8,15 +8,15 @@ import { Restaurant } from "@/restaurants/entities/restaurant.entity";
 import { User } from "@/users/entities/user.entity";
 
 import { TypeormOrdersRepository } from "./infra/typeorm-orders.repository";
-import { ORDER_QUEUE } from "./orders.constants";
 import { OrdersController } from "./orders.controller";
-import { OrdersGateway } from "./orders.gateway";
 import { OrdersListener } from "./orders.listener";
-import { OrdersProcessor } from "./orders.processor";
+import { ORDER_QUEUE } from "./queue/orders-queue.constants";
+import { OrdersProcessor } from "./queue/orders.processor";
 import { ORDERS_REPOSITORY_DI } from "./repositories/orders.repository";
 import { OrdersCreationService } from "./services/orders-creation.service";
 import { OrdersProcessingService } from "./services/orders-processing.service";
 import { OrdersService } from "./services/orders.service";
+import { OrdersGateway } from "./web-sockets/orders.gateway";
 
 @Module({
   imports: [
