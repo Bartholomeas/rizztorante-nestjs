@@ -11,6 +11,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
   UseGuards,
   ValidationPipe,
 } from "@nestjs/common";
@@ -20,6 +21,7 @@ import { Roles } from "@/auth/decorators/roles.decorator";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 import { UpdateOrderStatusDto } from "@/orders/dto/update-order-status.dto";
 
+import { FindOrdersRequest } from "./http/requests/find-orders.request";
 import { JoinOrdersRoomRequest } from "./http/requests/join-orders-room.request";
 import { OrdersService } from "./services/orders.service";
 
@@ -31,8 +33,8 @@ export class OrdersController {
   @Get()
   @Roles(UserRole.ADMIN, UserRole.DELIVERY, UserRole.KITCHEN, UserRole.SERVICE)
   @UseGuards(RolesGuard)
-  async findAll(@JwtUser() user: JwtPayloadDto) {
-    return await this.ordersService.findAll({ user });
+  async findAll(@JwtUser() user: JwtPayloadDto, @Query() request: FindOrdersRequest) {
+    return await this.ordersService.findAll({ user, options: request });
   }
 
   @Get(":id")

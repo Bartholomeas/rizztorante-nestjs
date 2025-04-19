@@ -3,11 +3,11 @@ import { UserRole } from "@common/types/user-roles.type";
 import { OrdersCreateOrderPayload } from "@events/payloads/orders";
 import { CACHE_MANAGER, Cache } from "@nestjs/cache-manager";
 import { Inject, Injectable, NotImplementedException } from "@nestjs/common";
-import { FindManyOptions } from "typeorm";
 
 import { Cart } from "@/cart/entities/cart.entity";
 import { Order } from "@/orders/entities/order.entity";
 
+import { FindOrdersRequest } from "../http/requests/find-orders.request";
 import { OrdersUtils } from "../orders.utils";
 import { ORDERS_REPOSITORY_DI, OrdersRepository } from "../repositories/orders.repository";
 import { OrderStatus } from "../types/order-status.enum";
@@ -19,10 +19,8 @@ export class OrdersService {
     @Inject(ORDERS_REPOSITORY_DI) private readonly orderRepository: OrdersRepository,
   ) {}
 
-  async findAll({
-    user,
-    options,
-  }: { user?: JwtPayloadDto; options?: FindManyOptions<Order> } = {}) {
+  async findAll({ user, options }: { user?: JwtPayloadDto; options?: FindOrdersRequest } = {}) {
+    console.log({ user });
     const baseQuery = this.orderRepository
       .createQueryBuilder("order")
       .addOrderBy("order.createdAt", "DESC");
@@ -34,20 +32,28 @@ export class OrdersService {
         }
       });
     }
-    if (user?.role === UserRole.ADMIN)
-      return await this.orderRepository.find({
-        order: {
-          createdAt: "DESC",
-        },
-        take: 50,
+
+    if (options?.filter) {
+      Object.entries(options.filter).forEach(([key, value]) => {
+        baseQuery.andWhere(`order.${key} = :${key}`, { [key]: value });
       });
-    else
-      return await this.orderRepository.find({
-        order: {
-          createdAt: "DESC",
-        },
-        take: 50,
-      });
+    }
+
+    //   if (user?.role === UserRole.ADMIN)
+    //     return await this.orderRepository.find({
+    //       order: {
+    //         createdAt: "DESC",
+    //       },
+    //       take: 50,
+    //     });
+    //   else
+    //     return await this.orderRepository.find({
+    //       order: {
+    //         createdAt: "DESC",
+    //       },
+    //       take: 50,
+    //     });
+    return baseQuery.execute();
   }
 
   async getSingleOrder(orderId: string, userId: string, role: UserRole = UserRole.GUEST) {
