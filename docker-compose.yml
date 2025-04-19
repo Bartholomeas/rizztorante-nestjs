@@ -40,6 +40,11 @@ services:
     container_name: rizztorante-app
     environment:
       NODE_ENV: ${NODE_ENV}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_HOST: cache
+      REDIS_USERNAME: ${REDIS_USERNAME}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_URL: ${REDIS_URL}
       APP_API_PORT: ${APP_API_PORT}
       DB_HOST: db
       APP_DB_NAME: ${APP_DB_NAME}
