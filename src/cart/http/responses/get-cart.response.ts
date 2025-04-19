@@ -1,4 +1,5 @@
 import { BaseImageDto } from "@common/dto/base-image.dto";
+import { Currency } from "@common/types/currency.type";
 import { Exclude, Expose } from "class-transformer";
 
 import { CartDto } from "@/cart/dto/cart.dto";
@@ -26,7 +27,10 @@ export class GetCartResponse {
   public readonly id: string;
 
   @Expose()
-  public readonly total: number;
+  public readonly totalAmount: number;
+
+  @Expose()
+  public readonly currency: Currency;
 
   @Expose()
   public readonly items: CartItemRespone[];
@@ -38,7 +42,8 @@ export class GetCartResponse {
   static fromCart(cartDto: CartDto): GetCartResponse {
     return new GetCartResponse({
       id: cartDto.id,
-      total: cartDto.total,
+      totalAmount: cartDto.total,
+      currency: Currency.PLN,
       items:
         cartDto?.items?.map(
           (p) =>

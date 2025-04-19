@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -29,6 +30,7 @@ export class Order {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Index()
   @CreateDateColumn()
   createdAt: Date;
 
@@ -38,6 +40,7 @@ export class Order {
   @Column({ unique: true })
   orderNumber: string;
 
+  @Index()
   @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.NEW })
   orderStatus: OrderStatus;
 

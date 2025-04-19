@@ -4,7 +4,7 @@ import { Controller, Get, Logger, Query } from "@nestjs/common";
 import { Queue } from "bullmq";
 
 import { UpdateOrderStatusDto } from "@/orders/dto/update-order-status.dto";
-import { ORDER_QUEUE, ORDER_QUEUE_EVENTS } from "@/orders/orders.constants";
+import { ORDER_QUEUE, ORDER_QUEUE_EVENTS } from "@/orders/queue/orders-queue.constants";
 import { OrderStatus } from "@/orders/types/order-status.enum";
 
 import { StripeService } from "./stripe.service";

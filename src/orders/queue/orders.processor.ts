@@ -2,10 +2,11 @@ import { Processor, WorkerHost } from "@nestjs/bullmq";
 import { Logger } from "@nestjs/common";
 import { Job } from "bullmq";
 
-import { ORDER_QUEUE, ORDER_QUEUE_EVENTS } from "./orders.constants";
-import { OrdersCreationService } from "./services/orders-creation.service";
-import { OrdersProcessingService } from "./services/orders-processing.service";
-import { OrderStatus } from "./types/order-status.enum";
+import { OrdersCreationService } from "../services/orders-creation.service";
+import { OrdersProcessingService } from "../services/orders-processing.service";
+import { OrderStatus } from "../types/order-status.enum";
+
+import { ORDER_QUEUE, ORDER_QUEUE_EVENTS } from "./orders-queue.constants";
 
 @Processor(ORDER_QUEUE)
 export class OrdersProcessor extends WorkerHost {
