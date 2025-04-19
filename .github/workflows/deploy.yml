@@ -8,6 +8,7 @@ on:
 env:
   ECR_IMAGE: ${{ vars.ECR_IMAGE }}
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+  ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
 jobs:
   deploy:
     runs-on: ubuntu-latest
